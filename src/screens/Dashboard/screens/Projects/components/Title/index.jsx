@@ -1,15 +1,6 @@
 import styles from './_search.module.sass'
 import { Plus, Search } from 'react-feather'
-
-const Tabs = () => {
-    return (
-        <ul className={styles.tabs}>
-            <li className={styles.active}>Projects</li>
-            <li>Uploads</li>
-            <li>Archived</li>
-        </ul>
-    )
-}
+import { Link } from 'react-router-dom'
 
 const Searchbar = () => {
 
@@ -21,8 +12,10 @@ const Searchbar = () => {
                     <p>New Folder</p>
                 </li>
                 <li className={styles.create}>
-                    <Plus />
-                    <p>Create Project</p>
+                    <Link to='editor'>
+                        <Plus />
+                        <p>Create Project</p>
+                    </Link>
                 </li>
             </ul>
         )
@@ -43,7 +36,6 @@ const Title = () => {
     return (
         <div className={styles.title}>
             <h3>My Workspace</h3>
-            <Tabs />
             <Searchbar />
         </div>
     )

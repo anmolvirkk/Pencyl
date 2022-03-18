@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from './components/Header'
 import styles from './_projects.module.sass'
-import Title from './components/Search'
+import Title from './components/Title'
 import Workspace from './components/Workspace'
 
 const Projects = () => {

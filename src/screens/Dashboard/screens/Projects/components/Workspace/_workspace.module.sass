@@ -1,4 +1,4 @@
-@use '../../../../../../main'
+@use '../../../../../../mixins'
 
 .workspace
     height: 100%
@@ -7,7 +7,7 @@
 .empty
     height: 100%
     width: 100%
-    +main.center
+    +mixins.center
     h2
         font-size: 36px
         font-weight: 300
@@ -15,7 +15,7 @@
     p
         font-size: 16px
         opacity: 0.5
-    button
+    a
         margin-top: 12px
         padding: 16px
         border: none
@@ -27,6 +27,7 @@
         border-radius: 7px 7px
         cursor: pointer
         transition: 0.2s
-    button:hover
+        text-decoration: none
+    a:hover
         background: var(--primary)
         color: white

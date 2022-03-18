@@ -1,9 +1,16 @@
 import './main.sass'
 import Dashboard from './screens/Dashboard'
+import {BrowserRouter, Routes, Route} from "react-router-dom"
+import LandingPage from './screens/LandingPage'
 
 const App = () => {
   return (
-    <Dashboard />
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<LandingPage />} />
+        <Route path='dashboard/*' element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

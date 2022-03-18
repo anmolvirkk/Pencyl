@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styles from './_workspace.module.sass'
 
 const Empty = () => {
@@ -5,7 +6,7 @@ const Empty = () => {
         <div className={styles.empty}>
             <h2>Welcome to your Workspace</h2>
             <p>This is your own private space to create, edit and store your NFT Collections.</p>
-            <button>Create Your First NFT Project</button>
+            <Link to='editor'>Create Your First NFT Project</Link>
         </div>
     )
 }
