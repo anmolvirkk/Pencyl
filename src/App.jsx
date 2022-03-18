@@ -1,0 +1,10 @@
+import './main.sass'
+import Dashboard from './screens/Dashboard'
+
+const App = () => {
+  return (
+    <Dashboard />
+  )
+}
+
+export default App

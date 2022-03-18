@@ -1,0 +1,32 @@
+@use '../../../../../../main'
+
+.workspace
+    height: 100%
+    width: 100%
+    
+.empty
+    height: 100%
+    width: 100%
+    +main.center
+    h2
+        font-size: 36px
+        font-weight: 300
+        margin: 0
+    p
+        font-size: 16px
+        opacity: 0.5
+    button
+        margin-top: 12px
+        padding: 16px
+        border: none
+        outline: none
+        border: 1px solid var(--primary)
+        font-size: 16px
+        background-color: transparent
+        color: var(--primary)
+        border-radius: 7px 7px
+        cursor: pointer
+        transition: 0.2s
+    button:hover
+        background: var(--primary)
+        color: white
