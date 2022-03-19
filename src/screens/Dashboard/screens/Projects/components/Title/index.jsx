@@ -1,4 +1,4 @@
-import styles from './_search.module.sass'
+import styles from './_title.module.sass'
 import { Plus, Search } from 'react-feather'
 import { Link } from 'react-router-dom'
 

@@ -1,0 +1,59 @@
+@use '../../../../../../mixins'
+
+.layersWrapper
+    width: 300px
+    height: 100%
+    background-color: var(--black2)
+    overflow: hidden
+    .nav
+        padding: 0 12px
+        display: flex
+        justify-content: space-between
+        align-items: center
+        .tags
+            display: flex
+            align-items: center
+            color: white
+            .tag
+                display: flex
+                align-items: center
+        .options
+            width: 60px
+            display: flex
+            justify-content: space-between
+            svg
+                stroke: var(--lightblack2)
+                transform: translateY(3px) translateX(3px)
+                cursor: pointer
+            svg:first-child
+                transform: translateY(3px) translateX(3px) scale(0.825)
+    .layers
+        overflow-y: overlay
+        height: calc( 100% - 60px )
+    .layer
+        background-color: var(--lightblack)
+        margin: 6px
+        border-radius: 7px 7px
+        padding: 12px
+        cursor: pointer
+        .layerbtn
+            display: flex
+            align-items: center
+            justify-content: space-between
+        .assets
+            margin-top: 16px
+            .item
+                margin: 6px
+                padding: 12px
+                border-radius: 7px 7px
+                background-color: var(--black2)
+    .addLayer
+        height: 60px
+        width: 100%
+        +mixins.center
+        flex-flow: row
+        font-weight: 400
+        cursor: pointer
+        svg
+            height: 45px
+            margin-right: 6px
