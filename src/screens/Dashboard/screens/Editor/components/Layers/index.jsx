@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { CornerDownRight, ChevronRight, Plus } from 'react-feather'
+import { useState } from 'react'
+import { ChevronRight, CornerDownRight, Plus } from 'react-feather'
 import styles from './_layers.module.sass'
 
 const layers = {
@@ -82,23 +82,39 @@ const layers = {
             forearm: {
                 sub: {
                     wrist: {
-                        assets: [
-                            {
-                                name: 'x',
-                                elem: null,
-                                rare: ''
-                            },
-                            {
-                                name: 'y',
-                                elem: null,
-                                rare: ''
-                            },
-                            {
-                                name: 'z',
-                                elem: null,
-                                rare: ''
+                        sub: {
+                            fingers: {
+                                sub: {
+                                    thumb: {
+                                        sub: {
+                                            nail: {
+                                                sub: {
+                                                    colors: {
+                                                        assets: [
+                                                            {
+                                                                name: 'x',
+                                                                elem: null,
+                                                                rare: ''
+                                                            },
+                                                            {
+                                                                name: 'y',
+                                                                elem: null,
+                                                                rare: ''
+                                                            },
+                                                            {
+                                                                name: 'z',
+                                                                elem: null,
+                                                                rare: ''
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                        ]
+                        }
                     }
                 }
             },
@@ -153,78 +169,116 @@ const AddLayer = () => {
 }
 
 const Layer = ({name}) => {
-    const [assets, setAssets] = useState(null)
-    const [sublayers, setSublayers] = useState(null)
+
+    const [sublayers, setSublayers] = useState(false)
+
     const [nav, setNav] = useState(null)
 
-    useEffect(()=>{
-        if(layers[name]['assets']){
-            setAssets(layers[name]['assets'])
-        }
-    }, [name])
-
-    const setSubLayer = (name) => {
-        if(sublayers){
-            if(sublayers[name]['sub']){
-                setSublayers(sublayers[name]['sub'])
-                setNav([...nav, name])
-            }else{
-                setAssets(sublayers[name]['assets'])
-            }
+    const Nav = () => {
+        if(nav){
+            return (
+                <div className={styles.nav}>
+                    <div className={styles.tags}>
+                        {nav.map((item, key)=><div onMouseDown={()=>navigateSubLayers(item)} className={styles.tag} key={key}>/&nbsp;&nbsp;<p>{item}</p>&nbsp;&nbsp;</div>)}
+                    </div>
+                    <div className={styles.options}>
+                        <CornerDownRight />
+                    </div>
+                </div>  
+            )
         }else{
-            if(Object.keys(layers[name])[0] !== 'assets'){
+            return null
+        }
+    }
+
+    const navigateSubLayers = (clicked) => {
+        if(sublayers&&sublayers[clicked]){
+            setSublayers(sublayers[clicked]['sub'])
+            setNav([...nav, clicked])
+        }else if(clicked === name){
+            if(sublayers === layers[name]['sub']){
+                setSublayers(false)
+                setNav(false)
+            }else{
                 setSublayers(layers[name]['sub'])
                 setNav([name])
             }
+        }else{
+            let newNav = nav.map((item, key)=>{
+                if(key <= nav.indexOf(clicked)){
+                    return item
+                }else{
+                    return null
+                }
+            }).filter(i=>i!==null)
+            let newSubLayers = {...layers}
+            newNav.forEach((item)=>{
+                if(newSubLayers[item]['sub']){
+                    newSubLayers = newSubLayers[item]['sub']
+                }
+            })
+            setNav([...newNav])
+            setSublayers(newSubLayers)
         }
     }
-    return (
-        <div className={styles.layerWrapper}>
-            {nav
-            ?
-            <div className={styles.nav}>
-                <div className={styles.tags}>
-                    {nav.map((item, key)=><div className={styles.tag} key={key}>/&nbsp;&nbsp;<p>{item}</p>&nbsp;&nbsp;</div>)}
-                </div>
-                <div className={styles.options}>
-                    <CornerDownRight />
-                    <Plus />
-                </div>
-            </div>  
-            :null}
-            {sublayers
-            ?
-            <div>
-                {
-                    Object.keys(sublayers).map((name, key)=>{
-                        return (
-                            <div key={key} className={styles.layer} onMouseDown={()=>setSubLayer(name)}>
-                                <div className={styles.layerbtn}>
-                                    <p>{name}</p>
-                                    {assets?null:<ChevronRight />}
-                                </div>
-                                {assets?
-                                <div className={styles.assets}>
-                                    {assets.map((item, key)=><div className={styles.item} key={key}>{item.name}</div>)}
-                                </div>:null}
-                            </div>
-                        )
-                    })
-                }
+
+    const LayerElem = ({name, sub}) => {
+
+        const [layer] = useState({
+            name: name,
+            assets: sub?sub[name]['assets']:layers[name]['assets']
+        })
+    
+        const Title = () => {
+            if(layer.name){
+                return (
+                    <div className={styles.layerbtn} onMouseDown={()=>navigateSubLayers(layer.name)}>
+                        <p>{layer.name}</p>
+                        {layer['assets']?<Plus />:<ChevronRight />}
+                    </div>
+                )
+            }else{
+                return null
+            }
+        }
+    
+        const Assets = () => {
+            if(layer.assets){
+                return (
+                    <div className={styles.assets}>
+                        {layer.assets.map((item, key)=><div className={styles.item} key={key}>{item.name}</div>)}
+                    </div>
+                )
+            }else{
+                return null
+            }
+        }
+
+        return (
+            <div className={styles.layer}>
+                <Title />
+                <Assets />
             </div>
-            :
-            <div className={styles.layer} onMouseDown={()=>setSubLayer(name)}>
-                <div className={styles.layerbtn}>
-                    <p>{name}</p>
-                    {assets?null:<ChevronRight />}
-                </div>
-                {assets?
-                <div className={styles.assets}>
-                    {assets.map((item, key)=><div className={styles.item} key={key}>{item.name}</div>)}
-                </div>:null}
-            </div>}
-        </div>
-    )
+        )
+    }
+
+    if(sublayers){
+        return (
+            <div className={styles.sublayers}>
+                <Nav />
+                {Object.keys(sublayers).map((item, key)=>{
+                    return (
+                        <LayerElem key={key} name={item} sub={sublayers} />
+                    )
+                })}
+            </div>
+        )
+    }else{
+        return (
+            <LayerElem name={name} />
+        )
+    }
+
 }
 
 const Layers = () => {
