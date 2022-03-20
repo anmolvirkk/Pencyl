@@ -1,6 +1,8 @@
+import styles from './_details.module.sass'
+
 const Details = () => {
     return (
-        <div>
+        <div className={styles.details}>
 
         </div>
     )

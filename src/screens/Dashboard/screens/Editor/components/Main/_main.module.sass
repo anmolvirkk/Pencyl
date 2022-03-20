@@ -1,0 +1,13 @@
+@use '../../../../../../mixins'
+
+.main
+    height: 100%
+    width: 100%
+    overflow: auto
+    +mixins.center
+    .canvas
+        aspect-ratio: 1 / 1
+        width: 90%
+        max-width: 90%
+        max-height: 90%
+        background-color: var(--black2)
