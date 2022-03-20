@@ -1,0 +1,28 @@
+@use '../../../../../../mixins'
+
+.sidebar
+    width: calc( 8px + 24px + 60px + 8px  )
+    height: 100%
+    background-color: var(--black)
+    .option
+        width: fit-content
+        +mixins.center
+        cursor: pointer
+        text-decoration: none
+        color: var(--lightblack2)
+        padding: 8px 8px 8px 24px
+        margin: 8px 0
+        p
+            margin-top: 8px
+            font-size: 12px
+        .content
+            +mixins.center
+            background-color: var(--lightblack)
+            height: 100%
+            width: 60px
+            height: 60px
+            border-radius: 7px 7px
+    .active
+        background-color: var(--lightblack3)
+        border-radius: 0 7px 7px 0
+        color: white

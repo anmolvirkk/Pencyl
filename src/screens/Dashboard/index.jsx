@@ -7,7 +7,7 @@ const Dashboard = () => {
     return (
         <Routes>
             <Route index element={<Projects />} />
-            <Route path="editor" element={<Editor />} />
+            <Route path="editor/*" element={<Editor />} />
         </Routes>
     )
 }

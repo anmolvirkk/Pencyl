@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { ChevronRight, CornerDownRight, Plus } from 'react-feather'
-import MoreMenu from '../../../../components/MoreMenu'
+import { Plus } from 'react-feather'
+import MoreMenu from '../../../../../../components/MoreMenu'
 import styles from './_layers.module.sass'
 
 const layers = {
@@ -183,7 +183,7 @@ const Layer = ({name}) => {
                         {nav.map((item, key)=><div onMouseDown={()=>navigateSubLayers(item)} className={styles.tag} key={key}>/&nbsp;&nbsp;<p>{item}</p>&nbsp;&nbsp;</div>)}
                     </div>
                     <div className={styles.options}>
-                        <CornerDownRight />
+                        <Plus />
                     </div>
                 </div>  
             )
@@ -262,7 +262,7 @@ const Layer = ({name}) => {
             if(layer.assets){
                 return (
                     <div className={styles.assets}>
-                        {layer.assets.map((item, key)=><div className={styles.item} key={key}>{item.name}</div>)}
+                        {layer.assets.map((item, key)=><div className={styles.item} key={key}><p>{item.name}</p><MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} /></div>)}
                     </div>
                 )
             }else{
