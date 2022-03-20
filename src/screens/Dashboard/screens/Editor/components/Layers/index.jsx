@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ChevronRight, CornerDownRight, Plus } from 'react-feather'
+import MoreMenu from '../../../../components/MoreMenu'
 import styles from './_layers.module.sass'
 
 const layers = {
@@ -191,34 +192,46 @@ const Layer = ({name}) => {
         }
     }
 
-    const navigateSubLayers = (clicked) => {
-        if(sublayers&&sublayers[clicked]){
-            setSublayers(sublayers[clicked]['sub'])
-            setNav([...nav, clicked])
-        }else if(clicked === name){
-            if(sublayers === layers[name]['sub']){
-                setSublayers(false)
-                setNav(false)
+    const navigateSubLayers = (clicked, e) => {
+        const checkParent = (elem) => {
+            if(typeof elem.className==='string'&&elem.className.split('_').indexOf('moremenu') === 1){
+                return true
+            }else if(elem.parentNode){
+                return checkParent(elem.parentNode)
             }else{
-                setSublayers(layers[name]['sub'])
-                setNav([name])
+                return false
             }
-        }else{
-            let newNav = nav.map((item, key)=>{
-                if(key <= nav.indexOf(clicked)){
-                    return item
+        }
+        const moremenuClicked = e?checkParent(e.target):false
+        if(!moremenuClicked){
+            if(sublayers&&sublayers[clicked]){
+                setSublayers(sublayers[clicked]['sub'])
+                setNav([...nav, clicked])
+            }else if(clicked === name){
+                if(sublayers === layers[name]['sub']){
+                    setSublayers(false)
+                    setNav(false)
                 }else{
-                    return null
+                    setSublayers(layers[name]['sub'])
+                    setNav([name])
                 }
-            }).filter(i=>i!==null)
-            let newSubLayers = {...layers}
-            newNav.forEach((item)=>{
-                if(newSubLayers[item]['sub']){
-                    newSubLayers = newSubLayers[item]['sub']
-                }
-            })
-            setNav([...newNav])
-            setSublayers(newSubLayers)
+            }else{
+                let newNav = nav.map((item, key)=>{
+                    if(key <= nav.indexOf(clicked)){
+                        return item
+                    }else{
+                        return null
+                    }
+                }).filter(i=>i!==null)
+                let newSubLayers = {...layers}
+                newNav.forEach((item)=>{
+                    if(newSubLayers[item]['sub']){
+                        newSubLayers = newSubLayers[item]['sub']
+                    }
+                })
+                setNav([...newNav])
+                setSublayers(newSubLayers)
+            }
         }
     }
 
@@ -232,9 +245,12 @@ const Layer = ({name}) => {
         const Title = () => {
             if(layer.name){
                 return (
-                    <div className={styles.layerbtn} onMouseDown={()=>navigateSubLayers(layer.name)}>
+                    <div className={styles.layerbtn} onMouseDown={(e)=>navigateSubLayers(layer.name,e)}>
                         <p>{layer.name}</p>
-                        {layer['assets']?<Plus />:<ChevronRight />}
+                        <div className={styles.options}>
+                            {layer['assets']?<Plus />:null}
+                            <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} />
+                        </div>
                     </div>
                 )
             }else{
