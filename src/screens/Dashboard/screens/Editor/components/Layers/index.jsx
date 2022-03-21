@@ -115,6 +115,8 @@ const Layer = ({name}) => {
                         newSub[name]['sub'] = {...newSub[name]['sub'], [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
                         let replacedSub = newLayers.replace(prevSub, JSON.stringify(newSub))
                         parseLayers = JSON.parse(replacedSub)
+                        setNav(null)
+                        setSublayers(false)
                     }
                     setLayers({...parseLayers})
                     setModal({type: null})
