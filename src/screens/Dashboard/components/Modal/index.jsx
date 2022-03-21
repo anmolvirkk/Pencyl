@@ -12,7 +12,7 @@ const Modal = () => {
         switch (modal.type) {
             case 'addElementOrLayer': return <AddElementOrLayer />
             case 'addElement': return <AddElement />
-            case 'addLayer': return <AddLayer />
+            case 'addLayer': return <AddLayer func={modal.func} />
             default: return null
         }
     }

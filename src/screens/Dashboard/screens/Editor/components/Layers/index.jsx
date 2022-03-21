@@ -8,9 +8,14 @@ import styles from './_layers.module.sass'
 
 const AddLayer = () => {
     const setModal = useSetRecoilState(modalAtom)
+    const [layers, setLayers] = useRecoilState(layersAtom)
+    const addLayer = (layerName) => {
+        setLayers({...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}})
+        setModal({type: null})
+    }
     return (
-        <div className={styles.addLayer}>
-            <Plus onMouseDown={()=>setModal({type: 'addLayer'})} />
+        <div className={styles.addLayer} onMouseDown={()=>setModal({type: 'addLayer', func: addLayer})}>
+            <Plus />
             <p>Add Layer</p>
         </div>
     )
@@ -18,7 +23,7 @@ const AddLayer = () => {
 
 const Layer = ({name}) => {
 
-    const [layers] = useRecoilState(layersAtom)
+    const [layers, setLayers] = useRecoilState(layersAtom)
 
     const [sublayers, setSublayers] = useState(false)
 
@@ -91,20 +96,29 @@ const Layer = ({name}) => {
 
         const setModal = useSetRecoilState(modalAtom)
 
-        const [layer] = useState({
+        let layer = {
             name: name,
             assets: sub?sub[name]['assets']:layers[name]['assets'],
             sub: sub?sub[name]?sub[name]['sub']:false:layers[name]?layers[name]['sub']:false
-        })
+        }
     
         const Title = () => {
             if(layer.name){
+                const addLayer = (layerName) => {
+                    if(!sub){
+                        let newLayers = JSON.stringify(layers)
+                        let parseLayers = JSON.parse(newLayers)
+                        parseLayers[name]['sub'] = {...layers[name]['sub'], [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
+                        setLayers({...parseLayers})
+                        setModal({type: null})
+                    }
+                }
                 return (
                     <div className={styles.layerbtn} onMouseDown={(e)=>navigateSubLayers(layer.name,e)}>
                         <p>{layer.name}</p>
                         <div className={styles.options}>
                             <div className={styles.addBtn}>
-                                <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement'}):layer['sub']?()=>setModal({type: 'addLayer'}):()=>setModal({type: 'addElementOrLayer'})} />
+                                <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement'}):layer['sub']?()=>setModal({type: 'addLayer', func: addLayer}):()=>setModal({type: 'addElementOrLayer'})} />
                             </div>
                             <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} />
                         </div>
