@@ -1,3 +1,5 @@
+@use '../../../../../../../../mixins'
+
 .elements
     width: 100%
     height: 100%
@@ -30,3 +32,16 @@
             background: transparent
     .items
         height: calc( 100% - 48px - 48px - 18px )
+        overflow-y: overlay
+    .loading
+        width: 100%
+        height: 100%
+        +mixins.center
+    .illustrations
+        width: 100%
+        display: grid
+        grid-template-columns: repeat(auto-fill, minmax(64px, 1fr))
+        grid-template-rows: repeat(auto-fill, minmax(64px, 1fr))
+        grid-gap: 6px
+        img
+            cursor: pointer

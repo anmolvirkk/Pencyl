@@ -20,9 +20,9 @@ const options = [
 const Sidebar = () => {
     return (
         <div className={styles.sidebar}>
-            {options.map((item)=>{
+            {options.map((item, key)=>{
                 return (
-                    <NavLink to={item.name.toLowerCase()} className={({isActive})=>isActive?`${styles.option} ${styles.active}`:styles.option}>
+                    <NavLink key={key} to={item.name.toLowerCase()} className={({isActive})=>isActive?`${styles.option} ${styles.active}`:styles.option}>
                         <div className={styles.content}>
                             {item.icon}
                             <p>{item.name}</p>
