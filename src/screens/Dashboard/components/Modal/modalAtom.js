@@ -3,10 +3,10 @@ import { recoilPersist } from "recoil-persist"
 
 const {persistAtom} = recoilPersist()
 
-const itemsAtom = atom({
-    key: 'items',
-    default: false,
+const modalAtom = atom({
+    key: 'modal',
+    default: {type: null},
     effects: [persistAtom]
 })
 
-export default itemsAtom
+export default modalAtom

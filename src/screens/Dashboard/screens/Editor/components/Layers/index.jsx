@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Plus } from 'react-feather'
-import MoreMenu from '../../../../../../components/MoreMenu'
+import { useSetRecoilState } from 'recoil'
+import modalAtom from '../../../../components/Modal/modalAtom'
+import MoreMenu from '../../../../components/MoreMenu'
 import styles from './_layers.module.sass'
 
 const layers = {
@@ -161,9 +163,10 @@ const layers = {
 }
 
 const AddLayer = () => {
+    const setModal = useSetRecoilState(modalAtom)
     return (
         <div className={styles.addLayer}>
-            <Plus />
+            <Plus onMouseDown={()=>setModal({type: 'addLayer'})} />
             <p>Add Layer</p>
         </div>
     )
@@ -181,9 +184,6 @@ const Layer = ({name}) => {
                 <div className={styles.nav}>
                     <div className={styles.tags}>
                         {nav.map((item, key)=><div onMouseDown={()=>navigateSubLayers(item)} className={styles.tag} key={key}>/&nbsp;&nbsp;<p>{item}</p>&nbsp;&nbsp;</div>)}
-                    </div>
-                    <div className={styles.options}>
-                        <Plus />
                     </div>
                 </div>  
             )
@@ -237,6 +237,8 @@ const Layer = ({name}) => {
 
     const LayerElem = ({name, sub}) => {
 
+        const setModal = useSetRecoilState(modalAtom)
+
         const [layer] = useState({
             name: name,
             assets: sub?sub[name]['assets']:layers[name]['assets']
@@ -248,7 +250,7 @@ const Layer = ({name}) => {
                     <div className={styles.layerbtn} onMouseDown={(e)=>navigateSubLayers(layer.name,e)}>
                         <p>{layer.name}</p>
                         <div className={styles.options}>
-                            {layer['assets']?<Plus />:null}
+                            <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement'}):()=>setModal({type: 'addElementOrLayer'})} />
                             <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} />
                         </div>
                     </div>
