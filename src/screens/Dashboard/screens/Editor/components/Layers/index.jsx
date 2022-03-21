@@ -105,13 +105,19 @@ const Layer = ({name}) => {
         const Title = () => {
             if(layer.name){
                 const addLayer = (layerName) => {
+                    let newLayers = JSON.stringify(layers)
+                    let parseLayers = JSON.parse(newLayers)
                     if(!sub){
-                        let newLayers = JSON.stringify(layers)
-                        let parseLayers = JSON.parse(newLayers)
                         parseLayers[name]['sub'] = {...layers[name]['sub'], [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
-                        setLayers({...parseLayers})
-                        setModal({type: null})
+                    }else{
+                        let prevSub = JSON.stringify(sub)
+                        let newSub = JSON.parse(prevSub)
+                        newSub[name]['sub'] = {...newSub[name]['sub'], [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
+                        let replacedSub = newLayers.replace(prevSub, JSON.stringify(newSub))
+                        parseLayers = JSON.parse(replacedSub)
                     }
+                    setLayers({...parseLayers})
+                    setModal({type: null})
                 }
                 return (
                     <div className={styles.layerbtn} onMouseDown={(e)=>navigateSubLayers(layer.name,e)}>
