@@ -3,6 +3,8 @@ import styles from './_elements.module.sass'
 import Lottie from 'react-lottie-player'
 import { useEffect, useState } from 'react'
 import loadingAnim from '../../../../../../loading.json'
+import { useRecoilState } from 'recoil'
+import itemsAtom from '../itemsAtom'
 
 const LayerSelector = () => {
     return (
@@ -24,7 +26,7 @@ const Searchbar = () => {
 
 const Items = () => {
 
-    const [items, setItems] = useState(false)
+    const [items, setItems] = useRecoilState(itemsAtom)
 
     const clientID = '58758127462563'
 
