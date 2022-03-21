@@ -194,8 +194,14 @@ const Layer = ({name}) => {
 
     const navigateSubLayers = (clicked, e) => {
         const checkParent = (elem) => {
-            if(typeof elem.className==='string'&&elem.className.split('_').indexOf('moremenu') === 1){
-                return true
+            if(typeof elem.className==='string'){
+                if(elem.className.split('_').indexOf('moremenu') > 0 || elem.className.split('_').indexOf('addBtn') > 0){
+                    return true
+                }else if(elem.parentNode){
+                    return checkParent(elem.parentNode)
+                }else{
+                    return false
+                }
             }else if(elem.parentNode){
                 return checkParent(elem.parentNode)
             }else{
@@ -250,7 +256,9 @@ const Layer = ({name}) => {
                     <div className={styles.layerbtn} onMouseDown={(e)=>navigateSubLayers(layer.name,e)}>
                         <p>{layer.name}</p>
                         <div className={styles.options}>
-                            <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement'}):()=>setModal({type: 'addElementOrLayer'})} />
+                            <div className={styles.addBtn}>
+                                <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement'}):()=>setModal({type: 'addElementOrLayer'})} />
+                            </div>
                             <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} />
                         </div>
                     </div>

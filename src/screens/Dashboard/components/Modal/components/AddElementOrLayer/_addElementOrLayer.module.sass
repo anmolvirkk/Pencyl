@@ -1,0 +1,25 @@
+@use '../../../../../../mixins'
+
+.wrapper
+    padding: 24px
+    display: flex
+    align-items: center
+    .btn
+        background-color: var(--black2)
+        padding: 24px
+        border-radius: 10px 10px
+        width: 160px
+        cursor: pointer
+        .content
+            background-color: var(--lightblack3)
+            border-radius: 10px 10px
+            +mixins.center
+            padding: 12px
+            p
+                margin-top: 12px
+                font-size: 14px
+            svg
+                height: 30px
+                width: 30px
+    .or
+        margin: 0 24px
