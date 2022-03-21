@@ -4,7 +4,9 @@ const AddLayer = () => {
     return (
         <div className={styles.wrapper}>
             <input type='text' placeholder='Layer Name' />
-            <button>Add</button>
+            <button>
+                <p>Add</p>
+            </button>
         </div>
     )
 }
