@@ -1,11 +1,11 @@
-import { ChevronUp, Search } from 'react-feather'
+import { ChevronUp, Search, Upload } from 'react-feather'
 import styles from './_images.module.sass'
 
-const LayerSelector = () => {
+const UploadBtn = () => {
     return (
-        <div className={styles.layerSelector}>
-            <p>Select Layer</p>
-            <ChevronUp />
+        <div className={styles.upload}>
+            <p>Upload</p>
+            <Upload />
         </div>
     )
 }
@@ -27,9 +27,19 @@ const Items = () => {
     )
 }
 
+const LayerSelector = () => {
+    return (
+        <div className={styles.layerSelector}>
+            <p>Select Layer</p>
+            <ChevronUp />
+        </div>
+    )
+}
+
 const Images = () => {
     return (
         <div className={styles.images}>
+            <UploadBtn />
             <Searchbar />
             <Items />
             <LayerSelector />
