@@ -1,166 +1,10 @@
 import { useState } from 'react'
 import { Plus } from 'react-feather'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import MoreMenu from '../../../../components/MoreMenu'
+import layersAtom from './layersAtom'
 import styles from './_layers.module.sass'
-
-const layers = {
-    head: {
-        sub: {
-                eyes: {
-                    sub: {
-                        glasses: {
-                            assets: [
-                                {
-                                    name: 'x',
-                                    elem: null,
-                                    rare: ''
-                                },
-                                {
-                                    name: 'y',
-                                    elem: null,
-                                    rare: ''
-                                },
-                                {
-                                    name: 'z',
-                                    elem: null,
-                                    rare: ''
-                                }
-                            ]
-                        }
-                    }
-                },
-                nose: {
-                    assets: [
-                        {
-                            name: 'x',
-                            elem: null,
-                            rare: ''
-                        },
-                        {
-                            name: 'y',
-                            elem: null,
-                            rare: ''
-                        }
-                    ]
-                },
-                ears: {
-                    assets: [
-                        {
-                            name: 'y',
-                            elem: null,
-                            rare: ''
-                        },
-                        {
-                            name: 'z',
-                            elem: null,
-                            rare: ''
-                        }
-                    ]
-                }
-            }
-    },
-    body: {
-        assets: [
-            {
-                name: 'x',
-                elem: null,
-                rare: ''
-            },
-            {
-                name: 'y',
-                elem: null,
-                rare: ''
-            },
-            {
-                name: 'z',
-                elem: null,
-                rare: ''
-            }
-        ]
-    },
-    arms: {
-        sub: {
-            forearm: {
-                sub: {
-                    wrist: {
-                        sub: {
-                            fingers: {
-                                sub: {
-                                    thumb: {
-                                        sub: {
-                                            nail: {
-                                                sub: {
-                                                    colors: {
-                                                        assets: [
-                                                            {
-                                                                name: 'x',
-                                                                elem: null,
-                                                                rare: ''
-                                                            },
-                                                            {
-                                                                name: 'y',
-                                                                elem: null,
-                                                                rare: ''
-                                                            },
-                                                            {
-                                                                name: 'z',
-                                                                elem: null,
-                                                                rare: ''
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            hands: {
-                sub: {
-                    accessories: {
-                        assets: [
-                            {
-                                name: 'x',
-                                elem: null,
-                                rare: ''
-                            },
-                            {
-                                name: 'y',
-                                elem: null,
-                                rare: ''
-                            },
-                            {
-                                name: 'z',
-                                elem: null,
-                                rare: ''
-                            }
-                        ]
-                    }
-                }
-            },
-        }
-    },
-    legs: {
-        assets: [
-            {
-                name: 'a',
-                elem: null,
-                rare: ''
-            },
-            {
-                name: 'b',
-                elem: null,
-                rare: ''
-            }
-        ]
-    }
-}
 
 const AddLayer = () => {
     const setModal = useSetRecoilState(modalAtom)
@@ -173,6 +17,8 @@ const AddLayer = () => {
 }
 
 const Layer = ({name}) => {
+
+    const [layers] = useRecoilState(layersAtom)
 
     const [sublayers, setSublayers] = useState(false)
 
@@ -247,7 +93,8 @@ const Layer = ({name}) => {
 
         const [layer] = useState({
             name: name,
-            assets: sub?sub[name]['assets']:layers[name]['assets']
+            assets: sub?sub[name]['assets']:layers[name]['assets'],
+            sub: sub?sub[name]?sub[name]['sub']:false:layers[name]?layers[name]['sub']:false
         })
     
         const Title = () => {
@@ -257,7 +104,7 @@ const Layer = ({name}) => {
                         <p>{layer.name}</p>
                         <div className={styles.options}>
                             <div className={styles.addBtn}>
-                                <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement'}):()=>setModal({type: 'addElementOrLayer'})} />
+                                <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement'}):layer['sub']?()=>setModal({type: 'addLayer'}):()=>setModal({type: 'addElementOrLayer'})} />
                             </div>
                             <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} />
                         </div>
@@ -308,6 +155,7 @@ const Layer = ({name}) => {
 }
 
 const Layers = () => {
+    const [layers] = useRecoilState(layersAtom)
     return (
         <div className={styles.layersWrapper}>
             <div className={styles.layers}>
