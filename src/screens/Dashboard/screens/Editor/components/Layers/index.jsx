@@ -121,6 +121,26 @@ const Layer = ({name}) => {
                     setLayers({...parseLayers})
                     setModal({type: null})
                 }
+                const removeLayer = () => {
+                    let newLayers = {}
+                    if(!sub){
+                        Object.keys(layers).forEach((item)=>{
+                            if(item !== name){
+                                newLayers = {...newLayers, [item]: layers[item]}
+                            }
+                        })
+                    }else{
+                        // let prevSub = JSON.stringify(sub)
+                        // let newSub = JSON.parse(prevSub)
+                        // newSub[name]['sub'] = {...newSub[name]['sub'], [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
+                        // let replacedSub = newLayers.replace(prevSub, JSON.stringify(newSub))
+                        // parseLayers = JSON.parse(replacedSub)
+                        // setNav(null)
+                        // setSublayers(false)
+                    }
+                    setLayers({...newLayers})
+                    setModal({type: null})
+                }
                 return (
                     <div className={styles.layerbtn} onMouseDown={(e)=>navigateSubLayers(layer.name,e)}>
                         <p>{layer.name}</p>
@@ -128,7 +148,7 @@ const Layer = ({name}) => {
                             <div className={styles.addBtn}>
                                 <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement'}):layer['sub']?()=>setModal({type: 'addLayer', func: addLayer}):()=>setModal({type: 'addElementOrLayer'})} />
                             </div>
-                            <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} />
+                            <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: removeLayer}]} />
                         </div>
                     </div>
                 )
