@@ -139,7 +139,7 @@ const Layer = ({name}) => {
                             }
                         })
                         let subLayerRemovedString = JSON.stringify(subLayerRemoved)
-                        newLayers = JSON.parse(allLayerString.replace(subLayerString, subLayerRemovedString))
+                        newLayers = JSON.parse(allLayerString.replace(`{"sub":${subLayerString}}`, subLayerRemovedString))
                         setNav(null)
                         setSublayers(false)
                     }
