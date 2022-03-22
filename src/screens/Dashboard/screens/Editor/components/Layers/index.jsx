@@ -62,8 +62,10 @@ const Layer = ({name}) => {
         const moremenuClicked = e?checkParent(e.target):false
         if(!moremenuClicked){
             if(sublayers&&sublayers[clicked]){
-                setSublayers(sublayers[clicked]['sub'])
-                setNav([...nav, clicked])
+                if(sublayers[clicked]['sub']){
+                    setSublayers(sublayers[clicked]['sub'])
+                    setNav([...nav, clicked])
+                }
             }else if(clicked === name){
                 if(sublayers === layers[name]['sub']){
                     setSublayers(false)

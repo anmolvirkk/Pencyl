@@ -16,7 +16,7 @@ const Header = () => {
         const search = () => {
 
             const getIcon = () => {
-                fetch(`https://api.iconscout.com/v3/search?query=${query.current}&product_type=item&asset=icon&per_page=10&page=1&sort=relevant&&price=free`, {
+                fetch(`https://api.iconscout.com/v3/search?query=${query.current}&product_type=item&asset=icon&sort=relevant&&price=free`, {
                     headers: {
                         'accept': 'application/json',
                         'Client-ID': clientID
