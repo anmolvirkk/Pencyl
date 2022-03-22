@@ -1,0 +1,39 @@
+@use '../../../../mixins'
+
+.header
+    width: 100%
+    padding: 12px
+    display: flex
+    justify-content: space-between
+    align-items: center
+    height: 60px
+    background-color: var(--black)
+    img
+        height: 100%
+    .menu
+        display: flex
+        align-items: center
+    .launch
+        border: none
+        outline: none
+        font-size: 16px
+        padding: 0 24px
+        background-color: var(--primary)
+        color: white
+        cursor: pointer
+        height: 42px
+        border-radius: 7px 7px
+        font-weight: 400
+    .profile
+        border-radius: 100%
+        +mixins.center
+        margin-left: 30px
+        cursor: pointer
+        border: 2px solid var(--lightblack)
+        svg
+            background-color: var(--lightblack)
+            border-radius: 100%
+            width: 36px
+            height: 36px
+            padding: 8px
+            margin: 3px

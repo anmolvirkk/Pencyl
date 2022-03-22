@@ -148,12 +148,39 @@ const Layer = ({name}) => {
                     setLayers({...newLayers})
                     setModal({type: null})
                 }
+                const addElement = (e) => {
+                    if(!sub){
+                        if(layers[name]['assets']){
+                            let resetActiveAssets = layers[name]['assets'].map((item)=>{
+                                let newItem = {...item}
+                                newItem.active = false
+                                return newItem
+                            })
+                            setLayers({...layers, [name]: {assets: [...resetActiveAssets, {
+                                name: e.target.src.split('/')[e.target.src.split('/').length - 1],
+                                elem: e.target.src,
+                                rare: '',
+                                active: true,
+                                id: new Date().valueOf()
+                            }]}})
+                        }else{
+                            setLayers({...layers, [name]: {assets: [{
+                                name: e.target.src.split('/')[e.target.src.split('/').length - 1],
+                                elem: e.target.src,
+                                rare: '',
+                                active: true,
+                                id: new Date().valueOf()
+                            }]}})
+                        }
+                        setModal({type: null})
+                    }
+                }
                 return (
                     <div className={styles.layerbtn} onMouseDown={(e)=>navigateSubLayers(layer.name,e)}>
                         <p>{layer.name}</p>
                         <div className={styles.options}>
                             <div className={styles.addBtn}>
-                                <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement'}):layer['sub']?()=>setModal({type: 'addLayer', func: addLayer}):()=>setModal({type: 'addElementOrLayer', addLayer: addLayer})} />
+                                <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement', func: addElement}):layer['sub']?()=>setModal({type: 'addLayer', func: addLayer}):()=>setModal({type: 'addElementOrLayer', addLayer: addLayer, addElement: addElement})} />
                             </div>
                             <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: removeLayer}]} />
                         </div>
@@ -165,10 +192,35 @@ const Layer = ({name}) => {
         }
     
         const Assets = () => {
+            const setActiveAsset = (asset) => {
+                let layersString = JSON.stringify(layers)
+                let layersParse = JSON.parse(layersString)
+                let layerString = JSON.stringify(layer)
+                let layerParse = JSON.parse(layerString)
+                layerParse.assets = layerParse.assets.map((item)=>{
+                    let newItem = {...item}
+                    if(item.id === asset.id){
+                        newItem.active = true
+                    }else{
+                        newItem.active = false
+                    }
+                    return newItem
+                })
+                console.log(layersParse)
+                console.log(layerParse)
+                console.log(asset)
+                console.log(sub)
+                if(!sub){
+                    layerParse[name] = {...layerParse}
+                    console.log(layers)
+                    console.log(layersParse)
+                    setLayers({...layersParse})
+                }
+            }
             if(layer.assets){
                 return (
                     <div className={styles.assets}>
-                        {layer.assets.map((item, key)=><div className={styles.item} key={key}><p>{item.name}</p><MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} /></div>)}
+                        {layer.assets.map((item, key)=><div onMouseDown={()=>setActiveAsset(item)} className={item.active?`${styles.item} ${styles.active}`:styles.item} key={key}><p>{item.name}</p><MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} /></div>)}
                     </div>
                 )
             }else{

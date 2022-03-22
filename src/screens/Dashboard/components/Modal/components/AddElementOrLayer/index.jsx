@@ -3,7 +3,7 @@ import { useSetRecoilState } from "recoil"
 import modalAtom from "../../modalAtom"
 import styles from './_addElementOrLayer.module.sass'
 
-const AddElementOrLayer = ({addLayer}) => {
+const AddElementOrLayer = ({addLayer, addElement}) => {
     const setModal = useSetRecoilState(modalAtom)
     return (
         <div className={styles.wrapper}>
@@ -15,7 +15,7 @@ const AddElementOrLayer = ({addLayer}) => {
             </div>
             <p className={styles.or}>or</p>
             <div className={styles.btn}>
-                <div className={styles.content} onMouseDown={()=>setModal({type: 'addElement'})}>
+                <div className={styles.content} onMouseDown={()=>setModal({type: 'addElement', func: addElement})}>
                     <Box />
                     <p>Add Element</p>
                 </div>

@@ -1,6 +1,6 @@
 import { Search, Upload } from 'react-feather'
 import styles from './_addElement.module.sass'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { useRecoilState } from 'recoil'
 import elementsAtom from './elementsAtom'
 
@@ -30,6 +30,7 @@ const Header = () => {
                 case 'icons':
                     getIcon()
                 break
+                default: getIcon()
             }
 
         }
@@ -65,32 +66,32 @@ const Header = () => {
     )
 }
 
-const Assets = () => {
+const Assets = ({onClick}) => {
     
-    const [elements] = useRecoilState(elementsAtom)
+    const [elements, setElements] = useRecoilState(elementsAtom)
 
     return (
         <div className={styles.assets}>
             <div className={styles.elementsType}>
-                <div className={elements.type==='icons'?styles.active:null}>Icons</div>
-                <div className={elements.type==='illustrations'?styles.active:null}>Illustrations</div>
-                <div className={elements.type==='images'?styles.active:null}>Images</div>
-                <div className={elements.type==='uploaded'?styles.active:null}>Uploaded</div>
+                <div onMouseDown={()=>setElements({...elements, type: 'icons'})} className={elements.type==='icons'?styles.active:null}>Icons</div>
+                <div onMouseDown={()=>setElements({...elements, type: 'illustrations'})} className={elements.type==='illustrations'?styles.active:null}>Illustrations</div>
+                <div onMouseDown={()=>setElements({...elements, type: 'images'})} className={elements.type==='images'?styles.active:null}>Images</div>
+                <div onMouseDown={()=>setElements({...elements, type: 'uploaded'})} className={elements.type==='uploaded'?styles.active:null}>Uploaded</div>
             </div>
             <div className={styles.content}>
                 {elements.content.map((item, key)=>{
-                    return <img key={key} alt='' src={item.urls.png_64} />
+                    return <img key={key} alt='' src={item.urls.png_64} onClick={(e)=>onClick(e)} />
                 })}
             </div>
         </div>
     )
 }
 
-const AddElement = () => {
+const AddElement = ({func}) => {
     return (
         <div className={styles.wrapper}>
             <Header />
-            <Assets />
+            <Assets onClick={func} />
         </div>
     )
 }
