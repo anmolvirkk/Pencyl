@@ -8,10 +8,11 @@
         padding: 0 24px
         margin: 24px 0
 .searchbar
-    background-color: var(--black)
+    background-color: var(--lightblack3)
     padding: 24px
     +mixins.center
     flex-flow: row
+    box-shadow: inset 0 0 10px rgba(0,0,0,1)
     
     .input
         position: relative
@@ -28,6 +29,7 @@
             border: none
             outline: none
             background-color: var(--lightblack)
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15)
             width: 100%
             color: white
             border-radius: 7px 7px
