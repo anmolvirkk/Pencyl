@@ -130,13 +130,18 @@ const Layer = ({name}) => {
                             }
                         })
                     }else{
-                        // let prevSub = JSON.stringify(sub)
-                        // let newSub = JSON.parse(prevSub)
-                        // newSub[name]['sub'] = {...newSub[name]['sub'], [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
-                        // let replacedSub = newLayers.replace(prevSub, JSON.stringify(newSub))
-                        // parseLayers = JSON.parse(replacedSub)
-                        // setNav(null)
-                        // setSublayers(false)
+                        let allLayerString = JSON.stringify(layers)
+                        let subLayerString = JSON.stringify(sub)
+                        let subLayerRemoved = {}
+                        Object.keys(sub).forEach((item)=>{
+                            if(item !== name){
+                                subLayerRemoved = {...subLayerRemoved, [item]: sub[item]}
+                            }
+                        })
+                        let subLayerRemovedString = JSON.stringify(subLayerRemoved)
+                        newLayers = JSON.parse(allLayerString.replace(subLayerString, subLayerRemovedString))
+                        setNav(null)
+                        setSublayers(false)
                     }
                     setLayers({...newLayers})
                     setModal({type: null})
