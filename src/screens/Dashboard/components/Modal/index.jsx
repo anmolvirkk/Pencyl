@@ -10,7 +10,7 @@ const Modal = () => {
     const [modal, setModal] = useRecoilState(modalAtom)
     const Content = () => {
         switch (modal.type) {
-            case 'addElementOrLayer': return <AddElementOrLayer />
+            case 'addElementOrLayer': return <AddElementOrLayer addLayer={modal.addLayer} />
             case 'addElement': return <AddElement />
             case 'addLayer': return <AddLayer func={modal.func} />
             default: return null

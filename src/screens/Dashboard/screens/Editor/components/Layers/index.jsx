@@ -151,7 +151,7 @@ const Layer = ({name}) => {
                         <p>{layer.name}</p>
                         <div className={styles.options}>
                             <div className={styles.addBtn}>
-                                <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement'}):layer['sub']?()=>setModal({type: 'addLayer', func: addLayer}):()=>setModal({type: 'addElementOrLayer'})} />
+                                <Plus onMouseDown={layer['assets']?()=>setModal({type: 'addElement'}):layer['sub']?()=>setModal({type: 'addLayer', func: addLayer}):()=>setModal({type: 'addElementOrLayer', addLayer: addLayer})} />
                             </div>
                             <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: removeLayer}]} />
                         </div>
