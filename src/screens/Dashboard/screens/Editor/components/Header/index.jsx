@@ -1,5 +1,6 @@
 import styles from './_header.module.sass'
 import {User} from 'react-feather'
+import { Link } from 'react-router-dom'
 
 const Upgrade = () => {
     return (
@@ -20,7 +21,7 @@ const Profile = () => {
 const Header = () => {
     return (
         <header className={styles.header}>
-            <img alt='' src='/logo.png' />
+            <Link to='/'><img alt='' src='/logo.png' /></Link>
             <div className={styles.menu}>
                 <Upgrade />
                 <Profile />

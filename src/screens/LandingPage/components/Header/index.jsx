@@ -1,11 +1,12 @@
 import styles from './_header.module.sass'
 import {User} from 'react-feather'
+import { Link } from 'react-router-dom'
 
 const Launch = () => {
     return (
-        <button className={styles.launch}>
+        <Link to='dashboard' className={styles.launch}>
             Launch App
-        </button>
+        </Link>
     )
 }
 
