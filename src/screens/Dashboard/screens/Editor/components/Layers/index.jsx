@@ -206,14 +206,8 @@ const Layer = ({name}) => {
                     }
                     return newItem
                 })
-                console.log(layersParse)
-                console.log(layerParse)
-                console.log(asset)
-                console.log(sub)
                 if(!sub){
-                    layerParse[name] = {...layerParse}
-                    console.log(layers)
-                    console.log(layersParse)
+                    layersParse[name] = {...layerParse}
                     setLayers({...layersParse})
                 }
             }
