@@ -106,7 +106,6 @@ const Layer = ({name}) => {
                 })
                 layersParse[name] = {...layerParse}
                 setLayers({...layersParse})
-                console.log(layers)
             }
             if(layer.assets){
                 return (

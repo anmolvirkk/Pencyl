@@ -25,10 +25,16 @@ const Option = ({title, style}) => {
         // }
     }
 
+    const preventEnter = (e) => {
+        if(e.key === 'Enter'){
+            e.preventDefault()
+        }
+    }
+
     return (
         <div className={styles.option}>
             <div className={styles.title}>{title}</div>
-            <input onBlur={onBlur} type='text' defaultValue={value} onChange={(e)=>value=e.target.value} />
+            <div className={styles.input} contentEditable defaultValue='test' onKeyDown={(e)=>preventEnter(e)}>{value}</div>
         </div>
     )
 }
@@ -40,7 +46,6 @@ const Details = () => {
     if(Object.keys(layers).length > 0){
         Object.keys(layers).forEach((item)=>{
             if(Object.keys(layers[item]).length > 0){
-                console.log(layers)
                 layers[item]['assets'].forEach((item)=>{
                     if(item.active){
                         style = item.style
@@ -54,7 +59,6 @@ const Details = () => {
     }
     return (
         <div className={styles.details}>
-            {console.log(style)}
             {
                 Object.keys(style).map((item, key)=>{
                     return <Option key={key} title={item} style={style[item]} />
