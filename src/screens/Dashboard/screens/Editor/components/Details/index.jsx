@@ -4,14 +4,12 @@ import canvasAtom from './canvasAtom'
 import styles from './_details.module.sass'
 
 const Option = ({title, style, onBlur}) => {
-
     const preventEnter = (e) => {
         if(e.key === 'Enter'){
             e.preventDefault()
             onBlur(title, e.target.innerText)
         }
     }
-
     return (
         <div className={styles.option}>
             <div className={styles.title}>{title}</div>
@@ -27,18 +25,20 @@ const Details = () => {
     let onBlur = () => {}
     if(Object.keys(layers).length > 0){
         Object.keys(layers).forEach((item)=>{
-            if(Object.keys(layers[item]).length > 0){
-                layers[item]['assets'].forEach((item2, i)=>{
-                    if(item2.active){
-                        style = item2.style
-                        onBlur = (key, value) => {
-                            let layersString = JSON.stringify(layers)
-                            let newLayers = JSON.parse(layersString)
-                            newLayers[item]['assets'][i].style[key] = value
-                            setLayers({...newLayers})
+            if(layers[item].active){
+                if(Object.keys(layers[item]).length > 0){
+                    layers[item]['assets'].forEach((item2, i)=>{
+                        if(item2.active){
+                            style = item2.style
+                            onBlur = (key, value) => {
+                                let layersString = JSON.stringify(layers)
+                                let newLayers = JSON.parse(layersString)
+                                newLayers[item]['assets'][i].style[key] = value
+                                setLayers({...newLayers})
+                            }
                         }
-                    }
-                })
+                    })
+                }
             }
         })
     }

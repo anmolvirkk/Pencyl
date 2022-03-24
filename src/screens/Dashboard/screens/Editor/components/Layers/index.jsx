@@ -14,8 +14,10 @@ const AddLayer = () => {
     }
     return (
         <div className={styles.addLayer} onMouseDown={()=>setModal({type: 'addLayer', func: addLayer})}>
-            <Plus />
-            <p>Add Layer</p>
+            <div className={styles.wrapper}>
+                <Plus />
+                <p>Add Layer</p>
+            </div>
         </div>
     )
 }
@@ -30,7 +32,8 @@ const Layer = ({name}) => {
 
         let layer = {
             name: name,
-            assets: layers[name]['assets']
+            assets: layers[name]['assets'],
+            active: layers[name]['active']
         }
 
         const Title = () => {
@@ -47,29 +50,48 @@ const Layer = ({name}) => {
                 }
                 const addElement = (e) => {
                     let assetId = new Date().valueOf()
+                    let layersString = JSON.stringify(layers)
+                    let layersParse = JSON.parse(layersString)
+                    Object.keys(layersParse).forEach((item)=>{
+                        if(item === name){
+                            layersParse[item].active = true
+                        }else{
+                            layersParse[item].active = false
+                        }
+                    })
                     if(layers[name]['assets']){
                             let resetActiveAssets = layers[name]['assets'].map((item)=>{
                                 let newItem = {...item}
                                 newItem.active = false
                                 return newItem
                             })
-                            setLayers({...layers, [name]: {assets: [...resetActiveAssets, {
-                                name: e.target.src.split('/')[e.target.src.split('/').length - 1],
-                                elem: e.target.src,
-                                rare: '',
-                                active: true,
-                                id: assetId,
-                                style: {height: 'auto', width: '100%', top: '0%', left: '0%'}
-                            }]}})
+                            setLayers({...layersParse, 
+                                [name]: {
+                                    assets: [...resetActiveAssets, {
+                                        name: e.target.src.split('/')[e.target.src.split('/').length - 1],
+                                        elem: e.target.src,
+                                        rare: '',
+                                        active: true,
+                                        id: assetId,
+                                        style: {height: 'auto', width: '100%', top: '0%', left: '0%'},
+                                    }],
+                                    active: true
+                                }
+                            })
                     }else{
-                        setLayers({...layers, [name]: {assets: [{
-                            name: e.target.src.split('/')[e.target.src.split('/').length - 1],
-                            elem: e.target.src,
-                            rare: '',
-                            active: true,
-                            id: assetId,
-                            style: {height: 'auto', width: '100%', top: '0%', left: '0%'}
-                        }]}})
+                        setLayers({...layersParse, 
+                            [name]: {
+                                assets: [{
+                                    name: e.target.src.split('/')[e.target.src.split('/').length - 1],
+                                    elem: e.target.src,
+                                    rare: '',
+                                    active: true,
+                                    id: assetId,
+                                    style: {height: 'auto', width: '100%', top: '0%', left: '0%'}
+                                }],
+                                active: true
+                            }
+                        })
                     }
                     setModal({type: null})
                 }
@@ -95,6 +117,13 @@ const Layer = ({name}) => {
                 let layersParse = JSON.parse(layersString)
                 let layerString = JSON.stringify(layer)
                 let layerParse = JSON.parse(layerString)
+                Object.keys(layersParse).forEach((item)=>{
+                    if(item === name){
+                        layerParse.active = true
+                    }else{
+                        layersParse[item].active = false
+                    }
+                })
                 layerParse.assets = layerParse.assets.map((item)=>{
                     let newItem = {...item}
                     if(item.id === asset.id){
@@ -107,10 +136,16 @@ const Layer = ({name}) => {
                 layersParse[name] = {...layerParse}
                 setLayers({...layersParse})
             }
+            const deleteAsset = (item) => {
+                console.log(item)
+            }
+            const editAsset = () => {
+
+            }
             if(layer.assets){
                 return (
                     <div className={styles.assets}>
-                        {layer.assets.map((item, key)=><div onMouseDown={()=>setActiveAsset(item)} className={item.active?`${styles.item} ${styles.active}`:styles.item} key={key}><p>{item.name}</p><MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} /></div>)}
+                        {layer.assets.map((item, key)=><div onMouseDown={()=>setActiveAsset(item)} className={item.active?`${styles.item} ${styles.active}`:styles.item} key={key}><p>{item.name}</p><MoreMenu options={[{name: 'edit', func: ()=>editAsset()},{name: 'delete', func: ()=>deleteAsset(item)}]} /></div>)}
                     </div>
                 )
             }else{
