@@ -34,7 +34,7 @@ const Option = ({title, style}) => {
     return (
         <div className={styles.option}>
             <div className={styles.title}>{title}</div>
-            <div className={styles.input} contentEditable defaultValue='test' onKeyDown={(e)=>preventEnter(e)}>{value}</div>
+            <div className={styles.input} contentEditable defaultValue='test' onKeyDown={(e)=>preventEnter(e)} dangerouslySetInnerHTML={{__html: value}} />
         </div>
     )
 }
