@@ -1,6 +1,6 @@
 import { Search, Upload } from 'react-feather'
 import styles from './_addElement.module.sass'
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { useRecoilState } from 'recoil'
 import elementsAtom from './elementsAtom'
 
@@ -41,10 +41,14 @@ const Header = () => {
                 search()
             }
         }
+        const elem = useRef(null)
+        useEffect(()=>{
+            elem.current.focus()
+        }, [])
         
         return (
             <div className={styles.search}>
-                <input autoFocus type='text' placeholder='Search for any element' onKeyDown={(e)=>searchOnEnter(e)} />
+                <input ref={elem} type='text' placeholder='Search for any element' onKeyDown={(e)=>searchOnEnter(e)} />
                 <Search onMouseDown={search} />
             </div>
         )

@@ -54,6 +54,7 @@ const Details = () => {
     }
     return (
         <div className={styles.details}>
+            {console.log(style)}
             {
                 Object.keys(style).map((item, key)=>{
                     return <Option key={key} title={item} style={style[item]} />
