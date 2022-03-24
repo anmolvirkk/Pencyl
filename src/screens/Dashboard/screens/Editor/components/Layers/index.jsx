@@ -60,7 +60,6 @@ const Layer = ({name}) => {
                         setLayers({...layersParse, 
                             [name]: {
                                 assets: [...resetActiveAssets, {
-                                    name: e.target.src.split('/')[e.target.src.split('/').length - 1],
                                     elem: e.target.src,
                                     rare: '',
                                     active: true,
@@ -74,7 +73,6 @@ const Layer = ({name}) => {
                     setLayers({...layersParse, 
                         [name]: {
                             assets: [{
-                                name: e.target.src.split('/')[e.target.src.split('/').length - 1],
                                 elem: e.target.src,
                                 rare: '',
                                 active: true,
@@ -147,7 +145,6 @@ const Layer = ({name}) => {
                     let newItem = {...item2}
                     if(item.id === item2.id){
                         newItem = {...item2,
-                            name: e.target.src.split('/')[e.target.src.split('/').length - 1],
                             elem: e.target.src
                         }
                     }
@@ -163,7 +160,7 @@ const Layer = ({name}) => {
                 <div className={styles.assets}>
                     {layers[name]['assets'].map((item, key)=>
                         <div onMouseDown={(e)=>setActiveAsset(item, e)} className={item.active?`${styles.item} ${styles.active}`:styles.item} key={key}>
-                            <p>{item.name}</p>
+                            <img src={item.elem} alt='' />
                             <MoreMenu options={[{name: 'change', func: ()=>changeAsset(item)},{name: 'delete', func: ()=>{deleteAsset(item)}}]} />
                         </div>)
                     }
