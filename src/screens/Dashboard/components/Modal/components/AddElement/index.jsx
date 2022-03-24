@@ -74,8 +74,8 @@ const Assets = ({onClick}) => {
         <div className={styles.assets}>
             <div className={styles.elementsType}>
                 <div onMouseDown={()=>setElements({...elements, type: 'icons'})} className={elements.type==='icons'?styles.active:null}>Icons</div>
-                <div onMouseDown={()=>setElements({...elements, type: 'illustrations'})} className={elements.type==='illustrations'?styles.active:null}>Illustrations</div>
                 <div onMouseDown={()=>setElements({...elements, type: 'images'})} className={elements.type==='images'?styles.active:null}>Images</div>
+                <div onMouseDown={()=>setElements({...elements, type: 'text'})} className={elements.type==='text'?styles.active:null}>Text</div>
                 <div onMouseDown={()=>setElements({...elements, type: 'uploaded'})} className={elements.type==='uploaded'?styles.active:null}>Uploaded</div>
             </div>
             <div className={styles.content}>
