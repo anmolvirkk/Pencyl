@@ -139,8 +139,24 @@ const Layer = ({name}) => {
                 setLayers({...layers, [name]: {...layers[name], assets: null, active: false}})
             }
         }
-        const editAsset = () => {
-
+        const changeAsset = (item) => {
+            const editElement = (e) => {
+                let layersString = JSON.stringify(layers)
+                let layersParse = JSON.parse(layersString)
+                layersParse[name]['assets'] = layersParse[name]['assets'].map((item2)=>{
+                    let newItem = {...item2}
+                    if(item.id === item2.id){
+                        newItem = {...item2,
+                            name: e.target.src.split('/')[e.target.src.split('/').length - 1],
+                            elem: e.target.src
+                        }
+                    }
+                    return newItem
+                })
+                setLayers({...layersParse})
+                setModal({type: null})
+            }
+            setModal({type: 'editElement', func: editElement})
         }
         if(layers[name]['assets']){
             return (
@@ -148,7 +164,7 @@ const Layer = ({name}) => {
                     {layers[name]['assets'].map((item, key)=>
                         <div onMouseDown={(e)=>setActiveAsset(item, e)} className={item.active?`${styles.item} ${styles.active}`:styles.item} key={key}>
                             <p>{item.name}</p>
-                            <MoreMenu options={[{name: 'edit', func: editAsset},{name: 'delete', func: ()=>{deleteAsset(item)}}]} />
+                            <MoreMenu options={[{name: 'change', func: ()=>changeAsset(item)},{name: 'delete', func: ()=>{deleteAsset(item)}}]} />
                         </div>)
                     }
                 </div>

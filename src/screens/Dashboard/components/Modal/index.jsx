@@ -12,6 +12,7 @@ const Modal = () => {
         switch (modal.type) {
             case 'addElementOrLayer': return <AddElementOrLayer addLayer={modal.addLayer} addElement={modal.addElement} />
             case 'addElement': return <AddElement func={modal.func} />
+            case 'editElement': return <AddElement func={modal.func} />
             case 'addLayer': return <AddLayer func={modal.func} />
             default: return null
         }
