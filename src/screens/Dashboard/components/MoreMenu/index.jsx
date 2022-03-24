@@ -8,7 +8,7 @@ const MoreMenu = ({options}) => {
     return (
         <OutsideClickHandler onOutsideClick={()=>setOpen(false)}>
             <div className={styles.moremenu}>
-                <MoreVertical onMouseUp={()=>setOpen(!open)} />
+                <MoreVertical onMouseDown={()=>setOpen(!open)} />
                 {open?    
                     <div className={styles.options}>
                         {options.map((item, key)=>{
