@@ -44,7 +44,7 @@ const Header = () => {
         
         return (
             <div className={styles.search}>
-                <input type='text' placeholder='Search for any element' onKeyDown={(e)=>searchOnEnter(e)} />
+                <input autoFocus type='text' placeholder='Search for any element' onKeyDown={(e)=>searchOnEnter(e)} />
                 <Search onMouseDown={search} />
             </div>
         )

@@ -10,7 +10,7 @@ const AddLayer = ({func}) => {
     }
     return (
         <div className={styles.wrapper}>
-            <input type='text' placeholder='Layer Name' onChange={(e)=>layerName.current=e.target.value} onKeyDown={(e)=>onEnter(e)} />
+            <input autoFocus type='text' placeholder='Layer Name' onChange={(e)=>layerName.current=e.target.value} onKeyDown={(e)=>onEnter(e)} />
             <button onMouseDown={()=>func(layerName.current)}>
                 <p>Add</p>
             </button>

@@ -1,19 +1,19 @@
 import { useRecoilState } from 'recoil'
-import detailsAtom from '../Details/detailsAtom'
+import canvasAtom from '../Details/canvasAtom'
 import layersAtom from '../Layers/layersAtom'
 import styles from './_main.module.sass'
 
 const Main = () => {
     const [layers] = useRecoilState(layersAtom)
-    const [details] = useRecoilState(detailsAtom)
+    const [canvas] = useRecoilState(canvasAtom)
     return (
         <div className={styles.main}>
-            <div className={styles.canvas} style={{aspectRatio: `${details.canvas.style.width}/${details.canvas.style.height}`}}>
+            <div className={styles.canvas} style={{aspectRatio: `${canvas.style.width}/${canvas.style.height}`}}>
                 {Object.keys(layers).map((item)=>{
                     if(layers[item]['assets']){
                         return layers[item]['assets'].map((item, key)=>{
                                     if(item.active){
-                                        return <img key={key} src={item.elem.replace('png-64','png-512')} alt={item.name} style={details.assets[item.id].style} />
+                                        return <img key={key} src={item.elem.replace('png-64','png-512')} alt={item.name} style={item.style} />
                                     }else{
                                         return null
                                     }

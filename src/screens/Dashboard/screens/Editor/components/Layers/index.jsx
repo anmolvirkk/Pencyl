@@ -2,7 +2,6 @@ import { Plus } from 'react-feather'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import MoreMenu from '../../../../components/MoreMenu'
-import detailsAtom from '../Details/detailsAtom'
 import layersAtom from './layersAtom'
 import styles from './_layers.module.sass'
 
@@ -24,7 +23,6 @@ const AddLayer = () => {
 const Layer = ({name}) => {
 
     const [layers, setLayers] = useRecoilState(layersAtom)
-    const [details, setDetails] = useRecoilState(detailsAtom)
 
     const LayerElem = ({name}) => {
 
@@ -60,7 +58,8 @@ const Layer = ({name}) => {
                                 elem: e.target.src,
                                 rare: '',
                                 active: true,
-                                id: assetId
+                                id: assetId,
+                                style: {height: 'auto', width: '100%', top: '0%', left: '0%'}
                             }]}})
                     }else{
                         setLayers({...layers, [name]: {assets: [{
@@ -68,20 +67,10 @@ const Layer = ({name}) => {
                             elem: e.target.src,
                             rare: '',
                             active: true,
-                            id: assetId
+                            id: assetId,
+                            style: {height: 'auto', width: '100%', top: '0%', left: '0%'}
                         }]}})
                     }
-                    let detailsString = JSON.stringify(details)
-                    let newDetails = JSON.parse(detailsString)
-                    Object.keys(newDetails.assets).forEach((item)=>{
-                        if(newDetails.assets[item]){
-                            newDetails.assets[item]['active'] = false
-                        }
-                    })
-                    setDetails({...newDetails, assets: {...newDetails.assets, [assetId]:{
-                        active: true,
-                        style: {height: 'auto', width: '100%', top: '0%', left: '0%'}
-                    }}})
                     setModal({type: null})
                 }
                 return (
@@ -117,6 +106,7 @@ const Layer = ({name}) => {
                 })
                 layersParse[name] = {...layerParse}
                 setLayers({...layersParse})
+                console.log(layers)
             }
             if(layer.assets){
                 return (

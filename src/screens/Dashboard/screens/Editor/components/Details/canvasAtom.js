@@ -3,15 +3,12 @@ import { recoilPersist } from "recoil-persist"
 
 const {persistAtom} = recoilPersist()
 
-const detailsAtom = atom({
-    key: 'details',
+const canvasAtom = atom({
+    key: 'canvas',
     default: {
-        canvas: {
-            style: {height: 600, width: 600}
-        },
-        assets: {}
+        style: {height: 600, width: 600}
     },
     effects: [persistAtom]
 })
 
-export default detailsAtom
+export default canvasAtom
