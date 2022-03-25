@@ -51,6 +51,21 @@ const Layer = ({name}) => {
                         layersParse[item].active = false
                     }
                 })
+                let layerStyle = {
+                    height: 'auto', 
+                    width: '100%', 
+                    top: '0%', 
+                    left: '0%',
+                    filter: 'none',
+                    boxShadow: 'none',
+                    margin: 0,
+                    padding: 0,
+                    opacity: 1,
+                    mixBlendMode: 'none',
+                    borderRadius: 0,
+                    border: 'none',
+                    backgroundColor: 'transparent'
+                }
                 if(layers[name]['assets']){
                         let resetActiveAssets = layers[name]['assets'].map((item)=>{
                             let newItem = {...item}
@@ -64,7 +79,7 @@ const Layer = ({name}) => {
                                     rare: '',
                                     active: true,
                                     id: assetId,
-                                    style: {height: 'auto', width: '100%', top: '0%', left: '0%'},
+                                    style: layerStyle
                                 }],
                                 active: true
                             }
@@ -77,7 +92,7 @@ const Layer = ({name}) => {
                                 rare: '',
                                 active: true,
                                 id: assetId,
-                                style: {height: 'auto', width: '100%', top: '0%', left: '0%'}
+                                style: layerStyle
                             }],
                             active: true
                         }

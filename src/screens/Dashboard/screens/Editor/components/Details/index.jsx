@@ -10,12 +10,30 @@ const Option = ({title, style, onBlur}) => {
             onBlur(title, e.target.innerText)
         }
     }
-    return (
-        <div className={styles.option}>
-            <div className={styles.title}>{title}</div>
-            <div onBlur={(e)=>onBlur(title, e.target.innerText)} className={styles.input} contentEditable defaultValue='test' onKeyDown={(e)=>preventEnter(e)} dangerouslySetInnerHTML={{__html: style}} />
-        </div>
-    )
+    const SingleUnit = () => {
+        return (
+            <div className={styles.option}>
+                <div className={styles.title}>{title}</div>
+                <div className={styles.inputWrapper}>
+                    <div onBlur={(e)=>onBlur(title, e.target.innerText)} className={styles.input} contentEditable defaultValue='test' onKeyDown={(e)=>preventEnter(e)} dangerouslySetInnerHTML={{__html: style}} />
+                    <div className={styles.unit}>
+                        %
+                    </div>
+                </div>
+            </div>
+        )
+    }
+    const Filters = () => {
+        return (
+            <div className={styles.filters}>
+                
+            </div>
+        )
+    }
+    switch (title) {
+        case 'filter': return <Filters />
+        default: return <SingleUnit />
+    }
 }
 
 const Details = () => {
