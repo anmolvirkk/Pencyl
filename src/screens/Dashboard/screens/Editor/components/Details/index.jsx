@@ -3,22 +3,29 @@ import layersAtom from '../Layers/layersAtom'
 import canvasAtom from './canvasAtom'
 import styles from './_details.module.sass'
 
-const Option = ({title, style, onBlur}) => {
-    const preventEnter = (e) => {
+const Option = ({title, value, onBlur}) => {
+    const validate = (e) => {
         if(e.key === 'Enter'){
             e.preventDefault()
             onBlur(title, e.target.innerText)
         }
+        if(e.which !== 8 && e.which !== 37 && e.which !== 39){
+            if(e.which < 48 || e.which > 57){
+                e.preventDefault()
+            }
+        }
     }
     const SingleUnit = () => {
+        let displayValue = value
+        if(typeof value === 'string'){
+            displayValue = value.replace('%', '')
+        }
         return (
             <div className={styles.option}>
                 <div className={styles.title}>{title}</div>
                 <div className={styles.inputWrapper}>
-                    <div onBlur={(e)=>onBlur(title, e.target.innerText)} className={styles.input} contentEditable defaultValue='test' onKeyDown={(e)=>preventEnter(e)} dangerouslySetInnerHTML={{__html: style}} />
-                    <div className={styles.unit}>
-                        %
-                    </div>
+                    <div onBlur={(e)=>onBlur(title, e.target.innerText)} className={styles.input} contentEditable defaultValue='test' onKeyDown={(e)=>validate(e)} dangerouslySetInnerHTML={{__html: displayValue}} />
+                    <div className={styles.unit}>%</div>
                 </div>
             </div>
         )
@@ -51,7 +58,7 @@ const Details = () => {
                             onBlur = (key, value) => {
                                 let layersString = JSON.stringify(layers)
                                 let newLayers = JSON.parse(layersString)
-                                newLayers[item]['assets'][i].style[key] = value
+                                newLayers[item]['assets'][i].style[key] = value+'%'
                                 setLayers({...newLayers})
                             }
                         }
@@ -68,7 +75,7 @@ const Details = () => {
         <div className={styles.details}>
             {
                 Object.keys(style).map((item, key)=>{
-                    return <Option key={key} title={item} style={style[item]} onBlur={onBlur} />
+                    return <Option key={key} title={item} value={style[item]} onBlur={onBlur} />
                 })
             }
         </div>
