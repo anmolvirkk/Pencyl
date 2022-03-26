@@ -173,7 +173,6 @@ const Layer = ({name}) => {
         if(layers[name]['assets']){
             return (
                 <div className={styles.assets}>
-                    {console.log(layers[name].active)}
                     {layers[name]['assets'].map((item, key)=>
                         <div onMouseDown={(e)=>setActiveAsset(item, e)} className={item.active?layers[name].active?`${styles.item} ${styles.active} ${styles.highlight}`:`${styles.item} ${styles.active}`:styles.item} key={key}>
                             <img src={item.elem} alt='' />
