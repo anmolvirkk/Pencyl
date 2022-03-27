@@ -3,11 +3,34 @@ import canvasAtom from '../Details/canvasAtom'
 import layersAtom from '../Layers/layersAtom'
 import styles from './_main.module.sass'
 import {Rnd} from 'react-rnd'
+import { useEffect, useRef } from 'react'
 
 const Main = () => {
     const [layers, setLayers] = useRecoilState(layersAtom)
     const [canvas] = useRecoilState(canvasAtom)
 
+    let onChange = useRef(null)
+
+    useEffect(()=>{
+        if(Object.keys(layers).length > 0){
+            Object.keys(layers).forEach((item)=>{
+                if(layers[item].active){
+                    if(Object.keys(layers[item]).length > 0){
+                        layers[item]['assets'].forEach((item2, i)=>{
+                            if(item2.active){
+                                onChange.current = (key, value) => {
+                                    let layersString = JSON.stringify(layers)
+                                    let newLayers = JSON.parse(layersString)
+                                    newLayers[item]['assets'][i].style[key] = value+'%'
+                                    setLayers({...newLayers})
+                                }
+                            }
+                        })
+                    }
+                }
+            })
+        }
+    }, [layers, setLayers])
     
     const setActiveAsset = (layer, asset) => {
         let layersString = JSON.stringify(layers)
@@ -31,9 +54,6 @@ const Main = () => {
             return newItem
         })
         layersParse[layer] = {...layerParse}
-        console.log(layer)
-        console.log(asset)
-        console.log(layersParse)
         setLayers({...layersParse})
     }
 
@@ -45,10 +65,8 @@ const Main = () => {
         console.log(canvasElem)
         console.log(canvasWidth)
     }
-    const onResizeStop = (e, d, ref, delta, pos) => {
-        console.log(e)
-        console.log(d)
-        console.log(ref.style.width)
+    const onResizeStop = (e, d, ref) => {
+        onChange.current('width', ref.style.width.replace('%', ''))
     }
     return (
         <div className={styles.main}>
