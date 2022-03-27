@@ -59,6 +59,7 @@ const Main = () => {
 
     const canvasElem = document.getElementById('canvas')
     const canvasWidth = canvasElem?canvasElem.clientWidth:null
+    const canvasHeight = canvasElem?canvasElem.clientHeight:null
     const onDragStop = (e, d) => {
         console.log(e)
         console.log(d)
@@ -66,6 +67,15 @@ const Main = () => {
         console.log(canvasWidth)
     }
     const onResizeStop = (e, d, ref) => {
+        let regExp = /\(([^)]+)\)/
+        let transform = regExp.exec(ref.style.transform)[1].split(', ')
+        let x = (transform[0].replace('px','')/canvasWidth)*100
+        let y = (transform[1].replace('px','')/canvasHeight)*100
+        console.log(ref.style)
+        console.log(x)
+        console.log(y)
+        onChange.current('left', x)
+        onChange.current('top', y)
         onChange.current('width', ref.style.width.replace('%', ''))
     }
     return (
@@ -77,14 +87,14 @@ const Main = () => {
                                     if(item2.active){
                                         if(layers[item].active){
                                             return (
-                                                <Rnd onDragStop={(e, d)=>onDragStop(e, d)} onResizeStop={(e, d, ref, delta, pos)=>onResizeStop(e, d, ref, delta, pos)} key={key} size={{width: item2.style.width, height: item2.style.height}} position={{x: parseInt(item2.style.left)/100*canvasWidth, y: parseInt(item2.style.top)/100*canvasWidth}} lockAspectRatio={true}>
-                                                    <img className={layers[item].active?styles.active:null} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...item2.style, border: '2px solid var(--primary)', top: 0, left: 0, width: '100%', height: '100%'}} />
+                                                <Rnd onDragStop={(e, d)=>onDragStop(e, d)} onResizeStop={(e, d, ref, delta, pos)=>onResizeStop(e, d, ref, delta, pos)} key={key} size={{width: item2.style.width, height: item2.style.height}} lockAspectRatio={true} default={{x: parseInt(item2.style.left)/100*canvasWidth, y: parseInt(item2.style.top)/100*canvasHeight}} >
+                                                    <img className={layers[item].active?styles.active:null} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...item2.style, border: '1px solid var(--primary)', top: 0, left: 0, width: '100%', height: '100%'}} />
                                                 </Rnd>
                                             )
                                         }else{
                                             return (
-                                                <div className={styles.imgWrapper} key={key} onMouseDown={()=>setActiveAsset(item, item2)} style={{top: item2.style.top, left: item2.style.left}}>
-                                                    <img src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={item2.style} />
+                                                <div className={styles.imgWrapper} key={key} onMouseDown={()=>setActiveAsset(item, item2)} style={{top: parseInt(item2.style.top)/100*canvasHeight, left: parseInt(item2.style.left)/100*canvasWidth, width: item2.style.width, height: item2.style.height}}>
+                                                    <img src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...item2.style, width: '100%', height: '100%', left: 0, top: 0}} />
                                                 </div>
                                             )
                                         }
