@@ -9,7 +9,7 @@ const Option = ({title, value, onBlur}) => {
             e.preventDefault()
             onBlur(title, e.target.innerText)
         }
-        if(e.which !== 8 && e.which !== 37 && e.which !== 39){
+        if(e.which !== 8 && e.which !== 37 && e.which !== 39 && e.which !== 190){
             if(e.which < 48 || e.which > 57){
                 e.preventDefault()
             }
@@ -20,12 +20,16 @@ const Option = ({title, value, onBlur}) => {
         if(typeof value === 'string'){
             displayValue = value.replace('%', '')
         }
+        let unit = '%'
+        if(title.toLowerCase() === 'background'){
+            unit = ''
+        }
         return (
             <div className={styles.option}>
                 <div className={styles.title}>{title}</div>
                 <div className={styles.inputWrapper}>
-                    <div onBlur={(e)=>onBlur(title, e.target.innerText)} className={styles.input} contentEditable defaultValue='test' onKeyDown={(e)=>validate(e)} dangerouslySetInnerHTML={{__html: displayValue}} />
-                    <div className={styles.unit}>%</div>
+                    <div onBlur={(e)=>onBlur(title, e.target.innerText)} className={styles.input} contentEditable onKeyDown={(e)=>validate(e)} dangerouslySetInnerHTML={{__html: displayValue}} />
+                    <div className={styles.unit}>{unit}</div>
                 </div>
             </div>
         )
