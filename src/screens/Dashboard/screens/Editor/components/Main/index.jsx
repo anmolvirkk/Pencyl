@@ -88,7 +88,7 @@ const Main = () => {
     }
     return (
         <div className={styles.main}>
-            <div id='canvas' className={styles.canvas} style={{aspectRatio: `${canvas.style.width}/${canvas.style.height}`}}>
+            <div id='canvas' className={styles.canvas} style={{aspectRatio: `${canvas.style.width}/${canvas.style.height}`, backgroundColor: canvas.style.background}}>
                 {Object.keys(layers).map((item)=>{
                     if(layers[item]['assets']){
                         return layers[item]['assets'].map((item2, key)=>{

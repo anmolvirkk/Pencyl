@@ -6,7 +6,7 @@ const {persistAtom} = recoilPersist()
 const canvasAtom = atom({
     key: 'canvas',
     default: {
-        style: {height: 600, width: 600}
+        style: {height: 600, width: 600, background: '#090909'}
     },
     effects: [persistAtom]
 })

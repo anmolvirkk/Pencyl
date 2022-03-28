@@ -57,7 +57,6 @@ const Layer = ({name}) => {
                     top: '0%', 
                     left: '0%',
                     filter: 'none',
-                    boxShadow: 'none',
                     margin: 0,
                     padding: 0,
                     opacity: 1,
