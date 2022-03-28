@@ -61,19 +61,16 @@ const Main = () => {
     const canvasWidth = canvasElem?canvasElem.clientWidth:null
     const canvasHeight = canvasElem?canvasElem.clientHeight:null
     const onDragStop = (e, d) => {
-        console.log(e)
-        console.log(d)
-        console.log(canvasElem)
-        console.log(canvasWidth)
+        let x = (d.lastX/canvasWidth)*100
+        let y = (d.lastY/canvasHeight)*100
+        onChange.current('left', x)
+        onChange.current('top', y)
     }
     const onResizeStop = (e, d, ref) => {
         let regExp = /\(([^)]+)\)/
         let transform = regExp.exec(ref.style.transform)[1].split(', ')
         let x = (transform[0].replace('px','')/canvasWidth)*100
         let y = (transform[1].replace('px','')/canvasHeight)*100
-        console.log(ref.style)
-        console.log(x)
-        console.log(y)
         onChange.current('left', x)
         onChange.current('top', y)
         onChange.current('width', ref.style.width.replace('%', ''))
