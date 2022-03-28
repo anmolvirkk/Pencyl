@@ -62,7 +62,6 @@ const Layer = ({name}) => {
                     padding: 0,
                     opacity: 1,
                     mixBlendMode: 'none',
-                    borderRadius: 0,
                     backgroundColor: 'transparent'
                 }
                 if(layers[name]['assets']){

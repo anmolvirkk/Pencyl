@@ -4,6 +4,7 @@ import layersAtom from '../Layers/layersAtom'
 import styles from './_main.module.sass'
 import {Rnd} from 'react-rnd'
 import { useEffect, useRef } from 'react'
+import OutsideClickHandler from 'react-outside-click-handler/build/OutsideClickHandler'
 
 const Main = () => {
     const [layers, setLayers] = useRecoilState(layersAtom)
@@ -31,6 +32,15 @@ const Main = () => {
             })
         }
     }, [layers, setLayers])
+
+    const setActiveCanvas = () => {
+        let layersString = JSON.stringify(layers)
+        let layersParse = JSON.parse(layersString)
+        Object.keys(layersParse).forEach((item)=>{
+            layersParse[item].active = false
+        })
+        setLayers({...layersParse})
+    }
     
     const setActiveAsset = (layer, asset) => {
         let layersString = JSON.stringify(layers)
@@ -66,6 +76,7 @@ const Main = () => {
         onChange.current('left', x)
         onChange.current('top', y)
     }
+
     const onResizeStop = (e, d, ref) => {
         let regExp = /\(([^)]+)\)/
         let transform = regExp.exec(ref.style.transform)[1].split(', ')
@@ -84,9 +95,11 @@ const Main = () => {
                                     if(item2.active){
                                         if(layers[item].active){
                                             return (
-                                                <Rnd onDragStop={(e, d)=>onDragStop(e, d)} onResizeStop={(e, d, ref, delta, pos)=>onResizeStop(e, d, ref, delta, pos)} key={key} size={{width: item2.style.width, height: item2.style.height}} lockAspectRatio={true} default={{x: parseInt(item2.style.left)/100*canvasWidth, y: parseInt(item2.style.top)/100*canvasHeight}} >
-                                                    <img className={layers[item].active?styles.active:null} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...item2.style, border: '1px solid var(--primary)', top: 0, left: 0, width: '100%', height: '100%'}} />
-                                                </Rnd>
+                                                <OutsideClickHandler key={key} onOutsideClick={setActiveCanvas}>
+                                                    <Rnd onDragStop={(e, d)=>onDragStop(e, d)} onResizeStop={(e, d, ref, delta, pos)=>onResizeStop(e, d, ref, delta, pos)} size={{width: item2.style.width, height: item2.style.height}} lockAspectRatio={true} default={{x: parseInt(item2.style.left)/100*canvasWidth, y: parseInt(item2.style.top)/100*canvasHeight}} >
+                                                        <img className={layers[item].active?styles.active:null} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...item2.style, border: '1px solid var(--primary)', top: 0, left: 0, width: '100%', height: '100%'}} />
+                                                    </Rnd>
+                                                </OutsideClickHandler>
                                             )
                                         }else{
                                             return (
