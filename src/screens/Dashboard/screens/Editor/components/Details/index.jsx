@@ -44,7 +44,7 @@ const Option = ({title, value, onBlur}) => {
 }
 
 const Details = () => {
-    const [canvas] = useRecoilState(canvasAtom)
+    const [canvas, setCanvas] = useRecoilState(canvasAtom)
     const [layers, setLayers] = useRecoilState(layersAtom)
     let style = false
     let onBlur = () => {}
@@ -68,7 +68,13 @@ const Details = () => {
         })
     }
     if(!style){
-        style = canvas.style 
+        style = canvas.style
+        onBlur = (key, value) => {
+            let canvasString = JSON.stringify(canvas)
+            let newCanvas = JSON.parse(canvasString)
+            newCanvas.style[key] = value
+            setCanvas(newCanvas)
+        }
     }
 
     return (
