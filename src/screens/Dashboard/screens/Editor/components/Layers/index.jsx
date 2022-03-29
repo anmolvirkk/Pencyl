@@ -57,7 +57,6 @@ const Layer = ({name}) => {
                     top: '0%', 
                     left: '0%',
                     rotate: '0deg',
-                    opacity: '100%',
                     brightness: '100%',
                     contrast: '100%',
                     saturatation: '100%',

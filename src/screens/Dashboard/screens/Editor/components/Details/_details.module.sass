@@ -5,6 +5,7 @@
     overflow-y: overlay
     .option
         padding: 12px
+        position: relative
         .title
             background-color: var(--lightblack3)
             padding: 12px
@@ -24,3 +25,20 @@
                 outline: none
                 width: 100%
                 background-color: transparent
+        .colorPicker
+            width: 100%
+            margin-top: 12px
+            background-color: var(--black2)
+            height: 42px
+            border-radius: 7px 7px
+            border: none
+            border: 1px solid var(--lightblack3)
+        img
+            position: absolute
+            right: 12px
+            bottom: 27px
+        input[type="color"]::-webkit-color-swatch-wrapper
+            padding: 0
+        input[type="color"]::-webkit-color-swatch
+            border: none
+            border-radius: 7px 7px

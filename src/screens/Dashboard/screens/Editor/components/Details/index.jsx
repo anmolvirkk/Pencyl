@@ -40,13 +40,40 @@ const Option = ({title, value, onBlur}) => {
                 unit = '%'
             break
         }
-        return (
-            <div className={styles.option}>
-                <div className={styles.title}>{title}</div>
+
+        let Input = () => {
+            return (
                 <div className={styles.inputWrapper}>
                     <div onBlur={(e)=>onBlur(title, e.target.innerText)} className={styles.input} contentEditable onKeyDown={(e)=>validate(e)} dangerouslySetInnerHTML={{__html: displayValue}} />
                     <div className={styles.unit}>{unit}</div>
                 </div>
+            )
+        }
+
+        switch (title.toLowerCase()) {
+            case 'background':
+                Input = () => {
+                    return (
+                        <input type='color' className={styles.colorPicker} onBlur={(e)=>onBlur(title, e.target.value)} defaultValue={displayValue} />
+                    )
+                }
+            break
+            default:
+                Input = () => {
+                    return (
+                        <div className={styles.inputWrapper}>
+                            <div onBlur={(e)=>onBlur(title, e.target.innerText)} className={styles.input} contentEditable onKeyDown={(e)=>validate(e)} dangerouslySetInnerHTML={{__html: displayValue}} />
+                            <div className={styles.unit}>{unit}</div>
+                        </div>
+                    )
+                }
+            break
+        }
+
+        return (
+            <div className={styles.option}>
+                <div className={styles.title}>{title}</div>
+                <Input />
             </div>
         )
     }
