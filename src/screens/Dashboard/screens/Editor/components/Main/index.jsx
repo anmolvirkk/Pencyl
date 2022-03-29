@@ -101,7 +101,9 @@ const Main = () => {
                                             return (
                                                 <OutsideClickHandler key={key} onOutsideClick={(e)=>setActiveCanvas(e)}>
                                                     <Rnd onDragStop={(e, d)=>onDragStop(e, d)} onResizeStop={(e, d, ref, delta, pos)=>onResizeStop(e, d, ref, delta, pos)} size={{width: item2.style.width, height: item2.style.height}} lockAspectRatio={true} position={{x: parseInt(item2.style.left)/100*canvasWidth, y: parseInt(item2.style.top)/100*canvasHeight}} >
-                                                        <img className={styles.active} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style, border: '1px solid var(--primary)'}} />
+                                                        <div style={{border: '1px solid var(--primary)'}}>
+                                                            <img className={styles.active} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style}} />
+                                                        </div>
                                                     </Rnd>
                                                 </OutsideClickHandler>
                                             )
