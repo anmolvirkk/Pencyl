@@ -10,7 +10,7 @@ const Option = ({title, value, onBlur}) => {
             onBlur(title, e.target.innerText)
         }
         if(title !== 'background'){
-            if(e.which !== 8 && e.which !== 37 && e.which !== 39 && e.which !== 190){
+            if(e.which !== 8 && e.which !== 37 && e.which !== 39 && e.which !== 190 && e.which !== 189){
                 if(e.which < 48 || e.which > 57){
                     e.preventDefault()
                 }
@@ -106,8 +106,6 @@ const Details = () => {
                                     newLayers[item]['assets'][i].style[key] = value.replace('deg', '')+'deg'
                                 }else if(key === 'background'){
                                     newLayers[item]['assets'][i].style[key] = value
-                                }else if(key === 'blur'){
-                                    newLayers[item]['assets'][i].style[key] = value.replace('px', '')+'px'
                                 }else{
                                     newLayers[item]['assets'][i].style[key] = value.replace('%', '')+'%'
                                 }

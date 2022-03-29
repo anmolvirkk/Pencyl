@@ -99,7 +99,7 @@ const Main = () => {
                 {Object.keys(layers).map((item)=>{
                     if(layers[item]['assets']){
                         return layers[item]['assets'].map((item2, key)=>{
-                                    let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: `rotate(${item2.style.rotate})`, filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia}) blur(${item2.style.blur})`}
+                                    let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: `rotate(${item2.style.rotate})`, filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia})`}
                                     if(item2.active){
                                         if(layers[item].active){
                                             return (
