@@ -19,10 +19,19 @@ const Option = ({title, value, onBlur}) => {
         let displayValue = value
         if(typeof value === 'string'){
             displayValue = value.replace('%', '')
+            displayValue = value.replace('deg', '')
         }
         let unit = '%'
-        if(title.toLowerCase() === 'background'){
-            unit = ''
+        switch (title.toLowerCase()) {
+            case 'background':
+                unit = ''
+            break
+            case 'rotate':
+                unit = 'deg'
+            break
+            default:
+                unit = '%'
+            break
         }
         return (
             <div className={styles.option}>
@@ -62,7 +71,11 @@ const Details = () => {
                             onBlur = (key, value) => {
                                 let layersString = JSON.stringify(layers)
                                 let newLayers = JSON.parse(layersString)
-                                newLayers[item]['assets'][i].style[key] = value+'%'
+                                if(key === 'rotate'){
+                                    newLayers[item]['assets'][i].style[key] = value+'deg'
+                                }else{
+                                    newLayers[item]['assets'][i].style[key] = value+'%'
+                                }
                                 setLayers({...newLayers})
                             }
                         }

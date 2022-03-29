@@ -56,12 +56,14 @@ const Layer = ({name}) => {
                     width: '100%', 
                     top: '0%', 
                     left: '0%',
-                    opacity: 1,
+                    rotate: '0deg',
+                    opacity: '100%',
                     brightness: '100%',
                     contrast: '100%',
                     saturatation: '100%',
                     hue: '0deg',
                     sepia: '0%',
+                    blur: '0',
                     blend: 'none',
                     background: 'transparent'
                 }

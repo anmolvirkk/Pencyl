@@ -94,19 +94,21 @@ const Main = () => {
                 {Object.keys(layers).map((item)=>{
                     if(layers[item]['assets']){
                         return layers[item]['assets'].map((item2, key)=>{
+                            console.log(item2.style)
+                                    let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: `rotate(${item2.style.rotate})`, filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia}) blur(${item2.style.blur})`}
                                     if(item2.active){
                                         if(layers[item].active){
                                             return (
                                                 <OutsideClickHandler key={key} onOutsideClick={(e)=>setActiveCanvas(e)}>
                                                     <Rnd onDragStop={(e, d)=>onDragStop(e, d)} onResizeStop={(e, d, ref, delta, pos)=>onResizeStop(e, d, ref, delta, pos)} size={{width: item2.style.width, height: item2.style.height}} lockAspectRatio={true} default={{x: parseInt(item2.style.left)/100*canvasWidth, y: parseInt(item2.style.top)/100*canvasHeight}} >
-                                                        <img className={layers[item].active?styles.active:null} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...item2.style, border: '1px solid var(--primary)', top: 0, left: 0, width: '100%', height: '100%'}} />
+                                                        <img className={styles.active} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style, border: '1px solid var(--primary)'}} />
                                                     </Rnd>
                                                 </OutsideClickHandler>
                                             )
                                         }else{
                                             return (
                                                 <div className={styles.imgWrapper} key={key} onMouseDown={()=>setActiveAsset(item, item2)} style={{top: parseInt(item2.style.top)/100*canvasHeight, left: parseInt(item2.style.left)/100*canvasWidth, width: item2.style.width, height: item2.style.height}}>
-                                                    <img src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...item2.style, width: '100%', height: '100%', left: 0, top: 0}} />
+                                                    <img src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style}} />
                                                 </div>
                                             )
                                         }
