@@ -9,17 +9,18 @@ const Option = ({title, value, onBlur}) => {
             e.preventDefault()
             onBlur(title, e.target.innerText)
         }
-        if(e.which !== 8 && e.which !== 37 && e.which !== 39 && e.which !== 190){
-            if(e.which < 48 || e.which > 57){
-                e.preventDefault()
+        if(title !== 'background'){
+            if(e.which !== 8 && e.which !== 37 && e.which !== 39 && e.which !== 190){
+                if(e.which < 48 || e.which > 57){
+                    e.preventDefault()
+                }
             }
         }
     }
     const SingleUnit = () => {
         let displayValue = value
         if(typeof value === 'string'){
-            displayValue = value.replace('%', '')
-            displayValue = value.replace('deg', '')
+            displayValue = value.replace(/%|deg/g,'')
         }
         let unit = '%'
         switch (title.toLowerCase()) {
@@ -27,6 +28,9 @@ const Option = ({title, value, onBlur}) => {
                 unit = ''
             break
             case 'rotate':
+                unit = 'deg'
+            break
+            case 'hue':
                 unit = 'deg'
             break
             default:
@@ -71,10 +75,12 @@ const Details = () => {
                             onBlur = (key, value) => {
                                 let layersString = JSON.stringify(layers)
                                 let newLayers = JSON.parse(layersString)
-                                if(key === 'rotate'){
-                                    newLayers[item]['assets'][i].style[key] = value+'deg'
+                                if(key === 'rotate' || key === 'hue'){
+                                    newLayers[item]['assets'][i].style[key] = value.replace('deg', '')+'deg'
+                                }else if(key === 'background'){
+                                    newLayers[item]['assets'][i].style[key] = value
                                 }else{
-                                    newLayers[item]['assets'][i].style[key] = value+'%'
+                                    newLayers[item]['assets'][i].style[key] = value.replace('%', '')+'%'
                                 }
                                 setLayers({...newLayers})
                             }
