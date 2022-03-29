@@ -20,7 +20,7 @@ const Option = ({title, value, onBlur}) => {
     const SingleUnit = () => {
         let displayValue = value
         if(typeof value === 'string'){
-            displayValue = value.replace(/%|deg/g,'')
+            displayValue = value.replace(/%|deg|px/g,'')
         }
         let unit = '%'
         switch (title.toLowerCase()) {
@@ -32,6 +32,9 @@ const Option = ({title, value, onBlur}) => {
             break
             case 'hue':
                 unit = 'deg'
+            break
+            case 'blur':
+                unit = 'px'
             break
             default:
                 unit = '%'
@@ -79,6 +82,8 @@ const Details = () => {
                                     newLayers[item]['assets'][i].style[key] = value.replace('deg', '')+'deg'
                                 }else if(key === 'background'){
                                     newLayers[item]['assets'][i].style[key] = value
+                                }else if(key === 'blur'){
+                                    newLayers[item]['assets'][i].style[key] = value.replace('px', '')+'px'
                                 }else{
                                     newLayers[item]['assets'][i].style[key] = value.replace('%', '')+'%'
                                 }
