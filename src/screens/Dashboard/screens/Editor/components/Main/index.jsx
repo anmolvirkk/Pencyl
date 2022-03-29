@@ -88,19 +88,19 @@ const Main = () => {
         onChange.current('top', y)
         onChange.current('width', ref.style.width.replace('%', ''))
     }
+
     return (
         <div className={styles.main}>
             <div id='canvas' className={styles.canvas} style={{aspectRatio: `${canvas.style.width}/${canvas.style.height}`, backgroundColor: canvas.style.background}}>
                 {Object.keys(layers).map((item)=>{
                     if(layers[item]['assets']){
                         return layers[item]['assets'].map((item2, key)=>{
-                            console.log(item2.style)
                                     let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: `rotate(${item2.style.rotate})`, filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia}) blur(${item2.style.blur})`}
                                     if(item2.active){
                                         if(layers[item].active){
                                             return (
                                                 <OutsideClickHandler key={key} onOutsideClick={(e)=>setActiveCanvas(e)}>
-                                                    <Rnd onDragStop={(e, d)=>onDragStop(e, d)} onResizeStop={(e, d, ref, delta, pos)=>onResizeStop(e, d, ref, delta, pos)} size={{width: item2.style.width, height: item2.style.height}} lockAspectRatio={true} default={{x: parseInt(item2.style.left)/100*canvasWidth, y: parseInt(item2.style.top)/100*canvasHeight}} >
+                                                    <Rnd onDragStop={(e, d)=>onDragStop(e, d)} onResizeStop={(e, d, ref, delta, pos)=>onResizeStop(e, d, ref, delta, pos)} size={{width: item2.style.width, height: item2.style.height}} lockAspectRatio={true} position={{x: parseInt(item2.style.left)/100*canvasWidth, y: parseInt(item2.style.top)/100*canvasHeight}} >
                                                         <img className={styles.active} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style, border: '1px solid var(--primary)'}} />
                                                     </Rnd>
                                                 </OutsideClickHandler>
