@@ -3,7 +3,7 @@ import canvasAtom from '../Details/canvasAtom'
 import layersAtom from '../Layers/layersAtom'
 import styles from './_main.module.sass'
 import {Rnd} from 'react-rnd'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import OutsideClickHandler from 'react-outside-click-handler/build/OutsideClickHandler'
 
 const Main = () => {
@@ -72,18 +72,22 @@ const Main = () => {
     const canvasElem = document.getElementById('canvas')
     const canvasWidth = canvasElem?canvasElem.clientWidth:null
     const canvasHeight = canvasElem?canvasElem.clientHeight:null
+    
+    const [draging, setDraging] = useState(false)
+
     const onDragStop = (e, d) => {
         let x = (d.lastX/canvasWidth)*100
         let y = (d.lastY/canvasHeight)*100
         onChange.current('left', x)
         onChange.current('top', y)
+        setDraging(false)
     }
 
     const onResizeStop = (e, d, ref) => {
         let regExp = /\(([^)]+)\)/
         let transform = regExp.exec(ref.style.transform)[1].split(', ')
-        let x = (transform[0].replace('px','')/canvasWidth)*100
-        let y = (transform[1].replace('px','')/canvasHeight)*100
+        let x = (transform[0].replace('px','')/(canvasWidth))*100
+        let y = (transform[1].replace('px','')/(canvasHeight))*100
         onChange.current('left', x)
         onChange.current('top', y)
         onChange.current('width', ref.style.width.replace('%', ''))
@@ -100,9 +104,9 @@ const Main = () => {
                                         if(layers[item].active){
                                             return (
                                                 <OutsideClickHandler key={key} onOutsideClick={(e)=>setActiveCanvas(e)}>
-                                                    <Rnd onDragStop={(e, d)=>onDragStop(e, d)} onResizeStop={(e, d, ref, delta, pos)=>onResizeStop(e, d, ref, delta, pos)} size={{width: item2.style.width, height: item2.style.height}} lockAspectRatio={true} position={{x: parseInt(item2.style.left)/100*canvasWidth, y: parseInt(item2.style.top)/100*canvasHeight}} >
+                                                    <Rnd onResizeStart={()=>setDraging(true)} onDragStop={(e, d)=>onDragStop(e, d)} onResizeStop={(e, d, ref, delta, pos)=>onResizeStop(e, d, ref, delta, pos)} size={{width: item2.style.width, height: item2.style.height}} lockAspectRatio={true} default={{x: parseInt(item2.style.left)/100*canvasWidth, y: parseInt(item2.style.top)/100*canvasHeight}} position={!draging?{x: parseInt(item2.style.left)/100*canvasWidth, y: parseInt(item2.style.top)/100*canvasHeight}:null}>
                                                         <div style={{border: '1px solid var(--primary)'}}>
-                                                            <img className={styles.active} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style}} />
+                                                            <img className={styles.active} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style, marginBottom: '-3px'}} />
                                                         </div>
                                                     </Rnd>
                                                 </OutsideClickHandler>

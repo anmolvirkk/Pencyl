@@ -33,9 +33,6 @@ const Option = ({title, value, onBlur}) => {
             case 'hue':
                 unit = 'deg'
             break
-            case 'blur':
-                unit = 'px'
-            break
             default:
                 unit = '%'
             break

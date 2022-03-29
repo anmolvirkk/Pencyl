@@ -61,10 +61,7 @@ const Layer = ({name}) => {
                     contrast: '100%',
                     saturatation: '100%',
                     hue: '0deg',
-                    sepia: '0%',
-                    blur: '0',
-                    blend: 'none',
-                    background: 'transparent'
+                    sepia: '0%'
                 }
                 if(layers[name]['assets']){
                         let resetActiveAssets = layers[name]['assets'].map((item)=>{
