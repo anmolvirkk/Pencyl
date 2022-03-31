@@ -12,17 +12,15 @@ const Start = () => {
     const [projects, setProjects] = useRecoilState(projectsAtom)
 
     const startScratch = () => {
-        const addProject = (() => {
-            let keyName = 'untitled'
-            let num = 1
-            Object.keys(projects).forEach((item)=>{
-                if(item.includes('untitled')){
-                    num++
-                    keyName = 'untitled'+num
-                }
-            })
-            setProjects({...projects, [keyName]: {}})
-        })()
+        let keyName = 'untitled'
+        let num = 1
+        Object.keys(projects).forEach((item)=>{
+            if(item.includes('untitled')){
+                num++
+                keyName = 'untitled'+num
+            }
+        })
+        setProjects({...projects, [keyName]: {}})
         navigate('editor')
         setModal({type: ''})
     }
