@@ -1,21 +1,21 @@
 import styles from './_title.module.sass'
 import { Plus, Search } from 'react-feather'
-import { Link } from 'react-router-dom'
+import { useSetRecoilState } from 'recoil'
+import modalAtom from '../../../../components/Modal/modalAtom'
 
 const Searchbar = () => {
 
     const Options = () => {
+        const setModal = useSetRecoilState(modalAtom)
         return (
             <ul className={styles.options}>
                 <li className={styles.addproject}>
                     <Plus />
                     <p>New Folder</p>
                 </li>
-                <li className={styles.create}>
-                    <Link to='editor'>
-                        <Plus />
-                        <p>Create Project</p>
-                    </Link>
+                <li className={styles.create} onMouseDown={()=>setModal({type: 'start'})}>
+                    <Plus />
+                    <p>Create Project</p>
                 </li>
             </ul>
         )

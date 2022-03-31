@@ -9,10 +9,12 @@ const Option = ({title, value, onBlur}) => {
             e.preventDefault()
             onBlur(title, e.target.innerText)
         }
-        if(title !== 'background'){
-            if(e.which !== 8 && e.which !== 37 && e.which !== 39 && e.which !== 190 && e.which !== 189){
-                if(e.which < 48 || e.which > 57){
-                    e.preventDefault()
+        if(title.toLowerCase() !== 'projectname'){
+            if(title !== 'background'){
+                if(e.which !== 8 && e.which !== 37 && e.which !== 39 && e.which !== 190 && e.which !== 189){
+                    if(e.which < 48 || e.which > 57){
+                        e.preventDefault()
+                    }
                 }
             }
         }
@@ -24,6 +26,9 @@ const Option = ({title, value, onBlur}) => {
         }
         let unit = '%'
         switch (title.toLowerCase()) {
+            case 'projectname':
+                unit = ''
+            break
             case 'background':
                 unit = ''
             break
@@ -69,7 +74,7 @@ const Option = ({title, value, onBlur}) => {
 
         return (
             <div className={styles.option}>
-                <div className={styles.title}>{title}</div>
+                <div className={styles.title}>{title.toLowerCase()==='projectname'?'Project Name':title}</div>
                 <Input />
             </div>
         )
