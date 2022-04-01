@@ -21,7 +21,7 @@ const Profile = () => {
 const Header = () => {
     return (
         <header className={styles.header}>
-            <Link to='/'><img alt='' src='/logo.png' /></Link>
+            <Link to='/dashboard'><img alt='' src='/logo.png' /></Link>
             <div className={styles.menu}>
                 <Upgrade />
                 <Profile />
