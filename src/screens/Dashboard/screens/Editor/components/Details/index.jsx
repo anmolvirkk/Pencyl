@@ -104,11 +104,11 @@ const Details = () => {
                                 let projectsString = JSON.stringify(projects)
                                 let newProjects = JSON.parse(projectsString)
                                 if(key === 'rotate' || key === 'hue'){
-                                    projects[projects.active].layers[item]['assets'][i].style[key] = value.replace('deg', '')+'deg'
+                                    newProjects[projects.active].layers[item]['assets'][i].style[key] = value.replace('deg', '')+'deg'
                                 }else if(key === 'background'){
-                                    projects[projects.active].layers[item]['assets'][i].style[key] = value
+                                    newProjects[projects.active].layers[item]['assets'][i].style[key] = value
                                 }else{
-                                    projects[projects.active].layers[item]['assets'][i].style[key] = value.replace('%', '')+'%'
+                                    newProjects[projects.active].layers[item]['assets'][i].style[key] = value.replace('%', '')+'%'
                                 }
                                 setProjects({...newProjects})
                             }
