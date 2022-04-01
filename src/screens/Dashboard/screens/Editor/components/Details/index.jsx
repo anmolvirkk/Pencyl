@@ -8,7 +8,7 @@ const Option = ({title, value, onBlur, type}) => {
             e.preventDefault()
             onBlur(title, e.target.innerText)
         }
-        if(title.toLowerCase() !== 'projectname'){
+        if(title !== 'Project Name'){
             if(title !== 'background'){
                 if(e.which !== 8 && e.which !== 37 && e.which !== 39 && e.which !== 190 && e.which !== 189){
                     if(e.which < 48 || e.which > 57){
@@ -29,9 +29,6 @@ const Option = ({title, value, onBlur, type}) => {
         let unit = '%'
 
         switch (title.toLowerCase()) {
-            case 'projectname':
-                unit = ''
-            break
             case 'background':
                 unit = ''
             break
@@ -48,6 +45,9 @@ const Option = ({title, value, onBlur, type}) => {
 
         if(type === 'canvas'){
             unit = 'px'
+            if(title === 'Project Name'){
+                unit = ''
+            }
         }
 
         let Input = () => {
@@ -128,8 +128,17 @@ const Details = () => {
         }
     }
 
+    const changeName = (key, value) => {
+        let projectsString = JSON.stringify(projects)
+        let newProjects = JSON.parse(projectsString)
+        newProjects[projects.active].name = value
+        setProjects({...newProjects})
+        console.log(key)
+    }
+
     return (
         <div className={styles.details}>
+            {style.type==='canvas'?<Option title='Project Name' value={projects[projects.active].name} type='canvas' onBlur={changeName} />:null}
             {
                 Object.keys(style.items).map((item, key)=>{
                     return <Option key={key} title={item} value={style.items[item]} type={style.type} onBlur={onBlur} />
