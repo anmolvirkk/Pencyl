@@ -5,7 +5,6 @@ import Editor from "./screens/Editor"
 import { useRecoilState } from "recoil"
 import modalAtom from "./components/Modal/modalAtom"
 import Modal from "./components/Modal"
-import projectsAtom from "./screens/projectsAtom"
 
 const Dashboard = () => {
     const [modal] = useRecoilState(modalAtom)

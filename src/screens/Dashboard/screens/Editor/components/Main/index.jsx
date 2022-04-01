@@ -1,8 +1,7 @@
 import { useRecoilState } from 'recoil'
-import layersAtom from '../Layers/layersAtom'
 import styles from './_main.module.sass'
 import {Rnd} from 'react-rnd'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import OutsideClickHandler from 'react-outside-click-handler/build/OutsideClickHandler'
 import projectsAtom from '../../../projectsAtom'
 
@@ -12,12 +11,12 @@ const Main = () => {
 
     let layers = projects[projects.active].layers
 
-    const setLayers = (layers) => {
+    const setLayers = useCallback((layers) => {
         let projectsString = JSON.stringify(projects)
         let newProjects = JSON.parse(projectsString)
         newProjects[projects.active].layers = {...layers}
         setProjects(newProjects)
-    }
+    }, [projects, setProjects])
 
     let onChange = useRef(null)
 

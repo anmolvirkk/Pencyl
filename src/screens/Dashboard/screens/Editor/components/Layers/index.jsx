@@ -3,7 +3,6 @@ import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import MoreMenu from '../../../../components/MoreMenu'
 import projectsAtom from '../../../projectsAtom'
-import layersAtom from './layersAtom'
 import styles from './_layers.module.sass'
 
 const AddLayer = () => {
@@ -219,7 +218,7 @@ const Layers = () => {
     const [projects] = useRecoilState(projectsAtom)
     
     let layers = projects[projects.active].layers
-    
+
     return (
         <div className={styles.layersWrapper}>
             <div className={styles.layers}>
