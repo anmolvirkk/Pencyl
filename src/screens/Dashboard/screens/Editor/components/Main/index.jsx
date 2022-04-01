@@ -79,16 +79,29 @@ const Main = () => {
 
     const [canvasSize, setCanvasSize] = useState(null)
 
-    useEffect(()=>{
+    const setCanvas = useCallback(() => {
         if(document.getElementById('canvas')){
             if(!canvasSize){
                 setCanvasSize({
                     height: document.getElementById('canvas').clientHeight,
-                    width: document.getElementById('canvas').clientHeight
+                    width: document.getElementById('canvas').clientWidth
+                })
+            }else if(canvasSize.height !== document.getElementById('canvas').clientHeight || canvasSize.width !== document.getElementById('canvas').clientWidth){
+                setCanvasSize({
+                    height: document.getElementById('canvas').clientHeight,
+                    width: document.getElementById('canvas').clientWidth
                 })
             }
         }
     }, [canvasSize])
+
+    useEffect(()=>{
+        setCanvas()
+    }, [setCanvas])
+
+    window.onresize = () => {
+        setCanvas()
+    }
     
     const [draging, setDraging] = useState(false)
 
