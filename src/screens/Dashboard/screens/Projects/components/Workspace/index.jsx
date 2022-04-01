@@ -36,8 +36,10 @@ const Workspace = () => {
             {Object.keys(projects).length<=0?
                 <Empty />
                 :
-                <div className={styles.files}>
-                    {Object.keys(projects).map((item, key)=><Tile key={key} title={item} />)}
+                <div className={styles.container}>
+                    <div className={styles.files}>
+                        {Object.keys(projects).map((item, key)=><Tile key={key} title={item} />)}
+                    </div>
                 </div>
             }
         </div>
