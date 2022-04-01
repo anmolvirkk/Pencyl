@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import MoreMenu from '../../../../components/MoreMenu'
@@ -15,14 +16,20 @@ const Empty = () => {
     )
 }
 
-const Tile = ({title}) => {
+const Tile = ({id}) => {
+    const [projects, setProjects] = useRecoilState(projectsAtom)
+    const navigate = useNavigate()
+    const goToEditor = () => {
+        setProjects({...projects, active: id})
+        navigate('editor')
+    }
     return (
-        <div className={styles.tile}>
+        <div className={styles.tile} onMouseDown={goToEditor}>
             <div className={styles.canvas}>
                 <div className={styles.container}></div>
             </div>
             <div className={styles.title}>
-                <p>{title}</p>
+                <p>{projects[id].name}</p>
                 <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} />
             </div>
         </div>
@@ -38,7 +45,13 @@ const Workspace = () => {
                 :
                 <div className={styles.container}>
                     <div className={styles.files}>
-                        {Object.keys(projects).map((item, key)=><Tile key={key} title={item} />)}
+                        {Object.keys(projects).map((item, key)=>{
+                            if(item!=='active'){
+                                return <Tile key={key} id={item} />
+                            }else{
+                                return null
+                            }
+                        })}
                     </div>
                 </div>
             }
