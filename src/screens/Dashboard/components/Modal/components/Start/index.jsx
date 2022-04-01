@@ -22,7 +22,6 @@ const Start = () => {
         })
         let id = new Date().valueOf()
         setProjects({
-            active: id,
             ...projects, 
             [id]: {
                 name: name,
@@ -32,7 +31,8 @@ const Start = () => {
                     background: '#090909'
                 },
                 layers: {}
-            }
+            },
+            active: id
         })
         navigate('editor')
         setModal({type: ''})

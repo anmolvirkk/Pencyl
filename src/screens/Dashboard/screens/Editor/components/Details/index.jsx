@@ -1,9 +1,8 @@
 import { useRecoilState } from 'recoil'
-import layersAtom from '../Layers/layersAtom'
-import canvasAtom from './canvasAtom'
+import projectsAtom from '../../../projectsAtom'
 import styles from './_details.module.sass'
 
-const Option = ({title, value, onBlur}) => {
+const Option = ({title, value, onBlur, type}) => {
     const validate = (e) => {
         if(e.key === 'Enter'){
             e.preventDefault()
@@ -20,11 +19,15 @@ const Option = ({title, value, onBlur}) => {
         }
     }
     const SingleUnit = () => {
+
         let displayValue = value
+
         if(typeof value === 'string'){
             displayValue = value.replace(/%|deg|px/g,'')
         }
+
         let unit = '%'
+
         switch (title.toLowerCase()) {
             case 'projectname':
                 unit = ''
@@ -41,6 +44,10 @@ const Option = ({title, value, onBlur}) => {
             default:
                 unit = '%'
             break
+        }
+
+        if(type === 'canvas'){
+            unit = 'px'
         }
 
         let Input = () => {
@@ -79,42 +86,31 @@ const Option = ({title, value, onBlur}) => {
             </div>
         )
     }
-    const Filters = () => {
-        return (
-            <div className={styles.filters}>
-                
-            </div>
-        )
-    }
-    switch (title) {
-        case 'filter': return <Filters />
-        default: return <SingleUnit />
-    }
+    return <SingleUnit />
 }
 
 const Details = () => {
-    const [canvas, setCanvas] = useRecoilState(canvasAtom)
-    const [layers, setLayers] = useRecoilState(layersAtom)
+    const [projects, setProjects] = useRecoilState(projectsAtom)
     let style = false
     let onBlur = () => {}
-    if(Object.keys(layers).length > 0){
-        Object.keys(layers).forEach((item)=>{
-            if(layers[item].active){
-                if(Object.keys(layers[item]).length > 0){
-                    layers[item]['assets'].forEach((item2, i)=>{
+    if(Object.keys(projects[projects.active].layers).length > 0){
+        Object.keys(projects[projects.active].layers).forEach((item)=>{
+            if(projects[projects.active].layers[item].active){
+                if(Object.keys(projects[projects.active].layers[item]).length > 0){
+                    projects[projects.active].layers[item]['assets'].forEach((item2, i)=>{
                         if(item2.active){
-                            style = item2.style
+                            style = {items: item2.style, type: 'layers'}
                             onBlur = (key, value) => {
-                                let layersString = JSON.stringify(layers)
-                                let newLayers = JSON.parse(layersString)
+                                let projectsString = JSON.stringify(projects)
+                                let newProjects = JSON.parse(projectsString)
                                 if(key === 'rotate' || key === 'hue'){
-                                    newLayers[item]['assets'][i].style[key] = value.replace('deg', '')+'deg'
+                                    projects[projects.active].layers[item]['assets'][i].style[key] = value.replace('deg', '')+'deg'
                                 }else if(key === 'background'){
-                                    newLayers[item]['assets'][i].style[key] = value
+                                    projects[projects.active].layers[item]['assets'][i].style[key] = value
                                 }else{
-                                    newLayers[item]['assets'][i].style[key] = value.replace('%', '')+'%'
+                                    projects[projects.active].layers[item]['assets'][i].style[key] = value.replace('%', '')+'%'
                                 }
-                                setLayers({...newLayers})
+                                setProjects({...newProjects})
                             }
                         }
                     })
@@ -123,20 +119,20 @@ const Details = () => {
         })
     }
     if(!style){
-        style = canvas.style
+        style = {items: projects[projects.active].canvas, type: 'canvas'}
         onBlur = (key, value) => {
-            let canvasString = JSON.stringify(canvas)
-            let newCanvas = JSON.parse(canvasString)
-            newCanvas.style[key] = value
-            setCanvas(newCanvas)
+            let projectsString = JSON.stringify(projects)
+            let newProjects = JSON.parse(projectsString)
+            newProjects[projects.active].canvas[key] = value
+            setProjects({...newProjects})
         }
     }
 
     return (
         <div className={styles.details}>
             {
-                Object.keys(style).map((item, key)=>{
-                    return <Option key={key} title={item} value={style[item]} onBlur={onBlur} />
+                Object.keys(style.items).map((item, key)=>{
+                    return <Option key={key} title={item} value={style.items[item]} type={style.type} onBlur={onBlur} />
                 })
             }
         </div>

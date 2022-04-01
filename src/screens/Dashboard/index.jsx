@@ -5,6 +5,7 @@ import Editor from "./screens/Editor"
 import { useRecoilState } from "recoil"
 import modalAtom from "./components/Modal/modalAtom"
 import Modal from "./components/Modal"
+import projectsAtom from "./screens/projectsAtom"
 
 const Dashboard = () => {
     const [modal] = useRecoilState(modalAtom)
@@ -13,7 +14,7 @@ const Dashboard = () => {
             {modal.type?<Modal />:null}
             <Routes>
                 <Route index element={<Projects />} />
-                <Route path="editor/*" element={<Editor />} />
+                <Route path={`editor/*`} element={<Editor />} />
             </Routes>
         </div>
     )

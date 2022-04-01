@@ -2,14 +2,23 @@ import { Plus } from 'react-feather'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import MoreMenu from '../../../../components/MoreMenu'
+import projectsAtom from '../../../projectsAtom'
 import layersAtom from './layersAtom'
 import styles from './_layers.module.sass'
 
 const AddLayer = () => {
+    
     const setModal = useSetRecoilState(modalAtom)
-    const [layers, setLayers] = useRecoilState(layersAtom)
+
+    const [projects, setProjects] = useRecoilState(projectsAtom)
+    
+    let layers = projects[projects.active].layers
+    
     const addLayer = (layerName) => {
-        setLayers({...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}})
+        let projectsString = JSON.stringify(projects)
+        let newProjects = JSON.parse(projectsString)
+        newProjects[projects.active].layers = {...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
+        setProjects(newProjects)
         setModal({type: null})
     }
     return (
@@ -24,7 +33,16 @@ const AddLayer = () => {
 
 const Layer = ({name}) => {
 
-    const [layers, setLayers] = useRecoilState(layersAtom)
+    const [projects, setProjects] = useRecoilState(projectsAtom)
+    
+    let layers = projects[projects.active].layers
+    
+    const setLayers = (layers) => {
+        let projectsString = JSON.stringify(projects)
+        let newProjects = JSON.parse(projectsString)
+        newProjects[projects.active].layers = {...layers}
+        setProjects(newProjects)
+    }
 
     const setModal = useSetRecoilState(modalAtom)
 
@@ -42,13 +60,13 @@ const Layer = ({name}) => {
             }
             const addElement = (e) => {
                 let assetId = new Date().valueOf()
-                let layersString = JSON.stringify(layers)
-                let layersParse = JSON.parse(layersString)
-                Object.keys(layersParse).forEach((item)=>{
+                let projectsString = JSON.stringify(projects)
+                let newProjects = JSON.parse(projectsString)
+                Object.keys(newProjects[projects.active].layers).forEach((item)=>{
                     if(item === name){
-                        layersParse[item].active = true
+                        newProjects[projects.active].layers[item].active = true
                     }else{
-                        layersParse[item].active = false
+                        newProjects[projects.active].layers[item].active = false
                     }
                 })
                 let layerStyle = {
@@ -63,13 +81,14 @@ const Layer = ({name}) => {
                     hue: '0deg',
                     sepia: '0%'
                 }
-                if(layers[name]['assets']){
-                        let resetActiveAssets = layers[name]['assets'].map((item)=>{
+                if(newProjects[projects.active].layers[name]&&newProjects[projects.active].layers[name]['assets']){
+                        let resetActiveAssets = newProjects[projects.active].layers[name]['assets'].map((item)=>{
                             let newItem = {...item}
                             newItem.active = false
                             return newItem
                         })
-                        setLayers({...layersParse, 
+                        newProjects[projects.active].layers = {
+                            ...newProjects[projects.active].layers,
                             [name]: {
                                 assets: [...resetActiveAssets, {
                                     elem: e.target.src,
@@ -80,9 +99,11 @@ const Layer = ({name}) => {
                                 }],
                                 active: true
                             }
-                        })
+                        }
+                        setProjects({...newProjects})
                 }else{
-                    setLayers({...layersParse, 
+                    newProjects[projects.active].layers = {
+                        ...newProjects[projects.active].layers,
                         [name]: {
                             assets: [{
                                 elem: e.target.src,
@@ -93,7 +114,8 @@ const Layer = ({name}) => {
                             }],
                             active: true
                         }
-                    })
+                    }
+                    setProjects({...newProjects})
                 }
                 setModal({type: null})
             }
@@ -167,7 +189,7 @@ const Layer = ({name}) => {
             }
             setModal({type: 'editElement', func: editElement})
         }
-        if(layers[name]['assets']){
+        if(layers[name]&&layers[name]['assets']){
             return (
                 <div className={styles.assets}>
                     {layers[name]['assets'].map((item, key)=>
@@ -193,7 +215,11 @@ const Layer = ({name}) => {
 }
 
 const Layers = () => {
-    const [layers] = useRecoilState(layersAtom)
+
+    const [projects] = useRecoilState(projectsAtom)
+    
+    let layers = projects[projects.active].layers
+    
     return (
         <div className={styles.layersWrapper}>
             <div className={styles.layers}>

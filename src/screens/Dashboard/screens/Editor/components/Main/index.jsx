@@ -1,14 +1,23 @@
 import { useRecoilState } from 'recoil'
-import canvasAtom from '../Details/canvasAtom'
 import layersAtom from '../Layers/layersAtom'
 import styles from './_main.module.sass'
 import {Rnd} from 'react-rnd'
 import { useEffect, useRef, useState } from 'react'
 import OutsideClickHandler from 'react-outside-click-handler/build/OutsideClickHandler'
+import projectsAtom from '../../../projectsAtom'
 
 const Main = () => {
-    const [layers, setLayers] = useRecoilState(layersAtom)
-    const [canvas] = useRecoilState(canvasAtom)
+
+    const [projects, setProjects] = useRecoilState(projectsAtom)
+
+    let layers = projects[projects.active].layers
+
+    const setLayers = (layers) => {
+        let projectsString = JSON.stringify(projects)
+        let newProjects = JSON.parse(projectsString)
+        newProjects[projects.active].layers = {...layers}
+        setProjects(newProjects)
+    }
 
     let onChange = useRef(null)
 
@@ -34,7 +43,7 @@ const Main = () => {
     }, [layers, setLayers])
 
     const setActiveCanvas = (e) => {
-        if(e.target.className.indexOf('details') < 0){
+        if(typeof e.target.className.indexOf === 'function' && e.target.className.indexOf('details') < 0){
             let layersString = JSON.stringify(layers)
             let layersParse = JSON.parse(layersString)
             Object.keys(layersParse).forEach((item)=>{
@@ -95,7 +104,7 @@ const Main = () => {
 
     return (
         <div className={styles.main}>
-            <div id='canvas' className={styles.canvas} style={{aspectRatio: `${canvas.style.width}/${canvas.style.height}`, backgroundColor: canvas.style.background}}>
+            <div id='canvas' className={styles.canvas} style={{aspectRatio: `${projects[projects.active].canvas.width}/${projects[projects.active].canvas.height}`, backgroundColor: projects[projects.active].canvas.background}}>
                 {Object.keys(layers).map((item)=>{
                     if(layers[item]['assets']){
                         return layers[item]['assets'].map((item2, key)=>{
