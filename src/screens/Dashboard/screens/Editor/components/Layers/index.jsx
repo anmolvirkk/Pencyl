@@ -23,12 +23,16 @@ const AddLayer = () => {
             }
         })
         if(shouldAddLayer){
-            if(isNaN(layerName.toLowerCase().replaceAll(/\s/g,'').charAt(0))){
-                newProjects[projects.active].layers = {...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
-                setProjects(newProjects)
-                setModal({type: null})
+            if(layerName !== ''){
+                if(isNaN(layerName.toLowerCase().replaceAll(/\s/g,'').charAt(0))){
+                    newProjects[projects.active].layers = {...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
+                    setProjects(newProjects)
+                    setModal({type: null})
+                }else{
+                    setModal({type: 'addLayer', func: addLayer, error: 'Layer name cannot start with a number'})
+                }
             }else{
-                setModal({type: 'addLayer', func: addLayer, error: 'Layer name cannot start with a number'})
+                setModal({type: 'addLayer', func: addLayer, error: 'Layer name cannot be empty'})
             }
         }else{
             setModal({type: 'addLayer', func: addLayer, error: 'Layer name taken'})
@@ -147,10 +151,14 @@ const Layer = ({name}) => {
                                 }
                             })
                             if(rename){
-                                if(isNaN(newName.toLowerCase().replaceAll(/\s/g,'').charAt(0))){
-                                    newItem = newName
+                                if(newName !== ''){
+                                    if(isNaN(newName.toLowerCase().replaceAll(/\s/g,'').charAt(0))){
+                                        newItem = newName
+                                    }else{
+                                        setModal({type: 'addLayer', func: editLayer, error: 'Layer name cannot start with a number'})
+                                    }
                                 }else{
-                                    setModal({type: 'addLayer', func: editLayer, error: 'Layer name cannot start with a number'})
+                                    setModal({type: 'addLayer', func: editLayer, error: 'Layer name cannot be empty'})
                                 }
                             }else{
                                 setModal({type: 'editLayer', func: editLayer, error: 'Layer name taken'})
