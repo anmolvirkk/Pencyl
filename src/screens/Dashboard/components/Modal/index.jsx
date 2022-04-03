@@ -13,8 +13,8 @@ const Modal = () => {
             case 'start': return <Start />
             case 'addElement': return <AddElement func={modal.func} />
             case 'editElement': return <AddElement func={modal.func} />
-            case 'addLayer': return <AddLayer func={modal.func} />
-            case 'editLayer': return <AddLayer func={modal.func} edit={true} />
+            case 'addLayer': return <AddLayer func={modal.func} error={modal.error} />
+            case 'editLayer': return <AddLayer func={modal.func} edit={true} error={modal.error} />
             default: return null
         }
     }

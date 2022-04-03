@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import styles from './_addLayer.module.sass'
 
-const AddLayer = ({func, edit}) => {
+const AddLayer = ({func, edit, error}) => {
     const layerName = useRef('')
     const onEnter = (e) => {
         if(e.key === 'Enter'){
@@ -12,9 +12,10 @@ const AddLayer = ({func, edit}) => {
     useEffect(()=>{
         elem.current.focus()
     }, [])
+
     return (
         <div className={styles.wrapper}>
-            <input ref={elem} type='text' placeholder='Layer Name' onChange={(e)=>layerName.current=e.target.value} onKeyDown={(e)=>onEnter(e)} />
+            <input className={layerName.current===''&&error?styles.error:null} ref={elem} type='text' placeholder={error?error:'Layer Name'} onChange={(e)=>layerName.current=e.target.value} onKeyDown={(e)=>onEnter(e)} />
             <button onMouseDown={()=>func(layerName.current)}>
                 {edit?<p>Edit</p>:<p>Add</p>}
             </button>

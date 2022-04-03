@@ -16,9 +16,19 @@ const AddLayer = () => {
     const addLayer = (layerName) => {
         let projectsString = JSON.stringify(projects)
         let newProjects = JSON.parse(projectsString)
-        newProjects[projects.active].layers = {...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
-        setProjects(newProjects)
-        setModal({type: null})
+        let shouldAddLayer = true
+        Object.keys(newProjects[projects.active].layers).forEach((item)=>{
+            if(item === layerName.toLowerCase().replaceAll(/\s/g,'')){
+                shouldAddLayer = false
+            }
+        })
+        if(shouldAddLayer){
+            newProjects[projects.active].layers = {...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
+            setProjects(newProjects)
+            setModal({type: null})
+        }else{
+            setModal({type: 'addLayer', func: addLayer, error: 'Layer name taken'})
+        }
     }
     return (
         <div className={styles.addLayer} onMouseDown={()=>setModal({type: 'addLayer', func: addLayer})}>
@@ -123,16 +133,28 @@ const Layer = ({name}) => {
                     let projectsString = JSON.stringify(projects)
                     let newProjects = JSON.parse(projectsString)
                     let newLayers = {}
+                    let rename = true
                     Object.keys(newProjects[projects.active].layers).forEach((item)=>{
                         let newItem = item
                         if(item === name){
-                            newItem = newName
+                            Object.keys(newProjects[projects.active].layers).forEach((item)=>{
+                                if(item === newName){
+                                    rename = false
+                                }
+                            })
+                            if(rename){
+                                newItem = newName
+                            }else{
+                                setModal({type: 'editLayer', func: editLayer, error: 'Layer name taken'})
+                            }
                         }
                         newLayers = {...newLayers, [newItem]: newProjects[projects.active].layers[item]}
                     })
                     newProjects[projects.active].layers = newLayers
                     setProjects({...newProjects})
-                    setModal({type: ''})
+                    if(rename){
+                        setModal({type: null})
+                    }
                 }
                 setModal({type: 'editLayer', func: editLayer})
             }
