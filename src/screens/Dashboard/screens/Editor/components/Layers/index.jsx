@@ -118,6 +118,24 @@ const Layer = ({name}) => {
                 }
                 setModal({type: null})
             }
+            const editLayerModal = () => {
+                const editLayer = (newName) => {
+                    let projectsString = JSON.stringify(projects)
+                    let newProjects = JSON.parse(projectsString)
+                    let newLayers = {}
+                    Object.keys(newProjects[projects.active].layers).forEach((item)=>{
+                        let newItem = item
+                        if(item === name){
+                            newItem = newName
+                        }
+                        newLayers = {...newLayers, [newItem]: newProjects[projects.active].layers[item]}
+                    })
+                    newProjects[projects.active].layers = newLayers
+                    setProjects({...newProjects})
+                    setModal({type: ''})
+                }
+                setModal({type: 'editLayer', func: editLayer})
+            }
             return (
                 <div className={styles.layerbtn}>
                     <p>{name}</p>
@@ -125,7 +143,7 @@ const Layer = ({name}) => {
                         <div className={styles.addBtn}>
                             <Plus onMouseDown={()=>setModal({type: 'addElement', func: addElement})} />
                         </div>
-                        <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: removeLayer}]} />
+                        <MoreMenu options={[{name: 'edit', func: editLayerModal},{name: 'delete', func: removeLayer}]} />
                     </div>
                 </div>
             )
