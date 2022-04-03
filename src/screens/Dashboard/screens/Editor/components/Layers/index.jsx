@@ -23,9 +23,13 @@ const AddLayer = () => {
             }
         })
         if(shouldAddLayer){
-            newProjects[projects.active].layers = {...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
-            setProjects(newProjects)
-            setModal({type: null})
+            if(isNaN(layerName.toLowerCase().replaceAll(/\s/g,'').charAt(0))){
+                newProjects[projects.active].layers = {...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
+                setProjects(newProjects)
+                setModal({type: null})
+            }else{
+                setModal({type: 'addLayer', func: addLayer, error: 'Layer name cannot start with a number'})
+            }
         }else{
             setModal({type: 'addLayer', func: addLayer, error: 'Layer name taken'})
         }
@@ -143,7 +147,11 @@ const Layer = ({name}) => {
                                 }
                             })
                             if(rename){
-                                newItem = newName
+                                if(isNaN(newName.toLowerCase().replaceAll(/\s/g,'').charAt(0))){
+                                    newItem = newName
+                                }else{
+                                    setModal({type: 'addLayer', func: editLayer, error: 'Layer name cannot start with a number'})
+                                }
                             }else{
                                 setModal({type: 'editLayer', func: editLayer, error: 'Layer name taken'})
                             }
@@ -152,7 +160,7 @@ const Layer = ({name}) => {
                     })
                     newProjects[projects.active].layers = newLayers
                     setProjects({...newProjects})
-                    if(rename){
+                    if(rename && isNaN(newName.toLowerCase().replaceAll(/\s/g,'').charAt(0))){
                         setModal({type: null})
                     }
                 }
