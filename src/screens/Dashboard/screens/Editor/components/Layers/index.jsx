@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Plus } from 'react-feather'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import MoreMenu from '../../../../components/MoreMenu'
 import projectsAtom from '../../../projectsAtom'
 import styles from './_layers.module.sass'
+import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
 
 const AddLayer = () => {
     
@@ -282,19 +283,26 @@ const Layers = () => {
     
     let layers = projects[projects.active].layers
 
-    const [grabLayer, setGrabLayer] = useState(false)
-
-    const moveLayer = (e) => {
-        if(grabLayer){
-            console.log(e)
-        }
-    }
-
     return (
-        <div className={styles.layersWrapper} onMouseDown={(e)=>setGrabLayer(e)} onMouseUp={()=>setGrabLayer(false)} onMouseMove={moveLayer}>
-            <div className={styles.layers}>
-                {Object.keys(layers).map((item, key)=><Layer key={key} name={item} />)}
-            </div>
+        <div className={styles.layersWrapper}>
+            <DragDropContext onDragEnd={(e)=>console.log(e)}>
+                <Droppable droppableId='droppable-1'>
+                    {(provided, snapshot)=>(
+                        <div className={styles.layers} ref={provided.innerRef} {...provided.droppableProps}>
+                            {Object.keys(layers).map((item, i)=>(
+                                <Draggable key={i} draggableId={'draggable-'+i} index={i}>
+                                    {(provided, snapshot)=>(
+                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                            <Layer name={item} />
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
             <AddLayer />
         </div>
     )
