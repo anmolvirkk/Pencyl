@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Plus } from 'react-feather'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
@@ -262,8 +263,14 @@ const Layer = ({name}) => {
 
     return (
         <div className={styles.layer}>
-            <Title />
-            <Assets />
+            <div className={styles.wrapper}>
+                <Title />
+                <Assets />
+            </div>
+            <div className={styles.placeholder}>
+                <Title />
+                <Assets />
+            </div>
         </div>
     )
 
@@ -275,8 +282,16 @@ const Layers = () => {
     
     let layers = projects[projects.active].layers
 
+    const [grabLayer, setGrabLayer] = useState(false)
+
+    const moveLayer = (e) => {
+        if(grabLayer){
+            console.log(e)
+        }
+    }
+
     return (
-        <div className={styles.layersWrapper}>
+        <div className={styles.layersWrapper} onMouseDown={(e)=>setGrabLayer(e)} onMouseUp={()=>setGrabLayer(false)} onMouseMove={moveLayer}>
             <div className={styles.layers}>
                 {Object.keys(layers).map((item, key)=><Layer key={key} name={item} />)}
             </div>

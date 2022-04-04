@@ -35,13 +35,21 @@
         overflow-y: overlay
         height: calc( 100% - 70px )
         .layer
-            background-color: var(--lightblack)
-            margin: 0 12px
+            position: relative
             margin-top: 12px
-            border-radius: 7px 7px
-            padding: 12px
-            cursor: pointer
-            box-shadow: 0 3px 5px rgba(0,0,0,0.5)
+            +mixins.center
+            .placeholder
+                padding: 12px
+                div
+                    pointer-events: none
+                    opacity: 0
+            .wrapper
+                padding: 12px
+                background-color: var(--lightblack)
+                border-radius: 7px 7px
+                box-shadow: 0 3px 5px rgba(0,0,0,0.5)
+                cursor: grab
+                position: absolute
         .layer:last-child
             margin-bottom: 6px
         .layerbtn
@@ -53,7 +61,9 @@
                 align-items: center
                 .addBtn
                     +mixins.center
+                    cursor: pointer
         .assets
+            margin: 4px
             margin-top: 16px
             display: grid
             grid-template-columns: 1fr 1fr
@@ -67,6 +77,7 @@
                 align-items: center
                 box-shadow: 0 0 10px rgba(0,0,0,0.2)
                 border: 1px solid var(--lightblack3)
+                cursor: pointer
                 svg
                     margin-right: -5px
             .active
