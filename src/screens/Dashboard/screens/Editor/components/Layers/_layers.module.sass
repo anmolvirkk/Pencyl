@@ -36,22 +36,17 @@
         height: calc( 100% - 70px )
         .layer
             position: relative
-            margin-top: 12px
-            +mixins.center
+            margin: 12px
+            padding: 12px
+            background-color: var(--lightblack)
+            border-radius: 7px 7px
+            box-shadow: 0 3px 5px rgba(0,0,0,0.5)
+            cursor: grab
             .placeholder
                 padding: 12px
                 div
                     pointer-events: none
                     opacity: 0
-            .wrapper
-                padding: 12px
-                background-color: var(--lightblack)
-                border-radius: 7px 7px
-                box-shadow: 0 3px 5px rgba(0,0,0,0.5)
-                cursor: grab
-                position: absolute
-        .layer:last-child
-            margin-bottom: 6px
         .layerbtn
             display: flex
             align-items: center

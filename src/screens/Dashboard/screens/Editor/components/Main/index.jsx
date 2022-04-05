@@ -1,9 +1,9 @@
 import { useRecoilState } from 'recoil'
 import styles from './_main.module.sass'
-import {Rnd} from 'react-rnd'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import OutsideClickHandler from 'react-outside-click-handler/build/OutsideClickHandler'
 import projectsAtom from '../../../projectsAtom'
+import Moveable from 'react-moveable'
+import targetAtom from './targetAtom'
 
 const Main = () => {
 
@@ -40,43 +40,7 @@ const Main = () => {
             })
         }
     }, [layers, setLayers])
-
-    const setActiveCanvas = (e) => {
-        if(typeof e.target.className.indexOf === 'function' && e.target.className.indexOf('details') < 0){
-            let layersString = JSON.stringify(layers)
-            let layersParse = JSON.parse(layersString)
-            Object.keys(layersParse).forEach((item)=>{
-                layersParse[item].active = false
-            })
-            setLayers({...layersParse})
-        }
-    }
     
-    const setActiveAsset = (layer, asset) => {
-        let layersString = JSON.stringify(layers)
-        let layersParse = JSON.parse(layersString)
-        let layerString = JSON.stringify(layers[layer])
-        let layerParse = JSON.parse(layerString)
-        Object.keys(layersParse).forEach((item)=>{
-            if(item === layer){
-                layerParse.active = true
-            }else{
-                layersParse[item].active = false
-            }
-        })
-        layerParse.assets = layerParse.assets.map((item)=>{
-            let newItem = {...item}
-            if(item.id === asset.id){
-                newItem.active = true
-            }else{
-                newItem.active = false
-            }
-            return newItem
-        })
-        layersParse[layer] = {...layerParse}
-        setLayers({...layersParse})
-    }
-
     const [canvasSize, setCanvasSize] = useState(null)
 
     const setCanvas = useCallback(() => {
@@ -101,56 +65,69 @@ const Main = () => {
 
     window.onresize = () => {
         setCanvas()
-    }
-    
-    const [draging, setDraging] = useState(false)
-
-    const onDragStop = (e, d) => {
-        let x = (d.lastX/canvasSize.width)*100
-        let y = (d.lastY/canvasSize.height)*100
-        onChange.current('left', x)
-        onChange.current('top', y)
-        setDraging(false)
-    }
-
-    const onResizeStop = (e, d, ref) => {
-        let regExp = /\(([^)]+)\)/
-        let transform = regExp.exec(ref.style.transform)[1].split(', ')
-        let x = (transform[0].replace('px','')/(canvasSize.width))*100
-        let y = (transform[1].replace('px','')/(canvasSize.height))*100
-        onChange.current('left', x)
-        onChange.current('top', y)
-        onChange.current('width', ref.style.width.replace('%', ''))
+        if(target){
+            setTarget(null)
+        }
     }
 
     let displayLayers = Object.keys(layers)
     displayLayers.reverse()
 
+    const [target, setTarget] = useRecoilState(targetAtom)
+
+    const setCanvasTarget = (e) => {
+        if(e.target.id){
+            if(!e.target.id.includes('asset')){
+                setTarget(null)
+            }else if(e.target.id.includes('asset')){
+                    
+                    if(e.target !== target){
+                        
+
+                        if(e.shiftKey || e.ctrlKey || e.altKey){
+                            if(Array.isArray(target)){
+                                console.log(target)
+                                if(!target.includes(e.target)){
+                                    setTarget([...target, e.target])
+                                }else{
+                                    setTarget(target.filter(i=>i!==e.target))
+                                }
+                            }else{
+                                setTarget([target, e.target])
+                            }
+                        }else{
+                            if(target !== e.target){
+                                setTarget(e.target)
+                            }
+                        }
+                        
+                    }else{
+                        setTarget(null)
+                    }
+
+            }else{
+                setTarget(null)
+            }
+        }else{
+            setTarget(null)
+        }
+    }
+
+    const resizePosition = useRef(null)
+
     return (
-        <div className={styles.main}>
+        <div className={styles.main} id='main' onClick={setCanvasTarget}>
             <div id='canvas' className={styles.canvas} style={{aspectRatio: `${projects[projects.active].canvas.width}/${projects[projects.active].canvas.height}`, backgroundColor: projects[projects.active].canvas.background}}>
-                {displayLayers.map((item)=>{
+                {displayLayers.map((item, key)=>{
                     if(layers[item]['assets']){
-                        return layers[item]['assets'].map((item2, key)=>{
+                        return layers[item]['assets'].map((item2, i)=>{
                                     let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: `rotate(${item2.style.rotate})`, filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia})`}
                                     if(item2.active && canvasSize){
-                                        if(layers[item].active){
-                                            return (
-                                                <OutsideClickHandler key={key} onOutsideClick={(e)=>setActiveCanvas(e)}>
-                                                    <Rnd onResizeStart={()=>setDraging(true)} onDragStop={(e, d)=>onDragStop(e, d)} onResizeStop={(e, d, ref, delta, pos)=>onResizeStop(e, d, ref, delta, pos)} size={{width: item2.style.width, height: item2.style.height}} lockAspectRatio={true} default={{x: parseInt(item2.style.left)/100*canvasSize.width, y: parseInt(item2.style.top)/100*canvasSize.height}} position={!draging?{x: parseInt(item2.style.left)/100*canvasSize.width, y: parseInt(item2.style.top)/100*canvasSize.height}:null}>
-                                                        <div style={{border: '1px solid var(--primary)'}}>
-                                                            <img className={styles.active} src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style, marginBottom: '-3px'}} />
-                                                        </div>
-                                                    </Rnd>
-                                                </OutsideClickHandler>
-                                            )
-                                        }else{
-                                            return (
-                                                <div className={styles.imgWrapper} key={key} onMouseDown={()=>setActiveAsset(item, item2)} style={{top: parseInt(item2.style.top)/100*canvasSize.height, left: parseInt(item2.style.left)/100*canvasSize.width, width: item2.style.width, height: item2.style.height}}>
-                                                    <img src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style}} />
-                                                </div>
-                                            )
-                                        }
+                                        return (
+                                            <div id={'asset-'+key} data-layer={item} data-asset={i} className={styles.imgWrapper} key={key} style={{top: ((parseInt(item2.style.top)/canvasSize.height)*100)+'%', left: ((parseInt(item2.style.left)/canvasSize.width)*100)+'%', width: item2.style.width, height: item2.style.height}}>
+                                                <img src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style}} />
+                                            </div>
+                                        )
                                     }else{
                                         return null
                                     }
@@ -159,6 +136,86 @@ const Main = () => {
                         return null
                     }
                 })}
+                <Moveable
+                    target={target}
+                    draggable={true}
+                    resizable={true}
+                    keepRatio={true}
+                    throttleDrag={0}
+                    startDragRotate={0}
+                    throttleDragRotate={0}
+                    zoom={1}
+                    origin={true}
+                    padding={{"left":0,"top":0,"right":0,"bottom":0}}
+                    onDrag={(e) => {
+                        e.target.style.left = e.left+'px'
+                        e.target.style.top = e.top+'px'
+                    }}
+                    onDragGroup={(e)=>{
+                        e.targets.forEach((item, i)=>{
+                            item.style.left = e.events[i].left+'px'
+                            item.style.top = e.events[i].top+'px'
+                        })
+                    }}
+                    onDragEnd={(e)=>{
+                        let left = parseInt(e.target.style.left)
+                        let top = parseInt(e.target.style.top)
+                        let layer = e.target.attributes[1].value
+                        let asset = e.target.attributes[2].value
+                        let projectsString = JSON.stringify(projects)
+                        let newProjects = JSON.parse(projectsString)
+                        newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, top: top, left: left}
+                        setProjects(newProjects)
+                    }}
+                    onDragGroupEnd={(e)=>{
+                        let projectsString = JSON.stringify(projects)
+                        let newProjects = JSON.parse(projectsString)
+                        e.events.forEach((e)=>{
+                            let left = parseInt(e.target.style.left)
+                            let top = parseInt(e.target.style.top)
+                            let layer = e.target.attributes[1].value
+                            let asset = e.target.attributes[2].value
+                            newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, top: top, left: left}
+                        })
+                        setProjects(newProjects)
+                    }}
+                    onResize={(e)=>{
+                        e.target.style.width = e.width+'px'
+                        e.target.style.height  = e.height+'px'
+                        e.target.style.transform = `translate(${e.drag.beforeTranslate[0]}px, ${e.drag.beforeTranslate[1]}px)`
+                        resizePosition.current = {
+                            left: e.drag.beforeTranslate[0],
+                            top: e.drag.beforeTranslate[1]
+                        }
+                    }}
+                    onResizeEnd={(e)=>{
+                        let width = e.lastEvent.width
+                        let height = e.lastEvent.height
+                        let left = e.lastEvent.drag.left
+                        let top = e.lastEvent.drag.top
+                        e.target.style.transform = 'none'
+                        let layer = e.target.attributes[1].value
+                        let asset = e.target.attributes[2].value
+                        let projectsString = JSON.stringify(projects)
+                        let newProjects = JSON.parse(projectsString)
+                        newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, width: width, height: height, top: top, left: left}
+                        setProjects(newProjects)
+                    }}
+                    onResizeGroup={(e)=>{
+                        let projectsString = JSON.stringify(projects)
+                        let newProjects = JSON.parse(projectsString)
+                        e.events.forEach((e)=>{
+                            let left = e.drag.left
+                            let top = e.drag.top
+                            let width = e.width
+                            let height = e.height
+                            let layer = e.target.attributes[1].value
+                            let asset = e.target.attributes[2].value
+                            newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, top: top, left: left, height: height, width: width}
+                        })
+                        setProjects(newProjects)
+                    }}
+                />
             </div>
         </div>
     )

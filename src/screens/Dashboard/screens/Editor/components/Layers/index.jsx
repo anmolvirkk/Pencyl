@@ -5,6 +5,7 @@ import MoreMenu from '../../../../components/MoreMenu'
 import projectsAtom from '../../../projectsAtom'
 import styles from './_layers.module.sass'
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
+import targetAtom from '../Main/targetAtom'
 
 const AddLayer = () => {
     
@@ -192,6 +193,57 @@ const Layer = ({name}) => {
     }
 
     const Assets = () => {
+        const [target, setTarget] = useRecoilState(targetAtom)
+    
+        let targets = []
+    
+        if(target){
+            let reverseLayerKey = Object.keys(layers).reverse()
+            if(!Array.isArray(target)){
+                let index = parseInt(target.id.split('-')[1])
+                targets = reverseLayerKey[index]
+            }else{
+                target.forEach((item)=>{
+                    let index = parseInt(item.id.split('-')[1])
+                    targets = [...targets, reverseLayerKey[index]]
+                })
+            }
+        }
+
+        let isActive = false
+
+        if(!Array.isArray(target)){
+            if(name === targets){
+                isActive = true
+            }
+        }else{
+            targets.forEach((item)=>{
+                if(name === item){
+                    isActive = true
+                }
+            })
+        }
+
+        const setActiveTarget = (i) => {
+            let asset = document.getElementById('asset-'+i)
+            if(target){
+                if(asset !== target){
+                    if(Array.isArray(target)){
+                        if(!target.includes(asset)){
+                            setTarget([...target, asset])
+                        }else{
+                            setTarget(target.filter(i=>i!==asset))
+                        }
+                    }else{
+                        setTarget([target, asset])
+                    }
+                }else{
+                    setTarget(null)
+                }
+            }else{
+                setTarget(asset)
+            }
+        }
         const setActiveAsset = (asset, e) => {
             let isMoreMenu = e.target.className && typeof e.target.className === 'string' && e.target.className.split('_').indexOf('moremenu') > 0
             if(e.target.tagName !== 'svg' && !isMoreMenu){
@@ -199,9 +251,11 @@ const Layer = ({name}) => {
                 let layersParse = JSON.parse(layersString)
                 let layerString = JSON.stringify(layers[name])
                 let layerParse = JSON.parse(layerString)
-                Object.keys(layersParse).forEach((item)=>{
+                let reverseLayerKey = Object.keys(layersParse).reverse()
+                reverseLayerKey.forEach((item, i)=>{
                     if(item === name){
-                        layerParse.active = true
+                        layersParse[item].active = true
+                        setActiveTarget(i)
                     }else{
                         layersParse[item].active = false
                     }
@@ -249,7 +303,7 @@ const Layer = ({name}) => {
             return (
                 <div className={styles.assets}>
                     {layers[name]['assets'].map((item, key)=>
-                        <div onMouseDown={(e)=>setActiveAsset(item, e)} className={item.active?layers[name].active?`${styles.item} ${styles.active} ${styles.highlight}`:`${styles.item} ${styles.active}`:styles.item} key={key}>
+                        <div onMouseDown={(e)=>setActiveAsset(item, e)} className={item.active?isActive?`${styles.item} ${styles.active} ${styles.highlight}`:`${styles.item} ${styles.active}`:styles.item} key={key}>
                             <img src={item.elem} alt='' />
                             <MoreMenu options={[{name: 'change', func: ()=>changeAsset(item)},{name: 'delete', func: ()=>{deleteAsset(item)}}]} />
                         </div>)
@@ -263,14 +317,8 @@ const Layer = ({name}) => {
 
     return (
         <div className={styles.layer}>
-            <div className={styles.wrapper}>
-                <Title />
-                <Assets />
-            </div>
-            <div className={styles.placeholder}>
-                <Title />
-                <Assets />
-            </div>
+            <Title />
+            <Assets />
         </div>
     )
 
@@ -300,11 +348,11 @@ const Layers = () => {
         <div className={styles.layersWrapper}>
             <DragDropContext onDragEnd={(e)=>reorderLayers(e)}>
                 <Droppable droppableId='droppable-1'>
-                    {(provided, snapshot)=>(
+                    {(provided)=>(
                         <div className={styles.layers} ref={provided.innerRef} {...provided.droppableProps}>
                             {Object.keys(layers).map((item, i)=>(
                                 <Draggable key={i} draggableId={'draggable-'+i} index={i}>
-                                    {(provided, snapshot)=>(
+                                    {(provided)=>(
                                         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                             <Layer name={item} />
                                         </div>
