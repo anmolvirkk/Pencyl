@@ -123,10 +123,13 @@ const Main = () => {
         onChange.current('width', ref.style.width.replace('%', ''))
     }
 
+    let displayLayers = Object.keys(layers)
+    displayLayers.reverse()
+
     return (
         <div className={styles.main}>
             <div id='canvas' className={styles.canvas} style={{aspectRatio: `${projects[projects.active].canvas.width}/${projects[projects.active].canvas.height}`, backgroundColor: projects[projects.active].canvas.background}}>
-                {Object.keys(layers).map((item)=>{
+                {displayLayers.map((item)=>{
                     if(layers[item]['assets']){
                         return layers[item]['assets'].map((item2, key)=>{
                                     let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: `rotate(${item2.style.rotate})`, filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia})`}
