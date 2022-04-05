@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { Plus } from 'react-feather'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
@@ -279,13 +278,27 @@ const Layer = ({name}) => {
 
 const Layers = () => {
 
-    const [projects] = useRecoilState(projectsAtom)
+    const [projects, setProjects] = useRecoilState(projectsAtom)
     
     let layers = projects[projects.active].layers
 
+    const reorderLayers = (e) => {
+        let projectsString = JSON.stringify(projects)
+        let newProjects = JSON.parse(projectsString)
+        let newLayers = newProjects[projects.active].layers
+        let newLayersKeys = Object.keys(newLayers)
+        newLayersKeys.splice(e.destination.index, 0, newLayersKeys.splice(e.source.index, 1)[0])
+        let finalLayers = {}
+        newLayersKeys.forEach((item)=>{
+            finalLayers = {...finalLayers, [item]: newLayers[item]}
+        })
+        newProjects[projects.active].layers = finalLayers
+        setProjects({...newProjects})
+    }
+
     return (
         <div className={styles.layersWrapper}>
-            <DragDropContext onDragEnd={(e)=>console.log(e)}>
+            <DragDropContext onDragEnd={(e)=>reorderLayers(e)}>
                 <Droppable droppableId='droppable-1'>
                     {(provided, snapshot)=>(
                         <div className={styles.layers} ref={provided.innerRef} {...provided.droppableProps}>
