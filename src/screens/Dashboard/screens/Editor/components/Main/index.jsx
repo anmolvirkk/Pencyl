@@ -113,8 +113,6 @@ const Main = () => {
         }
     }
 
-    const resizePosition = useRef(null)
-
     return (
         <div className={styles.main} id='main' onClick={setCanvasTarget}>
             <div id='canvas' className={styles.canvas} style={{aspectRatio: `${projects[projects.active].canvas.width}/${projects[projects.active].canvas.height}`, backgroundColor: projects[projects.active].canvas.background}}>
@@ -181,20 +179,16 @@ const Main = () => {
                         setProjects(newProjects)
                     }}
                     onResize={(e)=>{
+                        e.target.style.left = e.drag.left+'px'
+                        e.target.style.top = e.drag.top+'px'
                         e.target.style.width = e.width/canvasSize.width*100+'%'
                         e.target.style.height  = e.height/canvasSize.height*100+'%'
-                        e.target.style.transform = `translate(${e.drag.beforeTranslate[0]}px, ${e.drag.beforeTranslate[1]}px)`
-                        resizePosition.current = {
-                            left: e.drag.beforeTranslate[0],
-                            top: e.drag.beforeTranslate[1]
-                        }
                     }}
                     onResizeEnd={(e)=>{
                         let width = e.lastEvent.width/canvasSize.width*100+'%'
                         let height = e.lastEvent.height/canvasSize.height*100+'%'
-                        let left = e.lastEvent.drag.left/canvasSize.width*100+'%'
-                        let top = e.lastEvent.drag.top/canvasSize.height*100+'%'
-                        e.target.style.transform = 'none'
+                        let left = e.target.style.left
+                        let top = e.target.style.top
                         let layer = e.target.attributes[1].value
                         let asset = e.target.attributes[2].value
                         let projectsString = JSON.stringify(projects)
