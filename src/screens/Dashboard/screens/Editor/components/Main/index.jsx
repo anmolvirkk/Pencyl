@@ -196,14 +196,22 @@ const Main = () => {
                         newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, width: width, height: height, top: top, left: left}
                         setProjects(newProjects)
                     }}
-                    onResizeGroup={(e)=>{
+                    onResizeGroup = {(e) => {
+                        e.targets.forEach((item, i)=>{
+                            item.style.left = (e.events[i].drag.left)/canvasSize.width*100+'%'
+                            item.style.top = (e.events[i].drag.top)/canvasSize.height*100+'%'
+                            item.style.height = e.events[i].height/canvasSize.height*100+'%'
+                            item.style.width = e.events[i].width/canvasSize.width*100+'%'
+                        })
+                    }}
+                    onResizeGroupEnd={(e)=>{
                         let projectsString = JSON.stringify(projects)
                         let newProjects = JSON.parse(projectsString)
                         e.events.forEach((e)=>{
-                            let left = e.drag.left/canvasSize.width*100+'%'
-                            let top = e.drag.top/canvasSize.height*100+'%'
-                            let width = e.width/canvasSize.width*100+'%'
-                            let height = e.height/canvasSize.height*100+'%'
+                            let left = e.target.style.left
+                            let top = e.target.style.top
+                            let width = e.target.style.width
+                            let height = e.target.style.height
                             let layer = e.target.attributes[1].value
                             let asset = e.target.attributes[2].value
                             newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, top: top, left: left, height: height, width: width}
