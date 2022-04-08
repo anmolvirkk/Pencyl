@@ -121,10 +121,10 @@ const Main = () => {
                 {displayLayers.map((item, key)=>{
                     if(layers[item]['assets']){
                         return layers[item]['assets'].map((item2, i)=>{
-                                    let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: `rotate(${item2.style.rotate})`, filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia})`}
+                                    let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: 'none', filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia})`}
                                     if(item2.active && canvasSize){
                                         return (
-                                            <div id={'asset-'+key} data-layer={item} data-asset={i} className={styles.imgWrapper} key={key} style={{top: item2.style.top, left: item2.style.left, width: item2.style.width, height: item2.style.height}}>
+                                            <div id={'asset-'+key} data-layer={item} data-asset={i} className={styles.imgWrapper} key={key} style={{top: item2.style.top, left: item2.style.left, width: item2.style.width, height: item2.style.height, transform: `rotate(${item2.style.rotate})`}}>
                                                 <img src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style}} />
                                             </div>
                                         )
@@ -216,7 +216,36 @@ const Main = () => {
                         })
                         setProjects(newProjects)
                     }}
-                    onRotate={(e)=>console.log(e)}
+                    onRotate={(e)=>{
+                        e.target.style.transform = e.transform
+                    }}
+                    onRotateEnd={(e)=>{
+                        let layer = e.target.attributes[1].value
+                        let asset = e.target.attributes[2].value
+                        let rotate = `${e.lastEvent.rotate}deg`
+                        let projectsString = JSON.stringify(projects)
+                        let newProjects = JSON.parse(projectsString)
+                        newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, rotate: rotate}
+                        setProjects(newProjects)
+                    }}
+                    onRotateGroup={(e)=>{
+                        e.events.forEach((event)=>{
+                            event.target.style.transform = event.drag.transform
+                        })
+                    }}
+                    onRotateGroupEnd={(e)=>{
+                        let projectsString = JSON.stringify(projects)
+                        let newProjects = JSON.parse(projectsString)
+                        e.events.forEach((e)=>{
+                            let rotate = `${e.lastEvent.rotate}deg`
+                            let left = (parseInt(e.target.style.left.replace('%',''))+e.lastEvent.drag.beforeTranslate[0]/canvasSize.width*100)+'%'
+                            let top = (parseInt(e.target.style.top.replace('%',''))+e.lastEvent.drag.beforeTranslate[1]/canvasSize.height*100)+'%'
+                            let layer = e.target.attributes[1].value
+                            let asset = e.target.attributes[2].value
+                            newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, rotate: rotate, left: left, top: top}
+                        })
+                        setProjects(newProjects)
+                    }}
                 />
             </div>
         </div>
