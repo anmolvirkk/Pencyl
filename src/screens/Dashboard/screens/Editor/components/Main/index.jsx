@@ -124,7 +124,7 @@ const Main = () => {
                                     let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: `rotate(${item2.style.rotate})`, filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia})`}
                                     if(item2.active && canvasSize){
                                         return (
-                                            <div id={'asset-'+key} data-layer={item} data-asset={i} className={styles.imgWrapper} key={key} style={{top: ((parseInt(item2.style.top)/canvasSize.height)*100)+'%', left: ((parseInt(item2.style.left)/canvasSize.width)*100)+'%', width: item2.style.width, height: item2.style.height}}>
+                                            <div id={'asset-'+key} data-layer={item} data-asset={i} className={styles.imgWrapper} key={key} style={{top: item2.style.top, left: item2.style.left, width: item2.style.width, height: item2.style.height}}>
                                                 <img src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style}} />
                                             </div>
                                         )
@@ -140,6 +140,7 @@ const Main = () => {
                     target={target}
                     draggable={true}
                     resizable={true}
+                    rotatable={true}
                     keepRatio={true}
                     throttleDrag={0}
                     startDragRotate={0}
@@ -148,18 +149,18 @@ const Main = () => {
                     origin={true}
                     padding={{"left":0,"top":0,"right":0,"bottom":0}}
                     onDrag={(e) => {
-                        e.target.style.left = e.left+'px'
-                        e.target.style.top = e.top+'px'
+                        e.target.style.left = e.left/canvasSize.width*100+'%'
+                        e.target.style.top = e.top/canvasSize.height*100+'%'
                     }}
                     onDragGroup={(e)=>{
                         e.targets.forEach((item, i)=>{
-                            item.style.left = e.events[i].left+'px'
-                            item.style.top = e.events[i].top+'px'
+                            item.style.left = e.events[i].left/canvasSize.width*100+'%'
+                            item.style.top = e.events[i].top/canvasSize.height*100+'%'
                         })
                     }}
                     onDragEnd={(e)=>{
-                        let left = parseInt(e.target.style.left)
-                        let top = parseInt(e.target.style.top)
+                        let left = e.target.style.left
+                        let top = e.target.style.top
                         let layer = e.target.attributes[1].value
                         let asset = e.target.attributes[2].value
                         let projectsString = JSON.stringify(projects)
@@ -180,8 +181,8 @@ const Main = () => {
                         setProjects(newProjects)
                     }}
                     onResize={(e)=>{
-                        e.target.style.width = e.width+'px'
-                        e.target.style.height  = e.height+'px'
+                        e.target.style.width = e.width/canvasSize.width*100+'%'
+                        e.target.style.height  = e.height/canvasSize.height*100+'%'
                         e.target.style.transform = `translate(${e.drag.beforeTranslate[0]}px, ${e.drag.beforeTranslate[1]}px)`
                         resizePosition.current = {
                             left: e.drag.beforeTranslate[0],
@@ -189,8 +190,8 @@ const Main = () => {
                         }
                     }}
                     onResizeEnd={(e)=>{
-                        let width = e.lastEvent.width
-                        let height = e.lastEvent.height
+                        let width = e.lastEvent.width/canvasSize.width*100+'%'
+                        let height = e.lastEvent.height/canvasSize.height*100+'%'
                         let left = e.lastEvent.drag.left
                         let top = e.lastEvent.drag.top
                         e.target.style.transform = 'none'
@@ -215,6 +216,7 @@ const Main = () => {
                         })
                         setProjects(newProjects)
                     }}
+                    onRotate={(e)=>console.log(e)}
                 />
             </div>
         </div>
