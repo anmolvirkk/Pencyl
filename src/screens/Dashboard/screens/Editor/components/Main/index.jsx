@@ -172,8 +172,8 @@ const Main = () => {
                         let projectsString = JSON.stringify(projects)
                         let newProjects = JSON.parse(projectsString)
                         e.events.forEach((e)=>{
-                            let left = parseInt(e.target.style.left)
-                            let top = parseInt(e.target.style.top)
+                            let left = e.target.style.left
+                            let top = e.target.style.top
                             let layer = e.target.attributes[1].value
                             let asset = e.target.attributes[2].value
                             newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, top: top, left: left}
@@ -192,8 +192,8 @@ const Main = () => {
                     onResizeEnd={(e)=>{
                         let width = e.lastEvent.width/canvasSize.width*100+'%'
                         let height = e.lastEvent.height/canvasSize.height*100+'%'
-                        let left = e.lastEvent.drag.left
-                        let top = e.lastEvent.drag.top
+                        let left = e.lastEvent.drag.left/canvasSize.width*100+'%'
+                        let top = e.lastEvent.drag.top/canvasSize.height*100+'%'
                         e.target.style.transform = 'none'
                         let layer = e.target.attributes[1].value
                         let asset = e.target.attributes[2].value
@@ -206,10 +206,10 @@ const Main = () => {
                         let projectsString = JSON.stringify(projects)
                         let newProjects = JSON.parse(projectsString)
                         e.events.forEach((e)=>{
-                            let left = e.drag.left
-                            let top = e.drag.top
-                            let width = e.width
-                            let height = e.height
+                            let left = e.drag.left/canvasSize.width*100+'%'
+                            let top = e.drag.top/canvasSize.height*100+'%'
+                            let width = e.width/canvasSize.width*100+'%'
+                            let height = e.height/canvasSize.height*100+'%'
                             let layer = e.target.attributes[1].value
                             let asset = e.target.attributes[2].value
                             newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, top: top, left: left, height: height, width: width}
