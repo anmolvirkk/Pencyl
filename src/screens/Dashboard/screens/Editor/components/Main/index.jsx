@@ -138,6 +138,16 @@ const Main = () => {
                 })}
                 {target?
                 <Moveable
+                    snappable={true}
+                    elementGuidelines={target}
+                    verticalGuidelines={[0,200,400]}
+                    horizontalGuidelines={[0,200,400]}
+                    snapThreshold={5}
+                    isDisplaySnapDigit={true}
+                    snapGap={true}
+                    snapDirections={{'top': true, 'right': true, 'bottom': true, 'left': true}}
+                    elementSnapDirections={{'top': true, 'right': true, 'bottom': true, 'left': true}}
+                    snapDigit={0}
                     target={target}
                     draggable={true}
                     resizable={true}
