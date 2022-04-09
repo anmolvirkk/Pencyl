@@ -111,7 +111,7 @@ const Main = () => {
                                     let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: 'none', filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) saturate(${item2.style.saturatation}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia})`}
                                     if(item2.active && canvasSize){
                                         return (
-                                            <div id={'asset-'+key} data-layer={item} data-asset={i} className={styles.imgWrapper} key={key} style={{top: item2.style.top, left: item2.style.left, width: item2.style.width, height: item2.style.height, transform: `rotate(${item2.style.rotate})`}}>
+                                            <div id={'asset-'+key} data-layer={item} data-asset={i} data-aspect={item2.style.lockAspectRatio} className={styles.imgWrapper} key={key} style={{top: item2.style.top, left: item2.style.left, width: item2.style.width, height: item2.style.height, transform: `rotate(${item2.style.rotate})`}}>
                                                 <img src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style}} />
                                             </div>
                                         )
@@ -129,7 +129,7 @@ const Main = () => {
                     draggable={true}
                     resizable={true}
                     rotatable={true}
-                    keepRatio={true}
+                    keepRatio={JSON.parse(target[0].attributes[3].value)}
                     throttleDrag={0}
                     startDragRotate={0}
                     throttleDragRotate={0}

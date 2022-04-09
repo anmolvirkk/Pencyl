@@ -33,6 +33,9 @@ const Option = ({title, value, onBlur, type}) => {
             case 'background':
                 unit = ''
             break
+            case 'lockaspectratio':
+                unit = ''
+            break
             case 'rotate':
                 unit = 'deg'
             break
@@ -68,6 +71,16 @@ const Option = ({title, value, onBlur, type}) => {
                     )
                 }
             break
+            case 'lockaspectratio':
+                Input = () => {
+                    return (
+                        <div className={styles.toggle}>
+                            <div className={`${styles.option} ${displayValue?styles.active:''}`} onMouseDown={()=>onBlur(title, true)}>On</div>
+                            <div className={`${styles.option} ${!displayValue?styles.active:''}`} onMouseDown={()=>onBlur(title, false)}>Off</div>
+                        </div>
+                    )
+                }
+            break
             default:
                 Input = () => {
                     return (
@@ -82,7 +95,7 @@ const Option = ({title, value, onBlur, type}) => {
 
         return (
             <div className={styles.option}>
-                <div className={styles.title}>{title.toLowerCase()==='projectname'?'Project Name':title}</div>
+                <div className={styles.title}>{title.toLowerCase()==='projectname'?'Project Name':title.toLowerCase()==='lockaspectratio'?'Lock Aspect Ratio':title}</div>
                 <Input />
             </div>
         )
@@ -106,8 +119,11 @@ const Details = () => {
                 let projectsString = JSON.stringify(projects)
                 let newProjects = JSON.parse(projectsString)
                 let unit = '%'
-                switch (key) {
+                switch (key.toLowerCase()) {
                     case 'background':
+                        unit = ''
+                    break
+                    case 'lockaspectratio':
                         unit = ''
                     break
                     case 'rotate':
@@ -120,7 +136,7 @@ const Details = () => {
                         unit = '%'
                     break
                 }
-                newProjects[projects.active].layers[layer].assets[asset].style[key] = value+unit
+                newProjects[projects.active].layers[layer].assets[asset].style[key] = typeof value === 'boolean'?value:value+unit
                 setProjects({...newProjects})
                 const setEmpty = async () => {
                     setTarget(null)
