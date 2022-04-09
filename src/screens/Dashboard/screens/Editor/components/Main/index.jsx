@@ -75,25 +75,23 @@ const Main = () => {
 
     const [target, setTarget] = useRecoilState(targetAtom)
 
-    const setCanvasTarget = (e) => {
-        if(e.target.id){
+    window.onmouseup = (e) => {
+        if(e&&e.target&&e.target.id){
             if(!e.target.id.includes('asset')){
                 setTarget(null)
             }else if(e.target.id.includes('asset')){
                     
                     if(e.target !== target){
-                        
 
                         if(e.shiftKey || e.ctrlKey || e.altKey){
                             if(Array.isArray(target)){
-                                console.log(target)
                                 if(!target.includes(e.target)){
                                     setTarget([...target, e.target])
                                 }else{
                                     setTarget(target.filter(i=>i!==e.target))
                                 }
                             }else{
-                                setTarget([target, e.target])
+                                setTarget([e.target])
                             }
                         }else{
                             if(target !== e.target){
@@ -114,7 +112,7 @@ const Main = () => {
     }
 
     return (
-        <div className={styles.main} id='main' onClick={setCanvasTarget}>
+        <div className={styles.main} id='main'>
             <div id='canvas' className={styles.canvas} style={{aspectRatio: `${projects[projects.active].canvas.width}/${projects[projects.active].canvas.height}`, backgroundColor: projects[projects.active].canvas.background}}>
                 {displayLayers.map((item, key)=>{
                     if(layers[item]['assets']){
@@ -134,6 +132,7 @@ const Main = () => {
                         return null
                     }
                 })}
+                {target?
                 <Moveable
                     target={target}
                     draggable={true}
@@ -249,6 +248,7 @@ const Main = () => {
                         setProjects(newProjects)
                     }}
                 />
+                :null}
             </div>
         </div>
     )
