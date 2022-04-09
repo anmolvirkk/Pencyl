@@ -75,7 +75,7 @@ const Main = () => {
 
     const [target, setTarget] = useRecoilState(targetAtom)
 
-    window.onclick = (e) => {
+    window.onmouseup = (e) => {
         if(e&&e.target&&e.target.id){
             if(!e.target.id.includes('asset')){
                 setTarget(null)
@@ -136,12 +136,10 @@ const Main = () => {
                         return null
                     }
                 })}
-                {target?
+                {target&&target[0]?
                 <Moveable
                     snappable={true}
                     elementGuidelines={target}
-                    verticalGuidelines={[0,200,400]}
-                    horizontalGuidelines={[0,200,400]}
                     snapThreshold={5}
                     isDisplaySnapDigit={true}
                     snapGap={true}

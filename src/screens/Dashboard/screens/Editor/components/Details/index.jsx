@@ -111,7 +111,7 @@ const Details = () => {
     const [target, setTarget] = useRecoilState(targetAtom)
 
     if(target){
-        if(target.length <= 1){
+        if(target.length <= 1 && target[0]){
             let layer = target[0].attributes[1].value
             let asset = target[0].attributes[2].value
             style = {items: projects[projects.active].layers[layer].assets[asset].style, type: 'layer'}
