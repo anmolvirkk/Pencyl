@@ -75,14 +75,12 @@ const Main = () => {
 
     const [target, setTarget] = useRecoilState(targetAtom)
 
-    window.onmouseup = (e) => {
+    window.onclick = (e) => {
         if(e&&e.target&&e.target.id){
             if(!e.target.id.includes('asset')){
                 setTarget(null)
             }else if(e.target.id.includes('asset')){
-                    
                     if(e.target !== target){
-
                         if(e.shiftKey || e.ctrlKey || e.altKey){
                             if(Array.isArray(target)){
                                 if(!target.includes(e.target)){
@@ -99,15 +97,8 @@ const Main = () => {
                             }
                         }
                         
-                    }else{
-                        setTarget(null)
                     }
-
-            }else{
-                setTarget(null)
             }
-        }else{
-            setTarget(null)
         }
     }
 
