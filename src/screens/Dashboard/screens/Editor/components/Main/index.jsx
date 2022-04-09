@@ -99,6 +99,19 @@ const Main = () => {
                         
                     }
             }
+        }else{
+            const getParent = (e) => {
+                if(e.parentNode.className.includes('details')){
+                    return false
+                }else if(e.parentNode.className){
+                    return getParent(e.parentNode)
+                }else{
+                    return true
+                }
+            }
+            if(getParent(e.target)){
+                setTarget(null)
+            }
         }
     }
 
