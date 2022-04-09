@@ -108,7 +108,7 @@ const Main = () => {
                 {displayLayers.map((item, key)=>{
                     if(layers[item]['assets']){
                         return layers[item]['assets'].map((item2, i)=>{
-                                    let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: 'none', filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia})`}
+                                    let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: 'none', filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) saturate(${item2.style.saturatation}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia})`}
                                     if(item2.active && canvasSize){
                                         return (
                                             <div id={'asset-'+key} data-layer={item} data-asset={i} className={styles.imgWrapper} key={key} style={{top: item2.style.top, left: item2.style.left, width: item2.style.width, height: item2.style.height, transform: `rotate(${item2.style.rotate})`}}>

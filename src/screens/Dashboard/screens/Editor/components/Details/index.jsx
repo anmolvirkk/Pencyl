@@ -95,7 +95,7 @@ const Details = () => {
     let style = false
     let onBlur = () => {}
 
-    const [target] = useRecoilState(targetAtom)
+    const [target, setTarget] = useRecoilState(targetAtom)
 
     if(target){
         if(target.length <= 1){
@@ -105,8 +105,29 @@ const Details = () => {
             onBlur = (key, value) => {
                 let projectsString = JSON.stringify(projects)
                 let newProjects = JSON.parse(projectsString)
-                newProjects[projects.active].canvas[key] = value
+                let unit = '%'
+                switch (key) {
+                    case 'background':
+                        unit = ''
+                    break
+                    case 'rotate':
+                        unit = 'deg'
+                    break
+                    case 'hue':
+                        unit = 'deg'
+                    break
+                    default:
+                        unit = '%'
+                    break
+                }
+                newProjects[projects.active].layers[layer].assets[asset].style[key] = value+unit
                 setProjects({...newProjects})
+                const setEmpty = async () => {
+                    setTarget(null)
+                }
+                setEmpty().then(()=>{
+                    setTarget(target)
+                })
             }
         }
     }
