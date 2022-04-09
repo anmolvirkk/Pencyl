@@ -93,7 +93,7 @@ const Main = () => {
                             }
                         }else{
                             if(target !== e.target){
-                                setTarget(e.target)
+                                setTarget([e.target])
                             }
                         }
                         
