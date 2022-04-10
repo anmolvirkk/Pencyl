@@ -78,35 +78,35 @@ const Main = () => {
 
     if(document.getElementById('canvas')){
 
-        document.getElementById('canvas').onclick = (e) => {
+        document.getElementById('canvas').onmouseup = (e) => {
             if(e&&e.target&&e.target.id){
                 if(!e.target.id.includes('asset')){
                     setTarget(null)
                 }else if(e.target.id.includes('asset')){
-                        if(e.target !== target){
-                            if(e.shiftKey || e.ctrlKey || e.altKey){
-                                if(Array.isArray(target)){
-                                    if(!target.includes(e.target)){
-                                        setTarget([...target, e.target])
-                                    }else{
-                                        setTarget(target.filter(i=>i!==e.target))
-                                    }
-                                }
-                            }else{
-                                if(target !== e.target){
-                                    setTarget([e.target])
-                                }
-                            }
-                            
+                    if(e.shiftKey || e.ctrlKey || e.altKey){
+                        if(!target.includes(e.target)){
+                            setTarget([...target, e.target])
+                        }else{
+                            setTarget(target.filter(i=>i!==e.target))
                         }
+                    }else{
+                        if(target){
+                            if(!target.includes(e.target)){
+                                setTarget([e.target])
+                            }else{
+                                setTarget(target.filter(i=>i!==e.target))
+                            }
+                        }else{
+                            setTarget([e.target])
+                        }
+                    }
                 }
             }
         }
-        
+
         let distance = 0
 
         document.getElementById('canvas').onkeydown = (e) => {
-            console.log(e)
             if(target && target.length >= 1 && !e.shiftKey && !e.ctrlKey && !e.altKey){
                 let direction = false
                 switch (e.key) {

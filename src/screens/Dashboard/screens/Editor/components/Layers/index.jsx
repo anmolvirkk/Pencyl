@@ -345,8 +345,16 @@ const Layers = () => {
         setProjects({...newProjects})
     }
 
+    const [target, setTarget] = useRecoilState(targetAtom)
+
+    const checkTarget = () => {
+        if(target){
+            setTarget(null)
+        }
+    }
+
     return (
-        <div className={styles.layersWrapper}>
+        <div className={styles.layersWrapper} onMouseDown={checkTarget}>
             <DragDropContext onDragEnd={(e)=>reorderLayers(e)}>
                 <Droppable droppableId='droppable-1'>
                     {(provided)=>(
