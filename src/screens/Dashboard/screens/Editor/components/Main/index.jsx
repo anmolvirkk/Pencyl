@@ -76,6 +76,16 @@ const Main = () => {
 
     const [target, setTarget] = useRecoilState(targetAtom)
 
+    if(document.getElementById('main')){
+        document.getElementById('main').onmousedown = (e) => {
+            if(e&&e.target&&e.target.id){
+                if(!e.target.id.includes('asset')){
+                    setTarget(null)
+                }
+            }
+        }
+    }
+
     if(document.getElementById('canvas')){
 
         document.getElementById('canvas').onmouseup = (e) => {
