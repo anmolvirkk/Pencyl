@@ -76,32 +76,33 @@ const Main = () => {
 
     const [target, setTarget] = useRecoilState(targetAtom)
 
-    window.onclick = (e) => {
-        if(e&&e.target&&e.target.id){
-            if(!e.target.id.includes('asset')){
-                setTarget(null)
-            }else if(e.target.id.includes('asset')){
-                    if(e.target !== target){
-                        if(e.shiftKey || e.ctrlKey || e.altKey){
-                            if(Array.isArray(target)){
-                                if(!target.includes(e.target)){
-                                    setTarget([...target, e.target])
-                                }else{
-                                    setTarget(target.filter(i=>i!==e.target))
+    if(document.getElementById('canvas')){
+
+        document.getElementById('canvas').onclick = (e) => {
+            if(e&&e.target&&e.target.id){
+                if(!e.target.id.includes('asset')){
+                    setTarget(null)
+                }else if(e.target.id.includes('asset')){
+                        if(e.target !== target){
+                            if(e.shiftKey || e.ctrlKey || e.altKey){
+                                if(Array.isArray(target)){
+                                    if(!target.includes(e.target)){
+                                        setTarget([...target, e.target])
+                                    }else{
+                                        setTarget(target.filter(i=>i!==e.target))
+                                    }
+                                }
+                            }else{
+                                if(target !== e.target){
+                                    setTarget([e.target])
                                 }
                             }
-                        }else{
-                            if(target !== e.target){
-                                setTarget([e.target])
-                            }
+                            
                         }
-                        
-                    }
+                }
             }
         }
-    }
-
-    if(document.getElementById('canvas')){
+        
         let distance = 0
 
         document.getElementById('canvas').onkeydown = (e) => {
