@@ -138,8 +138,8 @@ const Main = () => {
                     }
                 })}
                 <Selecto
-                    dragContainer={'#canvas'}
-                    boundContainer={'#canvas'}
+                    dragContainer={'#main'}
+                    boundContainer={'#main'}
                     selectableTargets={[`.${styles.imgWrapper}`]}
                     hitRate={0}
                     selectByClick={true}
