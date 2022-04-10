@@ -217,6 +217,13 @@ const Main = () => {
                     selectByClick={true}
                     selectFromInside={true}
                     ratio={0}
+                    onDragStart={(e)=>{
+                        if(target){
+                            if(target.some(i=>e.currentTarget.selectedTargets.includes(i))){
+                                e.stop()
+                            }
+                        }
+                    }}
                     onSelectEnd={e => {
                         if(e.selected.length > 0){
                             if(e.rect.height > 10 || e.rect.width > 10){
