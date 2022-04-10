@@ -116,6 +116,78 @@ const Main = () => {
         }
     }
 
+    let distance = 0
+
+    window.onkeydown = (e) => {
+        if(target.length >= 1){
+            let direction = false
+            switch (e.key) {
+                case 'ArrowRight':
+                    direction = 'left'
+                    distance++
+                break
+                case 'ArrowLeft':
+                    direction = 'left'
+                    distance--
+                break
+                case 'ArrowUp':
+                    direction = 'top'
+                    distance--
+                break
+                case 'ArrowDown':
+                    direction = 'top'
+                    distance++
+                break
+                default:
+                    direction = false
+                break
+            }
+            let newTarget = target.map((item)=>{
+                let newItem = item
+                newItem.style[direction] = (parseInt(newItem.style[direction]) + distance) + '%'
+                return newItem
+            })
+            setTarget(null)
+            setTarget(newTarget)
+        }
+    }
+
+    window.onkeyup = (e) => {
+        if(target.length >= 0){
+            target.forEach((item)=>{
+                let direction = false
+                switch (e.key) {
+                    case 'ArrowRight':
+                        direction = 'left'
+                    break
+                    case 'ArrowLeft':
+                        direction = 'left'
+                    break
+                    case 'ArrowUp':
+                        direction = 'top'
+                    break
+                    case 'ArrowDown':
+                        direction = 'top'
+                    break
+                    default:
+                        direction = false
+                    break
+                }
+                if(direction){
+                    let layer = item.attributes[1].value
+                    let asset = item.attributes[2].value
+                    let projectsString = JSON.stringify(projects)
+                    let newProjects = JSON.parse(projectsString)
+                    if( newProjects[projects.active]['layers'][layer]['assets'][asset].style[direction] !== item.style[direction]){
+                        newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, [direction]: item.style[direction]}
+                        setProjects(newProjects)
+                    }
+                }
+            })
+            distance = 0
+        }
+    }
+
     return (
         <div className={styles.main} id='main'>
             <div id='canvas' className={styles.canvas} style={{aspectRatio: `${projects[projects.active].canvas.width}/${projects[projects.active].canvas.height}`, backgroundColor: projects[projects.active].canvas.background}}>
