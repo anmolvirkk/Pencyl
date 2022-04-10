@@ -76,7 +76,7 @@ const Main = () => {
 
     const [target, setTarget] = useRecoilState(targetAtom)
 
-    window.onmouseup = (e) => {
+    window.onclick = (e) => {
         if(e&&e.target&&e.target.id){
             if(!e.target.id.includes('asset')){
                 setTarget(null)
@@ -89,8 +89,6 @@ const Main = () => {
                                 }else{
                                     setTarget(target.filter(i=>i!==e.target))
                                 }
-                            }else{
-                                setTarget([e.target])
                             }
                         }else{
                             if(target !== e.target){
@@ -99,19 +97,6 @@ const Main = () => {
                         }
                         
                     }
-            }
-        }else{
-            const getParent = (e) => {
-                if(e.parentNode.className.includes('details')){
-                    return false
-                }else if(e.parentNode.className){
-                    return getParent(e.parentNode)
-                }else{
-                    return true
-                }
-            }
-            if(getParent(e.target)){
-                setTarget(null)
             }
         }
     }
@@ -209,29 +194,6 @@ const Main = () => {
                         return null
                     }
                 })}
-                <Selecto
-                    dragContainer={'#main'}
-                    boundContainer={'#main'}
-                    selectableTargets={[`.${styles.imgWrapper}`]}
-                    hitRate={0}
-                    selectByClick={true}
-                    selectFromInside={true}
-                    ratio={0}
-                    onDragStart={(e)=>{
-                        if(target){
-                            if(target.some(i=>e.currentTarget.selectedTargets.includes(i))){
-                                e.stop()
-                            }
-                        }
-                    }}
-                    onSelectEnd={e => {
-                        if(e.selected.length > 0){
-                            if(e.rect.height > 10 || e.rect.width > 10){
-                                setTarget(e.selected)
-                            }
-                        }
-                    }}
-                />
                 {target&&target[0]?
                 <Moveable
                     snappable={true}
@@ -357,6 +319,29 @@ const Main = () => {
                     }}
                 />
                 :null}
+                <Selecto
+                    dragContainer={'#main'}
+                    boundContainer={'#main'}
+                    selectableTargets={[`.${styles.imgWrapper}`]}
+                    hitRate={10}
+                    selectByClick={true}
+                    selectFromInside={true}
+                    ratio={0}
+                    onDragStart={(e)=>{
+                        if(target){
+                            if(target.some(i=>e.currentTarget.selectedTargets.includes(i))){
+                                e.stop()
+                            }
+                        }
+                    }}
+                    onSelectEnd={e => {
+                        if(e.selected.length > 0){
+                            if(e.rect.height > 30 || e.rect.width > 30){
+                                setTarget(e.selected)
+                            }
+                        }
+                    }}
+                />
             </div>
         </div>
     )
