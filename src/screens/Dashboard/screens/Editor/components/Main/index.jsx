@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import projectsAtom from '../../../projectsAtom'
 import Moveable from 'react-moveable'
 import targetAtom from './targetAtom'
+import Selecto from "react-selecto"
 
 const Main = () => {
 
@@ -136,6 +137,20 @@ const Main = () => {
                         return null
                     }
                 })}
+                <Selecto
+                    dragContainer={'#canvas'}
+                    boundContainer={'#canvas'}
+                    selectableTargets={[`.${styles.imgWrapper}`]}
+                    hitRate={0}
+                    selectByClick={true}
+                    selectFromInside={true}
+                    ratio={0}
+                    onSelectEnd={e => {
+                        if(e.selected.length > 0){
+                            setTarget(e.selected)
+                        }
+                    }}
+                />
                 {target&&target[0]?
                 <Moveable
                     snappable={true}
