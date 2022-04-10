@@ -145,43 +145,43 @@ const Main = () => {
                     newItem.style[direction] = (parseInt(newItem.style[direction]) + distance) + '%'
                     return newItem
                 })
-                setTarget(null)
+                // setTarget(null)
                 setTarget(newTarget)
             }
         }
 
         document.getElementById('canvas').onkeyup = (e) => {
             if(target && target.length >= 0 && !e.shiftKey && !e.ctrlKey && !e.altKey){
-                target.forEach((item)=>{
-                    let direction = false
-                    switch (e.key) {
-                        case 'ArrowRight':
-                            direction = 'left'
-                        break
-                        case 'ArrowLeft':
-                            direction = 'left'
-                        break
-                        case 'ArrowUp':
-                            direction = 'top'
-                        break
-                        case 'ArrowDown':
-                            direction = 'top'
-                        break
-                        default:
-                            direction = false
-                        break
-                    }
-                    if(direction){
+                let direction = false
+                switch (e.key) {
+                    case 'ArrowRight':
+                        direction = 'left'
+                    break
+                    case 'ArrowLeft':
+                        direction = 'left'
+                    break
+                    case 'ArrowUp':
+                        direction = 'top'
+                    break
+                    case 'ArrowDown':
+                        direction = 'top'
+                    break
+                    default:
+                        direction = false
+                    break
+                }
+                if(direction){
+                    let projectsString = JSON.stringify(projects)
+                    let newProjects = JSON.parse(projectsString)
+                    target.forEach((item)=>{
                         let layer = item.attributes[1].value
                         let asset = item.attributes[2].value
-                        let projectsString = JSON.stringify(projects)
-                        let newProjects = JSON.parse(projectsString)
                         if( newProjects[projects.active]['layers'][layer]['assets'][asset].style[direction] !== item.style[direction]){
-                            newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, [direction]: item.style[direction]}
-                            setProjects(newProjects)
+                            newProjects[projects.active]['layers'][layer]['assets'][asset].style[direction] = item.style[direction]
                         }
-                    }
-                })
+                    })
+                    setProjects(newProjects)
+                }
                 distance = 0
             }
         }
