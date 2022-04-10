@@ -119,7 +119,7 @@ const Main = () => {
     let distance = 0
 
     window.onkeydown = (e) => {
-        if(target.length >= 1){
+        if(target && target.length >= 1 && !e.shiftKey && !e.ctrlKey && !e.altKey){
             let direction = false
             switch (e.key) {
                 case 'ArrowRight':
@@ -153,7 +153,7 @@ const Main = () => {
     }
 
     window.onkeyup = (e) => {
-        if(target.length >= 0){
+        if(target && target.length >= 0 && !e.shiftKey && !e.ctrlKey && !e.altKey){
             target.forEach((item)=>{
                 let direction = false
                 switch (e.key) {
@@ -219,7 +219,9 @@ const Main = () => {
                     ratio={0}
                     onSelectEnd={e => {
                         if(e.selected.length > 0){
-                            setTarget(e.selected)
+                            if(e.rect.height > 10 || e.rect.width > 10){
+                                setTarget(e.selected)
+                            }
                         }
                     }}
                 />
