@@ -145,7 +145,7 @@ const Main = () => {
                     newItem.style[direction] = (parseInt(newItem.style[direction]) + distance) + '%'
                     return newItem
                 })
-                // setTarget(null)
+                setTarget(null)
                 setTarget(newTarget)
             }
         }
