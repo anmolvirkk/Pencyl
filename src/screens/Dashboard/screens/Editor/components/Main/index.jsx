@@ -25,7 +25,7 @@ const Main = () => {
         if(Object.keys(layers).length > 0){
             Object.keys(layers).forEach((item)=>{
                 if(layers[item].active){
-                    if(Object.keys(layers[item]).length > 0){
+                    if(Object.keys(layers[item]).length > 0 && layers[item]['assets']){
                         layers[item]['assets'].forEach((item2, i)=>{
                             if(item2.active){
                                 onChange.current = (key, value) => {
@@ -89,7 +89,6 @@ const Main = () => {
     if(document.getElementById('canvas')){
 
         document.getElementById('canvas').onmouseup = (e) => {
-            console.log(e)
             if(e&&e.target&&e.target.id){
                 if(!e.target.id.includes('asset')){
                     setTarget(null)
@@ -136,17 +135,19 @@ const Main = () => {
                         distance++
                     break
                     case 'Delete':
-                        console.log('newProjects')
                         let projectsString = JSON.stringify(projects)
                         let newProjects = JSON.parse(projectsString)
                         target.forEach((item)=>{
                             let layer = item.attributes[1].value
                             let asset = item.attributes[2].value
                             newProjects[projects.active]['layers'][layer]['assets'] = newProjects[projects.active]['layers'][layer]['assets'].filter((_,i)=>i!==parseInt(asset))
-                            console.log(newProjects[projects.active]['layers'][layer]['assets'])
+                            if(newProjects[projects.active]['layers'][layer]['assets'][0]){
+                                newProjects[projects.active]['layers'][layer]['assets'][0].active = true
+                            }else{
+                                newProjects[projects.active]['layers'][layer]['assets'] = null
+                            }
                         })
                         setProjects(newProjects)
-                        console.log(newProjects)
                     break
                     default:
                         direction = false

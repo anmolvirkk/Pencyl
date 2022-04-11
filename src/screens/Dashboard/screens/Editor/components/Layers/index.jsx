@@ -276,6 +276,15 @@ const Layer = ({name}) => {
         }
         const deleteAsset = (item) => {
             let assetRemoved = layers[name]['assets'].filter(i=>i.id!==item.id)
+            assetRemoved = assetRemoved.map((item, i)=>{
+                let newItem = {...item}
+                if(i === 0){
+                    newItem.active = true
+                }else{
+                    newItem.active = false
+                }
+                return newItem
+            })
             if(assetRemoved.length > 0){
                 setLayers({...layers, [name]: {...layers[name], assets: assetRemoved, active: false}})
             }else{
