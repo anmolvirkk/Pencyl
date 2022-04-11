@@ -114,36 +114,38 @@ const Details = () => {
         if(target.length <= 1 && target[0]){
             let layer = target[0].attributes[1].value
             let asset = target[0].attributes[2].value
-            style = {items: projects[projects.active].layers[layer].assets[asset].style, type: 'layer'}
-            onBlur = (key, value) => {
-                let projectsString = JSON.stringify(projects)
-                let newProjects = JSON.parse(projectsString)
-                let unit = '%'
-                switch (key.toLowerCase()) {
-                    case 'background':
-                        unit = ''
-                    break
-                    case 'lockaspectratio':
-                        unit = ''
-                    break
-                    case 'rotate':
-                        unit = 'deg'
-                    break
-                    case 'hue':
-                        unit = 'deg'
-                    break
-                    default:
-                        unit = '%'
-                    break
+            if(projects[projects.active].layers[layer].assets[asset]){
+                style = {items: projects[projects.active].layers[layer].assets[asset].style, type: 'layer'}
+                onBlur = (key, value) => {
+                    let projectsString = JSON.stringify(projects)
+                    let newProjects = JSON.parse(projectsString)
+                    let unit = '%'
+                    switch (key.toLowerCase()) {
+                        case 'background':
+                            unit = ''
+                        break
+                        case 'lockaspectratio':
+                            unit = ''
+                        break
+                        case 'rotate':
+                            unit = 'deg'
+                        break
+                        case 'hue':
+                            unit = 'deg'
+                        break
+                        default:
+                            unit = '%'
+                        break
+                    }
+                    newProjects[projects.active].layers[layer].assets[asset].style[key] = typeof value === 'boolean'?value:value+unit
+                    setProjects({...newProjects})
+                    const setEmpty = async () => {
+                        setTarget(null)
+                    }
+                    setEmpty().then(()=>{
+                        setTarget(target)
+                    })
                 }
-                newProjects[projects.active].layers[layer].assets[asset].style[key] = typeof value === 'boolean'?value:value+unit
-                setProjects({...newProjects})
-                const setEmpty = async () => {
-                    setTarget(null)
-                }
-                setEmpty().then(()=>{
-                    setTarget(target)
-                })
             }
         }
     }

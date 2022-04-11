@@ -89,6 +89,7 @@ const Main = () => {
     if(document.getElementById('canvas')){
 
         document.getElementById('canvas').onmouseup = (e) => {
+            console.log(e)
             if(e&&e.target&&e.target.id){
                 if(!e.target.id.includes('asset')){
                     setTarget(null)
@@ -103,8 +104,6 @@ const Main = () => {
                         if(target){
                             if(!target.includes(e.target)){
                                 setTarget([e.target])
-                            }else{
-                                setTarget(target.filter(i=>i!==e.target))
                             }
                         }else{
                             setTarget([e.target])
@@ -135,6 +134,19 @@ const Main = () => {
                     case 'ArrowDown':
                         direction = 'top'
                         distance++
+                    break
+                    case 'Delete':
+                        console.log('newProjects')
+                        let projectsString = JSON.stringify(projects)
+                        let newProjects = JSON.parse(projectsString)
+                        target.forEach((item)=>{
+                            let layer = item.attributes[1].value
+                            let asset = item.attributes[2].value
+                            newProjects[projects.active]['layers'][layer]['assets'] = newProjects[projects.active]['layers'][layer]['assets'].filter((_,i)=>i!==parseInt(asset))
+                            console.log(newProjects[projects.active]['layers'][layer]['assets'])
+                        })
+                        setProjects(newProjects)
+                        console.log(newProjects)
                     break
                     default:
                         direction = false
