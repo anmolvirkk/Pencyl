@@ -90,9 +90,7 @@ const Main = () => {
 
         document.getElementById('canvas').onmouseup = (e) => {
             if(e&&e.target&&e.target.id){
-                if(!e.target.id.includes('asset')){
-                    setTarget(null)
-                }else if(e.target.id.includes('asset')){
+                if(e.target.id.includes('asset')){
                     if(e.shiftKey || e.ctrlKey || e.altKey){
                         if(!target.includes(e.target)){
                             setTarget([...target, e.target])
