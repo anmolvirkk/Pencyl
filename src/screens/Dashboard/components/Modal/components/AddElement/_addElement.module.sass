@@ -81,7 +81,7 @@
         .active
             border-color: var(--primary)
             color: white
-    .content
+    .contentIcons
         display: grid
         grid-template-columns: repeat(auto-fill, minmax(64px, 1fr))
         width: 100%
@@ -89,6 +89,16 @@
         margin-top: 12px
         img
             cursor: pointer
+
+    .contentImgs
+        display: grid
+        grid-template-columns: repeat(auto-fill, minmax(82px, 1fr))
+        width: 100%
+        grid-gap: 6px
+        margin-top: 12px
+        img
+            cursor: pointer
+            max-width: 82px
 
 .loading
     +mixins.center

@@ -5,7 +5,7 @@ const {persistAtom} = recoilPersist()
 
 const elementsAtom = atom({
     key: 'elements',
-    default: {type: 'icons', content: []},
+    default: {type: 'icons', content: {icons: [], images: [], text: [], uploaded: []}},
     effects: [persistAtom]
 })
 

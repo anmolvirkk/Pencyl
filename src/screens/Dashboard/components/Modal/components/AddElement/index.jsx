@@ -17,7 +17,7 @@ const Header = ({setLoading}) => {
 
         const search = () => {
 
-            const getIcon = () => {
+            const getIcons = () => {
                 setLoading(true)
                 fetch(`https://api.iconscout.com/v3/search?query=${query.current}&product_type=item&asset=icon&sort=relevant&&price=free`, {
                     headers: {
@@ -25,16 +25,27 @@ const Header = ({setLoading}) => {
                         'Client-ID': clientID
                     }
                 }).then(res=>res.json()).then((res)=>{
-                    setElements({...elements, content: res.response.items.data})
+                    setElements({...elements, content: {...elements.content, icons: [...res.response.items.data]}})
+                    setLoading(false)
+                })
+            }
+            
+            const getImages = () => {
+                setLoading(true)
+                fetch(`https://pixabay.com/api/?key=26257585-1e168f83ee7695e6991f13168&q=${query.current.replace(' ', '+')}&image_type=photo&per_page=200`).then(res=>res.json()).then((res)=>{
+                    setElements({...elements, content: {...elements.content, images: [...res.hits]}})
                     setLoading(false)
                 })
             }
 
             switch (elements.type) {
                 case 'icons':
-                    getIcon()
+                    getIcons()
                 break
-                default: getIcon()
+                case 'images':
+                    getImages()
+                break
+                default: getIcons()
             }
 
         }
@@ -52,7 +63,7 @@ const Header = ({setLoading}) => {
         
         return (
             <div className={styles.search}>
-                <input ref={elem} type='text' placeholder='Search for any element' onKeyDown={(e)=>searchOnEnter(e)} />
+                <input ref={elem} type='text' placeholder='Search' onKeyDown={(e)=>searchOnEnter(e)} />
                 <Search onMouseDown={search} />
             </div>
         )
@@ -91,6 +102,24 @@ const Assets = ({onClick, loading}) => {
         )
     }
 
+    const Elements = () => {
+        switch (elements.type) {
+            case 'icons':
+                return (
+                    <div className={styles.contentIcons}>
+                        {elements.content.icons.map((item, key)=><img key={key} alt='' src={item.urls.png_64} onClick={(e)=>onClick(e)} />)}
+                    </div>
+                )
+            case 'images':
+                return (
+                    <div className={styles.contentImgs}>
+                        {elements.content.images.map((item, key)=><img key={key} alt='' src={item.webformatURL} onClick={(e)=>onClick(e)} />)}
+                    </div>
+                )
+            default: return null
+        }
+    }
+
     return (
         <div className={styles.assets}>
             <div className={styles.elementsType}>
@@ -103,11 +132,7 @@ const Assets = ({onClick, loading}) => {
                 loading?
                 <Loading />
                 :
-                <div className={styles.content}>
-                    {elements.content.map((item, key)=>{
-                        return <img key={key} alt='' src={item.urls.png_64} onClick={(e)=>onClick(e)} />
-                    })}
-                </div>
+                <Elements />
             }
         </div>
     )
