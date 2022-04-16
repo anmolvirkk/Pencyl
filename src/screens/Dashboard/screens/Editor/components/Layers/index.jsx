@@ -64,6 +64,19 @@ const Layer = ({name}) => {
     }
 
     const setModal = useSetRecoilState(modalAtom)
+                
+    const convertToBase64 = async (url) => {
+        const data = await fetch(url)
+        const blob = await data.blob()
+        return new Promise((resolve) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onloadend = () => {
+            const base64data = reader.result
+            resolve(base64data)
+        }
+        })
+    }
 
     const Title = () => {
         if(name){
@@ -77,22 +90,10 @@ const Layer = ({name}) => {
                 setLayers({...newLayers})
                 setModal({type: null})
             }
+
             const addElement = (e) => {
 
                 let link = e.target.src.replace('png-64','png-512')
-                
-                const convertToBase64 = async (url) => {
-                    const data = await fetch(url)
-                    const blob = await data.blob()
-                    return new Promise((resolve) => {
-                    const reader = new FileReader()
-                    reader.readAsDataURL(blob)
-                    reader.onloadend = () => {
-                        const base64data = reader.result
-                        resolve(base64data)
-                    }
-                    })
-                }
 
                 convertToBase64(link).then((e)=>{
                     let assetId = new Date().valueOf()
@@ -309,21 +310,24 @@ const Layer = ({name}) => {
                 setLayers({...layers, [name]: {...layers[name], assets: null, active: false}})
             }
         }
+
         const changeAsset = (item) => {
             const editElement = (e) => {
-                let layersString = JSON.stringify(layers)
-                let layersParse = JSON.parse(layersString)
-                layersParse[name]['assets'] = layersParse[name]['assets'].map((item2)=>{
-                    let newItem = {...item2}
-                    if(item.id === item2.id){
-                        newItem = {...item2,
-                            elem: e.target.src
+                convertToBase64(e.target.src).then((e)=>{
+                    let layersString = JSON.stringify(layers)
+                    let layersParse = JSON.parse(layersString)
+                    layersParse[name]['assets'] = layersParse[name]['assets'].map((item2)=>{
+                        let newItem = {...item2}
+                        if(item.id === item2.id){
+                            newItem = {...item2,
+                                elem: e
+                            }
                         }
-                    }
-                    return newItem
+                        return newItem
+                    })
+                    setLayers({...layersParse})
+                    setModal({type: null})
                 })
-                setLayers({...layersParse})
-                setModal({type: null})
             }
             setModal({type: 'editElement', func: editElement})
         }
