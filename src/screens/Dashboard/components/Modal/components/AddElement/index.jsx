@@ -6,7 +6,7 @@ import elementsAtom from './elementsAtom'
 import Lottie from 'react-lottie-player'
 import loadingData from '../../../../loading.json'
 
-const Header = ({setLoading}) => {
+const Header = ({setLoading, onClick}) => {
     const Searchbar = () => {
 
         const query = useRef('')
@@ -69,13 +69,44 @@ const Header = ({setLoading}) => {
         )
     }
     const UploadBtn = () => {
+
+        const [elements, setElements] = useRecoilState(elementsAtom)
+
+        const upload = (e) => {
+            
+            const readAsDataURL = (file) => {
+                return new Promise((resolve)=>{
+                    let fileReader = new FileReader()
+                    fileReader.onload = function(){
+                        return resolve(fileReader.result)
+                    }
+                    fileReader.readAsDataURL(file)
+                })
+            } 
+            
+            const imagesSelected = async (event) => {
+                let files = [...event.target.files]
+                let images = await Promise.all(files.map(f=>{return readAsDataURL(f)}))
+                return images
+            }
+            
+            imagesSelected(e).then(e=>{
+                setElements({...elements, type: 'uploaded', content: {...elements.content, uploaded: [...elements.content.uploaded, ...e]}})
+            })
+
+        }
+
         return (
-            <div className={styles.upload}>
-                <div className={styles.content}>
-                    <Upload />
+            <label>
+                <div className={styles.upload}>
+                    <div className={styles.content}>
+                        <Upload />
+                    </div>
                 </div>
-            </div>
+                <input type='file' accept='image/*' multiple onChange={(e)=>upload(e)} />
+            </label>
         )
+
     }
     return (
         <div className={styles.header}>
@@ -101,7 +132,7 @@ const Assets = ({onClick, loading}) => {
             </div>
         )
     }
-    
+
     const Elements = () => {
         switch (elements.type) {
             case 'icons':
@@ -118,8 +149,8 @@ const Assets = ({onClick, loading}) => {
                 )
             case 'uploaded':
                 return (
-                    <div>
-
+                    <div className={styles.contentImgs}>
+                        {elements.content.uploaded.map((item, key)=><img key={key} alt='' src={item} onClick={(e)=>onClick(e)} />)}
                     </div>
                 )
             default: return null
@@ -148,7 +179,7 @@ const AddElement = ({func}) => {
     const [loading, setLoading] = useState(false)
     return (
         <div className={styles.wrapper}>
-            <Header setLoading={setLoading} />
+            <Header setLoading={setLoading} onClick={func} />
             <Assets onClick={func} loading={loading} />
         </div>
     )
