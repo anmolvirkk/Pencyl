@@ -209,7 +209,7 @@ const Main = () => {
                                     if(item2.active && canvasSize){
                                         return (
                                             <div id={'asset-'+key} data-layer={item} data-asset={i} data-aspect={item2.style.lockAspectRatio} className={styles.imgWrapper} key={key} style={{top: item2.style.top, left: item2.style.left, width: item2.style.width, height: item2.style.height, transform: `rotate(${item2.style.rotate})`}}>
-                                                <img src={item2.elem.replace('png-64','png-512')} alt={item2.name} style={{...style}} />
+                                                <img src={item2.elem} alt={item2.name} style={{...style}} />
                                             </div>
                                         )
                                     }else{

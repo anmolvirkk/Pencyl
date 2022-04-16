@@ -78,6 +78,8 @@ const Layer = ({name}) => {
                 setModal({type: null})
             }
             const addElement = (e) => {
+
+                let link = e.target.src.replace('png-64','png-512')
                 
                 const convertToBase64 = async (url) => {
                     const data = await fetch(url)
@@ -92,7 +94,7 @@ const Layer = ({name}) => {
                     })
                 }
 
-                convertToBase64(e.target.src).then((e)=>{
+                convertToBase64(link).then((e)=>{
                     let assetId = new Date().valueOf()
                     let projectsString = JSON.stringify(projects)
                     let newProjects = JSON.parse(projectsString)
