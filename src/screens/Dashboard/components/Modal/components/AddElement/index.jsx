@@ -101,7 +101,7 @@ const Assets = ({onClick, loading}) => {
             </div>
         )
     }
-
+    
     const Elements = () => {
         switch (elements.type) {
             case 'icons':

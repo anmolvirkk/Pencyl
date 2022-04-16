@@ -1,12 +1,8 @@
-import { atom } from "recoil";
-import { recoilPersist } from "recoil-persist"
-
-const {persistAtom} = recoilPersist()
+import { atom } from "recoil"
 
 const modalAtom = atom({
     key: 'modal',
-    default: {type: null},
-    effects: [persistAtom]
+    default: {type: null}
 })
 
 export default modalAtom
