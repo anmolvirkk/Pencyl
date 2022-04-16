@@ -78,40 +78,70 @@ const Layer = ({name}) => {
                 setModal({type: null})
             }
             const addElement = (e) => {
-                let assetId = new Date().valueOf()
-                let projectsString = JSON.stringify(projects)
-                let newProjects = JSON.parse(projectsString)
-                Object.keys(newProjects[projects.active].layers).forEach((item)=>{
-                    if(item === name){
-                        newProjects[projects.active].layers[item].active = true
-                    }else{
-                        newProjects[projects.active].layers[item].active = false
+                
+                const convertToBase64 = async (url) => {
+                    const data = await fetch(url)
+                    const blob = await data.blob()
+                    return new Promise((resolve) => {
+                    const reader = new FileReader()
+                    reader.readAsDataURL(blob)
+                    reader.onloadend = () => {
+                        const base64data = reader.result
+                        resolve(base64data)
                     }
-                })
-                let layerStyle = {
-                    height: 'auto', 
-                    width: '100%', 
-                    lockAspectRatio: true,
-                    top: '0%', 
-                    left: '0%',
-                    rotate: '0deg',
-                    brightness: '100%',
-                    contrast: '100%',
-                    saturatation: '100%',
-                    hue: '0deg',
-                    sepia: '0%'
+                    })
                 }
-                if(newProjects[projects.active].layers[name]&&newProjects[projects.active].layers[name]['assets']){
-                        let resetActiveAssets = newProjects[projects.active].layers[name]['assets'].map((item)=>{
-                            let newItem = {...item}
-                            newItem.active = false
-                            return newItem
-                        })
+
+                convertToBase64(e.target.src).then((e)=>{
+                    let assetId = new Date().valueOf()
+                    let projectsString = JSON.stringify(projects)
+                    let newProjects = JSON.parse(projectsString)
+                    Object.keys(newProjects[projects.active].layers).forEach((item)=>{
+                        if(item === name){
+                            newProjects[projects.active].layers[item].active = true
+                        }else{
+                            newProjects[projects.active].layers[item].active = false
+                        }
+                    })
+                    let layerStyle = {
+                        height: 'auto', 
+                        width: '100%', 
+                        lockAspectRatio: true,
+                        top: '0%', 
+                        left: '0%',
+                        rotate: '0deg',
+                        brightness: '100%',
+                        contrast: '100%',
+                        saturatation: '100%',
+                        hue: '0deg',
+                        sepia: '0%'
+                    }
+                    if(newProjects[projects.active].layers[name]&&newProjects[projects.active].layers[name]['assets']){
+                            let resetActiveAssets = newProjects[projects.active].layers[name]['assets'].map((item)=>{
+                                let newItem = {...item}
+                                newItem.active = false
+                                return newItem
+                            })
+                            newProjects[projects.active].layers = {
+                                ...newProjects[projects.active].layers,
+                                [name]: {
+                                    assets: [...resetActiveAssets, {
+                                        elem: e,
+                                        rare: '',
+                                        active: true,
+                                        id: assetId,
+                                        style: layerStyle
+                                    }],
+                                    active: true
+                                }
+                            }
+                            setProjects({...newProjects})
+                    }else{
                         newProjects[projects.active].layers = {
                             ...newProjects[projects.active].layers,
                             [name]: {
-                                assets: [...resetActiveAssets, {
-                                    elem: e.target.src,
+                                assets: [{
+                                    elem: e,
                                     rare: '',
                                     active: true,
                                     id: assetId,
@@ -121,23 +151,9 @@ const Layer = ({name}) => {
                             }
                         }
                         setProjects({...newProjects})
-                }else{
-                    newProjects[projects.active].layers = {
-                        ...newProjects[projects.active].layers,
-                        [name]: {
-                            assets: [{
-                                elem: e.target.src,
-                                rare: '',
-                                active: true,
-                                id: assetId,
-                                style: layerStyle
-                            }],
-                            active: true
-                        }
                     }
-                    setProjects({...newProjects})
-                }
-                setModal({type: null})
+                    setModal({type: null})
+                })
             }
             const editLayerModal = () => {
                 const editLayer = (newName) => {
