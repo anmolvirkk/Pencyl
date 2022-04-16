@@ -116,6 +116,12 @@ const Assets = ({onClick, loading}) => {
                         {elements.content.images.map((item, key)=><img key={key} alt='' src={item.webformatURL} onClick={(e)=>onClick(e)} />)}
                     </div>
                 )
+            case 'uploaded':
+                return (
+                    <div>
+
+                    </div>
+                )
             default: return null
         }
     }
