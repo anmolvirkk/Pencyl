@@ -5,10 +5,30 @@ import projectsAtom from '../../../projectsAtom'
 import Moveable from 'react-moveable'
 import targetAtom from './targetAtom'
 import Selecto from "react-selecto"
+import { toPng } from 'html-to-image'
 
 const Main = () => {
 
     const [projects, setProjects] = useRecoilState(projectsAtom)
+
+    useEffect(()=>{
+        let canvas = document.getElementById('canvas')
+        toPng(canvas).then((e)=>{
+            if(projects[projects.active].snapshot){
+                if(projects[projects.active].snapshot !== e){
+                    let projectsString = JSON.stringify(projects)
+                    let newProjects = JSON.parse(projectsString)
+                    newProjects[projects.active].snapshot = e
+                    setProjects(newProjects)
+                }
+            }else{
+                let projectsString = JSON.stringify(projects)
+                let newProjects = JSON.parse(projectsString)
+                newProjects[projects.active].snapshot = e
+                setProjects(newProjects)
+            }
+        })
+    }, [projects])
 
     let layers = projects[projects.active].layers
 

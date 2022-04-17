@@ -26,7 +26,9 @@ const Tile = ({id}) => {
     return (
         <div className={styles.tile} onMouseDown={goToEditor}>
             <div className={styles.canvas}>
-                <div className={styles.container}></div>
+                <div className={styles.container}>
+                    {projects&&projects[projects.active]&&projects[projects.active].snapshot?<img alt='' src={projects[projects.active].snapshot} />:null}
+                </div>
             </div>
             <div className={styles.title}>
                 <p>{projects[id].name}</p>
