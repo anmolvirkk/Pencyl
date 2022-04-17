@@ -27,7 +27,7 @@ const Tile = ({id}) => {
         <div className={styles.tile} onMouseDown={goToEditor}>
             <div className={styles.canvas}>
                 <div className={styles.container}>
-                    {projects&&projects[projects.active]&&projects[projects.active].snapshot?<img alt='' src={projects[projects.active].snapshot} />:null}
+                    {projects&&projects[id]&&projects[id].snapshot?<img alt='' src={projects[id].snapshot} />:null}
                 </div>
             </div>
             <div className={styles.title}>
