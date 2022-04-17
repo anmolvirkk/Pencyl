@@ -98,7 +98,7 @@ const Main = () => {
                             setTarget(target.filter(i=>i!==e.target))
                         }
                     }else{
-                        if(target){
+                        if(target && Array.isArray(target)){
                             if(!target.includes(e.target)){
                                 setTarget([e.target])
                             }
@@ -349,12 +349,12 @@ const Main = () => {
                     dragContainer={'#main'}
                     boundContainer={'#main'}
                     selectableTargets={[`.${styles.imgWrapper}`]}
-                    hitRate={10}
+                    hitRate={30}
                     selectByClick={true}
                     selectFromInside={true}
                     ratio={0}
                     onDragStart={(e)=>{
-                        if(target){
+                        if(target && Array.isArray(target)){
                             if(target.some(i=>e.currentTarget.selectedTargets.includes(i))){
                                 e.stop()
                             }
