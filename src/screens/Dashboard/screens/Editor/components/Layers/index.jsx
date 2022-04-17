@@ -92,9 +92,7 @@ const Layer = ({name}) => {
             }
 
             const addElement = (e) => {
-
                 let link = e.target.src.replace('png-64','png-512')
-
                 convertToBase64(link).then((e)=>{
                     let assetId = new Date().valueOf()
                     let projectsString = JSON.stringify(projects)
