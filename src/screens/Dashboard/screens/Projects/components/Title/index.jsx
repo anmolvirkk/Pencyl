@@ -9,10 +9,6 @@ const Searchbar = () => {
         const setModal = useSetRecoilState(modalAtom)
         return (
             <ul className={styles.options}>
-                <li className={styles.addproject}>
-                    <Plus />
-                    <p>New Folder</p>
-                </li>
                 <li className={styles.create} onMouseDown={()=>setModal({type: 'start'})}>
                     <Plus />
                     <p>Create Project</p>
