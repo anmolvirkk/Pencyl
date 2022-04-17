@@ -11,24 +11,33 @@ const Main = () => {
 
     const [projects, setProjects] = useRecoilState(projectsAtom)
 
-    useEffect(()=>{
-        let canvas = document.getElementById('canvas')
-        toPng(canvas).then((e)=>{
-            if(projects[projects.active].snapshot){
-                if(projects[projects.active].snapshot !== e){
+    const setSnapshot = () => {
+        if(document.getElementById('canvas')){
+            let canvas = document.getElementById('canvas')
+            toPng(canvas).then((e)=>{
+                if(projects[projects.active].snapshot){
+                    if(projects[projects.active].snapshot !== e){
+                        let projectsString = JSON.stringify(projects)
+                        let newProjects = JSON.parse(projectsString)
+                        newProjects[projects.active].snapshot = e
+                        setProjects(newProjects)
+                    }
+                }else{
                     let projectsString = JSON.stringify(projects)
                     let newProjects = JSON.parse(projectsString)
                     newProjects[projects.active].snapshot = e
                     setProjects(newProjects)
                 }
-            }else{
-                let projectsString = JSON.stringify(projects)
-                let newProjects = JSON.parse(projectsString)
-                newProjects[projects.active].snapshot = e
-                setProjects(newProjects)
-            }
-        })
-    }, [projects])
+            })
+        }
+    }
+
+    if(document.getElementById('main')){
+        document.getElementById('main').onvisibilitychange = () => setSnapshot()
+        document.getElementById('main').onblur = () => setSnapshot()
+        document.getElementById('main').onclose = () => setSnapshot()
+        document.getElementById('main').onmouseout = () => setSnapshot()
+    }
 
     let layers = projects[projects.active].layers
 
