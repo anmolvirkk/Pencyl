@@ -1,12 +1,8 @@
-import { atom } from "recoil";
-import { recoilPersist } from "recoil-persist"
-
-const {persistAtom} = recoilPersist()
+import { atom } from "recoil"
 
 const projectsAtom = atom({
     key: 'projects',
-    default: {},
-    effects: [persistAtom]
+    default: {}
 })
 
 export default projectsAtom

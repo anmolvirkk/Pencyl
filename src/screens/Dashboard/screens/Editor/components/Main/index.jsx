@@ -6,7 +6,6 @@ import Moveable from 'react-moveable'
 import targetAtom from './targetAtom'
 import Selecto from "react-selecto"
 import { toJpeg } from 'html-to-image'
-import OutsideClickHandler from 'react-outside-click-handler/build/OutsideClickHandler'
 
 const Main = () => {
 
@@ -16,20 +15,28 @@ const Main = () => {
         if(document.getElementById('canvas')){
             let canvas = document.getElementById('canvas')
             toJpeg(canvas).then((e)=>{
-                if(projects[projects.active].snapshot){
-                    if(projects[projects.active].snapshot !== e && e !== 'data:,'){
+                if(e !== 'data:,'){
+                    if(projects[projects.active].snapshot){
+                        if(projects[projects.active].snapshot !== e){
+                            let projectsString = JSON.stringify(projects)
+                            let newProjects = JSON.parse(projectsString)
+                            newProjects[projects.active].snapshot = e
+                            setProjects(newProjects)
+                        }
+                    }else{
                         let projectsString = JSON.stringify(projects)
                         let newProjects = JSON.parse(projectsString)
                         newProjects[projects.active].snapshot = e
                         setProjects(newProjects)
                     }
-                }else{
-                    let projectsString = JSON.stringify(projects)
-                    let newProjects = JSON.parse(projectsString)
-                    newProjects[projects.active].snapshot = e
-                    setProjects(newProjects)
                 }
             })
+        }
+    }
+
+    document.onmousedown = (e) => {
+        if(e.target.className && typeof e.target.className === 'string' && !e.target.className.includes('imgWrapper') && !e.target.className.includes('canvas')){
+            setSnapshot()
         }
     }
 
@@ -225,8 +232,7 @@ const Main = () => {
     return (
         <div className={styles.main} id='main'>
                 <div id='canvas' tabIndex={0} className={styles.canvas} style={{aspectRatio: `${projects[projects.active].canvas.width}/${projects[projects.active].canvas.height}`, backgroundColor: projects[projects.active].canvas.background}}>
-                  <OutsideClickHandler onOutsideClick={setSnapshot}>
-                    {displayLayers.map((item, key)=>{
+                  {displayLayers.map((item, key)=>{
                         if(layers[item]['assets']){
                             return layers[item]['assets'].map((item2, i)=>{
                                         let style = {...item2.style, width: '100%', height: '100%', left: 0, top: 0, transform: 'none', filter: `brightness(${item2.style.brightness}) contrast(${item2.style.contrast}) saturate(${item2.style.saturatation}) hue-rotate(${item2.style.hue}) sepia(${item2.style.sepia})`}
@@ -392,7 +398,6 @@ const Main = () => {
                             }
                         }}
                     />
-                    </OutsideClickHandler>
                 </div>
         </div>
     )

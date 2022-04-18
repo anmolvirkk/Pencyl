@@ -2,23 +2,9 @@ import { useRecoilState } from 'recoil'
 import projectsAtom from '../../../projectsAtom'
 import targetAtom from '../Main/targetAtom'
 import styles from './_details.module.sass'
+import { useState } from 'react'
 
 const Option = ({title, value, onBlur, type}) => {
-    const validate = (e) => {
-        if(e.key === 'Enter'){
-            e.preventDefault()
-            onBlur(title, e.target.innerText)
-        }
-        if(title !== 'Project Name'){
-            if(title !== 'background'){
-                if(e.which !== 8 && e.which !== 37 && e.which !== 39 && e.which !== 190 && e.which !== 189){
-                    if(e.which < 48 || e.which > 57){
-                        e.preventDefault()
-                    }
-                }
-            }
-        }
-    }
     const SingleUnit = () => {
 
         let displayValue = value
@@ -55,9 +41,25 @@ const Option = ({title, value, onBlur, type}) => {
         }
 
         let Input = () => {
+            const [inputText, setInputText] = useState(displayValue)
+            const validate = (e) => {
+                let shouldPrevent = false
+                if(e.nativeEvent.data){
+                    if(title !== 'Project Name'){
+                        if(!e.nativeEvent.data.match(/^\d+$/i)){
+                            shouldPrevent = true
+                        }
+                    }
+                }
+                if(shouldPrevent){
+                    e.preventDefault()
+                }else{
+                    setInputText(e.target.value)
+                }
+            }
             return (
                 <div className={styles.inputWrapper}>
-                    <div onBlur={(e)=>onBlur(title, e.target.innerText)} className={styles.input} contentEditable onKeyDown={(e)=>validate(e)} dangerouslySetInnerHTML={{__html: displayValue}} />
+                    <input type='text' value={inputText} onChange={(e)=>validate(e)} onMouseOut={inputText!==displayValue?()=>onBlur(title, inputText):null} className={styles.input} />
                     <div className={styles.unit}>{unit}</div>
                 </div>
             )
@@ -81,15 +83,7 @@ const Option = ({title, value, onBlur, type}) => {
                     )
                 }
             break
-            default:
-                Input = () => {
-                    return (
-                        <div className={styles.inputWrapper}>
-                            <div onBlur={(e)=>onBlur(title, e.target.innerText)} className={styles.input} contentEditable onKeyDown={(e)=>validate(e)} dangerouslySetInnerHTML={{__html: displayValue}} />
-                            <div className={styles.unit}>{unit}</div>
-                        </div>
-                    )
-                }
+            default: <Input />
             break
         }
 
