@@ -105,8 +105,8 @@ const Layer = ({name}) => {
                         }
                     })
                     let layerStyle = {
-                        height: 'auto', 
-                        width: '100%', 
+                        width: 'auto',
+                        height: 'auto',
                         lockAspectRatio: true,
                         top: '0%', 
                         left: '0%',
