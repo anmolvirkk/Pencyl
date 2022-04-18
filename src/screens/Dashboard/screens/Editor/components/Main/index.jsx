@@ -5,7 +5,6 @@ import projectsAtom from '../../../projectsAtom'
 import Moveable from 'react-moveable'
 import targetAtom from './targetAtom'
 import Selecto from "react-selecto"
-// import { toJpeg } from 'html-to-image'
 import { toJpeg } from 'dom-to-image'
 
 const Main = () => {
