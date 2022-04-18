@@ -2,7 +2,7 @@ import { useRecoilState } from 'recoil'
 import projectsAtom from '../../../projectsAtom'
 import targetAtom from '../Main/targetAtom'
 import styles from './_details.module.sass'
-import { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 const Option = ({title, value, onBlur, type}) => {
     const SingleUnit = () => {
@@ -40,9 +40,9 @@ const Option = ({title, value, onBlur, type}) => {
             }
         }
 
-        let Input = () => {
+        let Input = React.memo(() => {
             const [inputText, setInputText] = useState(displayValue)
-            const validate = (e) => {
+            const validate = useCallback((e) => {
                 let shouldPrevent = false
                 if(e.nativeEvent.data){
                     if(title !== 'Project Name'){
@@ -56,14 +56,14 @@ const Option = ({title, value, onBlur, type}) => {
                 }else{
                     setInputText(e.target.value)
                 }
-            }
+            }, [])
             return (
                 <div className={styles.inputWrapper}>
                     <input type='text' value={inputText} onChange={(e)=>validate(e)} onMouseOut={inputText!==displayValue?()=>onBlur(title, inputText):null} className={styles.input} />
                     <div className={styles.unit}>{unit}</div>
                 </div>
             )
-        }
+        })
 
         switch (title.toLowerCase()) {
             case 'background':
@@ -156,12 +156,12 @@ const Details = () => {
         }
     }
 
-    const changeName = (_, value) => {
+    const changeName = useCallback((_, value) => {
         let projectsString = JSON.stringify(projects)
         let newProjects = JSON.parse(projectsString)
         newProjects[projects.active].name = value
         setProjects({...newProjects})
-    }
+    }, [projects, setProjects])
 
     return (
         <div className={styles.details}>
