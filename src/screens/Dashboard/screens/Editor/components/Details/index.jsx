@@ -59,7 +59,7 @@ const Option = ({title, value, onBlur, type}) => {
             }, [])
             return (
                 <div className={styles.inputWrapper}>
-                    <input type='text' value={inputText} onChange={(e)=>validate(e)} onMouseOut={inputText!==displayValue?()=>onBlur(title, inputText):null} className={styles.input} />
+                    <input type='text' value={inputText} onChange={(e)=>validate(e)} onMouseLeave={inputText!==displayValue?()=>onBlur(title, inputText):null} className={styles.input} />
                     <div className={styles.unit}>{unit}</div>
                 </div>
             )
