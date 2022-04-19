@@ -34,9 +34,10 @@ const Main = () => {
         }
     }
 
-    document.onclick = (e) => {
-        if(e.target.className && typeof e.target.className === 'string' && !e.target.className.includes('imgWrapper') && !e.target.className.includes('canvas')){
+    if(document.getElementById('canvas')){
+        document.getElementById('canvas').onmouseleave = () => {
             setSnapshot()
+            setTarget(null)
         }
     }
 
