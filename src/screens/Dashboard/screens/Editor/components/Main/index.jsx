@@ -37,7 +37,6 @@ const Main = () => {
     if(document.getElementById('canvas')){
         document.getElementById('canvas').onmouseleave = () => {
             setSnapshot()
-            setTarget(null)
         }
     }
 
@@ -232,8 +231,8 @@ const Main = () => {
 
     return (
         <div className={styles.main} id='main'>
-            <div id='canvasWrapper' className={styles.canvasWrapper}>
-                <div id='canvas' tabIndex={0} className={styles.canvas} style={{aspectRatio: `${projects[projects.active].canvas.width}/${projects[projects.active].canvas.height}`, backgroundColor: projects[projects.active].canvas.background}}>
+            <div id='canvasWrapper' className={styles.canvasWrapper} style={{aspectRatio: `${projects[projects.active].canvas.width}/${projects[projects.active].canvas.height}`}}>
+                <div id='canvas' tabIndex={0} className={styles.canvas} style={{backgroundColor: projects[projects.active].canvas.background}}>
                     {displayLayers.map((item, key)=>{
                             if(layers[item]['assets']){
                                 return layers[item]['assets'].map((item2, i)=>{
@@ -322,6 +321,7 @@ const Main = () => {
                                 let newProjects = JSON.parse(projectsString)
                                 newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, width: width, height: height, top: top, left: left}
                                 setProjects(newProjects)
+                                console.log(newProjects)
                             }}
                             onResizeGroup = {(e) => {
                                 e.targets.forEach((item, i)=>{

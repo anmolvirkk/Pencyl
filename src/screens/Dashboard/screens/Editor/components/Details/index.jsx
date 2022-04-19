@@ -153,6 +153,7 @@ const Details = () => {
             let newProjects = JSON.parse(projectsString)
             newProjects[projects.active].canvas[key] = value
             setProjects({...newProjects})
+            console.log(newProjects)
         }
     }
 
