@@ -1,7 +1,8 @@
 import styles from './_title.module.sass'
 import { Plus, Search } from 'react-feather'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
+import searchAtom from './searchAtom'
 
 const Searchbar = () => {
 
@@ -17,11 +18,13 @@ const Searchbar = () => {
         )
     }
 
+    const [search, setSearch] = useRecoilState(searchAtom)
+
     return (
         <div className={styles.searchbar}>
             <div className={styles.input}>
                 <Search />
-                <input type='text' placeholder='Search' />
+                <input type='text' placeholder='Search' value={search} onChange={(e)=>setSearch(e.target.value)} />
             </div>
             <Options />
         </div>

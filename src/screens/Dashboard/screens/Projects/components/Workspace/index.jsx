@@ -3,6 +3,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import MoreMenu from '../../../../components/MoreMenu'
 import projectsAtom from '../../../projectsAtom'
+import searchAtom from '../Title/searchAtom'
 import styles from './_workspace.module.sass'
 
 const Empty = () => {
@@ -40,6 +41,7 @@ const Tile = ({id}) => {
 
 const Workspace = () => {
     const [projects] = useRecoilState(projectsAtom)
+    const [search] = useRecoilState(searchAtom)
     return (
         <div className={styles.workspace}>
             {Object.keys(projects).length<=0?
@@ -47,12 +49,25 @@ const Workspace = () => {
                 :
                 <div className={styles.container}>
                     <div className={styles.files}>
-                        {Object.keys(projects).map((item, key)=>{
-                            if(item!=='active'){
-                                return <Tile key={key} id={item} />
-                            }else{
-                                return null
-                            }
+                        {search!==''?
+                            Object.keys(projects).map((item, key)=>{
+                                if(projects[item].name){
+                                    if(item!=='active' && projects[item].name.includes(search)){
+                                        return <Tile key={key} id={item} />
+                                    }else{
+                                        return null
+                                    }
+                                }else{
+                                    return null
+                                }
+                            })
+                            :
+                            Object.keys(projects).map((item, key)=>{
+                                if(item!=='active'){
+                                    return <Tile key={key} id={item} />
+                                }else{
+                                    return null
+                                }
                         })}
                     </div>
                 </div>
