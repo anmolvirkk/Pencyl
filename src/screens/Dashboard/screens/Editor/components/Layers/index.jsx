@@ -6,30 +6,44 @@ import projectsAtom from '../../../projectsAtom'
 import styles from './_layers.module.sass'
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
 import targetAtom from '../Main/targetAtom'
+import activeProjectAtom from '../../../activeProjectAtom'
 
 const AddLayer = () => {
     
     const setModal = useSetRecoilState(modalAtom)
-
+    
     const [projects, setProjects] = useRecoilState(projectsAtom)
+    const [activeProject] = useRecoilState(activeProjectAtom)
     
-    let layers = projects[projects.active].layers
+    let layers = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project).layers
+
+    const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
     
-    const addLayer = (layerName) => {
-        let projectsString = JSON.stringify(projects)
-        let newProjects = JSON.parse(projectsString)
+    const addLayer = (layerName) => { 
         let shouldAddLayer = true
-        Object.keys(newProjects[projects.active].layers).forEach((item)=>{
+
+        Object.keys(project.layers).forEach((item)=>{
             if(item === layerName.toLowerCase().replaceAll(/\s/g,'')){
                 shouldAddLayer = false
             }
         })
+
         if(shouldAddLayer){
             if(layerName !== ''){
                 if(isNaN(layerName.toLowerCase().replaceAll(/\s/g,'').charAt(0))){
-                    newProjects[projects.active].layers = {...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
-                    setProjects(newProjects)
-                    setModal({type: null})
+                    let projectString = JSON.stringify(project)
+                    let newProject = JSON.parse(projectString)
+                    newProject.layers = {...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
+                    fetch('http://localhost:5000/'+activeProject, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({project: newProject})
+                    }).then(e=>e.json()).then((e)=>{
+                        setProjects(e)
+                        setModal({type: null})
+                    })
                 }else{
                     setModal({type: 'addLayer', func: addLayer, error: 'Layer name cannot start with a number'})
                 }
@@ -53,13 +67,15 @@ const AddLayer = () => {
 const Layer = ({name}) => {
 
     const [projects, setProjects] = useRecoilState(projectsAtom)
+    const [activeProject] = useRecoilState(activeProjectAtom)
     
-    let layers = projects[projects.active].layers
-    
+    let layers = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project).layers
+    const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
+
     const setLayers = (layers) => {
         let projectsString = JSON.stringify(projects)
         let newProjects = JSON.parse(projectsString)
-        newProjects[projects.active].layers = {...layers}
+        project.layers = {...layers}
         setProjects(newProjects)
     }
 
@@ -79,6 +95,7 @@ const Layer = ({name}) => {
     }
 
     const Title = () => {
+        const [activeProject] = useRecoilState(activeProjectAtom)
         if(name){
             const removeLayer = () => {
                 let newLayers = {}
@@ -87,8 +104,19 @@ const Layer = ({name}) => {
                         newLayers = {...newLayers, [item]: layers[item]}
                     }
                 })
-                setLayers({...newLayers})
-                setModal({type: null})
+                let projectString = JSON.stringify(project)
+                let newProject = JSON.parse(projectString)
+                newProject.layers = {...newLayers}
+                fetch('http://localhost:5000/'+activeProject, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({project: newProject})
+                }).then(e=>e.json()).then((e)=>{
+                    setProjects(e)
+                    setModal({type: null})
+                })
             }
 
             const addElement = (e) => {
@@ -97,11 +125,14 @@ const Layer = ({name}) => {
                     let assetId = new Date().valueOf()
                     let projectsString = JSON.stringify(projects)
                     let newProjects = JSON.parse(projectsString)
-                    Object.keys(newProjects[projects.active].layers).forEach((item)=>{
+                    console.log(newProjects)
+                    console.log(activeProject)
+                    console.log(project)
+                    Object.keys(project.layers).forEach((item)=>{
                         if(item === name){
-                            newProjects[projects.active].layers[item].active = true
+                            project.layers[item].active = true
                         }else{
-                            newProjects[projects.active].layers[item].active = false
+                            project.layers[item].active = false
                         }
                     })
                     let layerStyle = {
@@ -117,55 +148,63 @@ const Layer = ({name}) => {
                         hue: '0deg',
                         sepia: '0%'
                     }
-                    if(newProjects[projects.active].layers[name]&&newProjects[projects.active].layers[name]['assets']){
-                            let resetActiveAssets = newProjects[projects.active].layers[name]['assets'].map((item)=>{
+                    if(project.layers[name]&&project.layers[name]['assets']){
+                            let resetActiveAssets = project.layers[name]['assets'].map((item)=>{
                                 let newItem = {...item}
                                 newItem.active = false
                                 return newItem
                             })
-                            newProjects[projects.active].layers = {
-                                ...newProjects[projects.active].layers,
-                                [name]: {
-                                    assets: [...resetActiveAssets, {
-                                        elem: e,
-                                        rare: '',
-                                        active: true,
-                                        id: assetId,
-                                        style: layerStyle
-                                    }],
-                                    active: true
-                                }
-                            }
-                            setProjects({...newProjects})
+                            let projectString = JSON.stringify(project)
+                            let newProject = JSON.parse(projectString)
+                            newProject.layers[name]['assets'] = [...resetActiveAssets, {
+                                elem: e,
+                                rare: '',
+                                active: true,
+                                id: assetId,
+                                style: layerStyle
+                            }]
+                            fetch('http://localhost:5000/'+activeProject, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({project: newProject})
+                            }).then(e=>e.json()).then((e)=>{
+                                setProjects(e)
+                            })
                     }else{
-                        newProjects[projects.active].layers = {
-                            ...newProjects[projects.active].layers,
-                            [name]: {
-                                assets: [{
-                                    elem: e,
-                                    rare: '',
-                                    active: true,
-                                    id: assetId,
-                                    style: layerStyle
-                                }],
-                                active: true
-                            }
-                        }
-                        setProjects({...newProjects})
+                        let projectString = JSON.stringify(project)
+                        let newProject = JSON.parse(projectString)
+                        newProject.layers[name]['assets'] = [{
+                            elem: e,
+                            rare: '',
+                            active: true,
+                            id: assetId,
+                            style: layerStyle
+                        }]
+                        fetch('http://localhost:5000/'+activeProject, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({project: newProject})
+                        }).then(e=>e.json()).then((e)=>{
+                            setProjects(e)
+                        })
                     }
                     setModal({type: null})
                 })
             }
             const editLayerModal = () => {
                 const editLayer = (newName) => {
-                    let projectsString = JSON.stringify(projects)
-                    let newProjects = JSON.parse(projectsString)
+                    let projectString = JSON.stringify(project)
+                    let newProject = JSON.parse(projectString)
                     let newLayers = {}
                     let rename = true
-                    Object.keys(newProjects[projects.active].layers).forEach((item)=>{
+                    Object.keys(project.layers).forEach((item)=>{
                         let newItem = item
                         if(item === name){
-                            Object.keys(newProjects[projects.active].layers).forEach((item)=>{
+                            Object.keys(project.layers).forEach((item)=>{
                                 if(item === newName){
                                     rename = false
                                 }
@@ -184,10 +223,16 @@ const Layer = ({name}) => {
                                 setModal({type: 'editLayer', func: editLayer, error: 'Layer name taken'})
                             }
                         }
-                        newLayers = {...newLayers, [newItem]: newProjects[projects.active].layers[item]}
+                        newLayers = {...newLayers, [newItem]: project.layers[item]}
                     })
-                    newProjects[projects.active].layers = newLayers
-                    setProjects({...newProjects})
+                    newProject.layers = newLayers
+                    fetch('http://localhost:5000/'+activeProject, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({project: newProject})
+                    }).then(e=>e.json()).then(e=>setProjects(e))
                     if(rename && isNaN(newName.toLowerCase().replaceAll(/\s/g,'').charAt(0))){
                         setModal({type: null})
                     }
@@ -357,21 +402,29 @@ const Layer = ({name}) => {
 const Layers = () => {
 
     const [projects, setProjects] = useRecoilState(projectsAtom)
+    const [activeProject] = useRecoilState(activeProjectAtom)
     
-    let layers = projects[projects.active].layers
+    let layers = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project).layers
+    const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
 
     const reorderLayers = (e) => {
-        let projectsString = JSON.stringify(projects)
-        let newProjects = JSON.parse(projectsString)
-        let newLayers = newProjects[projects.active].layers
+        let projectString = JSON.stringify(project)
+        let newProject = JSON.parse(projectString)
+        let newLayers = project.layers
         let newLayersKeys = Object.keys(newLayers)
         newLayersKeys.splice(e.destination.index, 0, newLayersKeys.splice(e.source.index, 1)[0])
         let finalLayers = {}
         newLayersKeys.forEach((item)=>{
             finalLayers = {...finalLayers, [item]: newLayers[item]}
         })
-        newProjects[projects.active].layers = finalLayers
-        setProjects({...newProjects})
+        newProject.layers = finalLayers
+        fetch('http://localhost:5000/'+activeProject, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({project: newProject})
+        }).then(e=>e.json()).then(e=>setProjects(e))
     }
 
     const [target, setTarget] = useRecoilState(targetAtom)

@@ -4,12 +4,14 @@ import {useNavigate} from 'react-router-dom'
 import { useRecoilState, useSetRecoilState } from "recoil"
 import modalAtom from "../../modalAtom"
 import projectsAtom from "../../../../screens/projectsAtom"
+import activeProjectAtom from "../../../../screens/activeProjectAtom"
 
 const Start = () => {
 
     const navigate = useNavigate()
     const setModal = useSetRecoilState(modalAtom)
     const [projects, setProjects] = useRecoilState(projectsAtom)
+    const setActiveProject = useSetRecoilState(activeProjectAtom)
 
     const startScratch = () => {
         let name = 'untitled'
@@ -20,22 +22,28 @@ const Start = () => {
                 name = 'untitled'+num
             }
         })
-        let id = new Date().valueOf()
-        setProjects({
-            ...projects, 
-            [id]: {
-                name: name,
-                canvas: {
-                    height: 600,
-                    width: 600,
-                    background: '#090909'
-                },
-                layers: {}
+        let id = new Date().valueOf().toString()
+        const project = {
+            name: name,
+            canvas: {
+                height: 600,
+                width: 600,
+                background: '#090909'
             },
-            active: id
+            layers: {}
+        }
+        fetch('http://localhost:5000/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: id, project: project})
+        }).then((res)=>res.json()).then((data)=>{
+            setActiveProject(id)
+            setProjects(data)
+            navigate('editor')
+            setModal({type: ''})
         })
-        navigate('editor')
-        setModal({type: ''})
     }
 
     return (

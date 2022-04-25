@@ -4,19 +4,20 @@ import Main from './components/Main'
 import styles from './_editor.module.sass'
 import Layers from './components/Layers'
 import { useRecoilState } from 'recoil'
-import projectsAtom from '../projectsAtom'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import activeProjectAtom from '../activeProjectAtom'
 
 const Editor = () => {
-    const [projects] = useRecoilState(projectsAtom)
+    const [activeProject] = useRecoilState(activeProjectAtom)
     const navigate = useNavigate()
     useEffect(()=>{
-        if(!projects.active){
+        if(!activeProject){
             navigate('/dashboard')
         }
-    }, [navigate, projects.active])
-    if(projects.active){
+    }, [navigate, activeProject])
+
+    if(activeProject){
         return (
             <div className={styles.editor}>
                 <Header />

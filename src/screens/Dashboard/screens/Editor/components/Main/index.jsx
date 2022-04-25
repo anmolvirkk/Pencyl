@@ -6,29 +6,31 @@ import Moveable from 'react-moveable'
 import targetAtom from './targetAtom'
 import Selecto from "react-selecto"
 import { toJpeg } from 'dom-to-image'
+import activeProjectAtom from '../../../activeProjectAtom'
 
 const Main = () => {
 
     const [projects, setProjects] = useRecoilState(projectsAtom)
+
+    const [activeProject] = useRecoilState(activeProjectAtom)
+    
+    const layers = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project).layers
+
+    const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
 
     const setSnapshot = () => {
         if(document.getElementById('canvasWrapper')){
             let canvas = document.getElementById('canvasWrapper')
             toJpeg(canvas).then((e)=>{
                 if(e !== 'data:,'){
-                    if(projects[projects.active].snapshot){
-                        if(projects[projects.active].snapshot !== e){
-                            let projectsString = JSON.stringify(projects)
-                            let newProjects = JSON.parse(projectsString)
-                            newProjects[projects.active].snapshot = e
-                            setProjects(newProjects)
-                        }
-                    }else{
-                        let projectsString = JSON.stringify(projects)
-                        let newProjects = JSON.parse(projectsString)
-                        newProjects[projects.active].snapshot = e
-                        setProjects(newProjects)
-                    }
+                    let newProject = {...project, snapshot: e}
+                    fetch('http://localhost:5000/'+activeProject, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({project: newProject})
+                    })
                 }
             })
         }
@@ -40,14 +42,18 @@ const Main = () => {
         }
     }
 
-    let layers = projects[projects.active].layers
-
     const setLayers = useCallback((layers) => {
-        let projectsString = JSON.stringify(projects)
-        let newProjects = JSON.parse(projectsString)
-        newProjects[projects.active].layers = {...layers}
-        setProjects(newProjects)
-    }, [projects, setProjects])
+        let projectString = JSON.stringify(project)
+        let newProject = JSON.parse(projectString)
+        newProject.layers = {...layers}
+        fetch('http://localhost:5000/'+activeProject, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({project: newProject})
+        }).then(e=>e.json()).then(e=>setProjects(e))
+    }, [setProjects, activeProject, project])
 
     let onChange = useRef(null)
 
@@ -163,19 +169,25 @@ const Main = () => {
                         distance++
                     break
                     case 'Delete':
-                        let projectsString = JSON.stringify(projects)
-                        let newProjects = JSON.parse(projectsString)
+                        let projectString = JSON.stringify(project)
+                        let newProject = JSON.parse(projectString)
                         target.forEach((item)=>{
                             let layer = item.attributes[1].value
                             let asset = item.attributes[2].value
-                            newProjects[projects.active]['layers'][layer]['assets'] = newProjects[projects.active]['layers'][layer]['assets'].filter((_,i)=>i!==parseInt(asset))
-                            if(newProjects[projects.active]['layers'][layer]['assets'][0]){
-                                newProjects[projects.active]['layers'][layer]['assets'][0].active = true
+                            newProject['layers'][layer]['assets'] = newProject['layers'][layer]['assets'].filter((_,i)=>i!==parseInt(asset))
+                            if(newProject['layers'][layer]['assets'][0]){
+                                newProject['layers'][layer]['assets'][0].active = true
                             }else{
-                                newProjects[projects.active]['layers'][layer]['assets'] = null
+                                newProject['layers'][layer]['assets'] = null
                             }
                         })
-                        setProjects(newProjects)
+                        fetch('http://localhost:5000/'+activeProject, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({project: newProject})
+                        }).then(e=>e.json()).then(e=>setProjects(e))
                     break
                     default:
                         direction = false
@@ -212,16 +224,22 @@ const Main = () => {
                     break
                 }
                 if(direction){
-                    let projectsString = JSON.stringify(projects)
-                    let newProjects = JSON.parse(projectsString)
+                    let projectString = JSON.stringify(project)
+                    let newProject = JSON.parse(projectString)
                     target.forEach((item)=>{
                         let layer = item.attributes[1].value
                         let asset = item.attributes[2].value
-                        if( newProjects[projects.active]['layers'][layer]['assets'][asset].style[direction] !== item.style[direction]){
-                            newProjects[projects.active]['layers'][layer]['assets'][asset].style[direction] = item.style[direction]
+                        if( newProject['layers'][layer]['assets'][asset].style[direction] !== item.style[direction]){
+                            newProject['layers'][layer]['assets'][asset].style[direction] = item.style[direction]
                         }
                     })
-                    setProjects(newProjects)
+                    fetch('http://localhost:5000/'+activeProject, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({project: newProject})
+                    }).then(e=>e.json()).then(e=>setProjects(e))
                 }
                 distance = 0
             }
@@ -231,8 +249,8 @@ const Main = () => {
 
     return (
         <div className={styles.main} id='main'>
-            <div id='canvasWrapper' className={styles.canvasWrapper} style={{aspectRatio: `${projects[projects.active].canvas.width}/${projects[projects.active].canvas.height}`}}>
-                <div id='canvas' tabIndex={0} className={styles.canvas} style={{backgroundColor: projects[projects.active].canvas.background}}>
+            <div id='canvasWrapper' className={styles.canvasWrapper} style={{aspectRatio: `${project.canvas.width}/${project.canvas.height}`}}>
+                <div id='canvas' tabIndex={0} className={styles.canvas} style={{backgroundColor: project.canvas.background}}>
                     {displayLayers.map((item, key)=>{
                             if(layers[item]['assets']){
                                 return layers[item]['assets'].map((item2, i)=>{
@@ -287,22 +305,36 @@ const Main = () => {
                                 let top = e.target.style.top
                                 let layer = e.target.attributes[1].value
                                 let asset = e.target.attributes[2].value
-                                let projectsString = JSON.stringify(projects)
-                                let newProjects = JSON.parse(projectsString)
-                                newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, top: top, left: left}
-                                setProjects(newProjects)
+                                let projectString = JSON.stringify(project)
+                                let newProject = JSON.parse(projectString)
+                                newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left}
+                                fetch('http://localhost:5000/'+activeProject, {
+                                    method: 'PATCH',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({project: newProject})
+                                }).then(e=>e.json()).then((e)=>{
+                                    setProjects(e)
+                                })
                             }}
                             onDragGroupEnd={(e)=>{
-                                let projectsString = JSON.stringify(projects)
-                                let newProjects = JSON.parse(projectsString)
-                                e.events.forEach((e)=>{
-                                    let left = e.target.style.left
-                                    let top = e.target.style.top
-                                    let layer = e.target.attributes[1].value
-                                    let asset = e.target.attributes[2].value
-                                    newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, top: top, left: left}
+                                let projectString = JSON.stringify(project)
+                                let newProject = JSON.parse(projectString)
+                                e.events.forEach((x)=>{
+                                    let left = x.target.style.left
+                                    let top = x.target.style.top
+                                    let layer = x.target.attributes[1].value
+                                    let asset = x.target.attributes[2].value
+                                    newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left}
                                 })
-                                setProjects(newProjects)
+                                fetch('http://localhost:5000/'+activeProject, {
+                                        method: 'PATCH',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({project: newProject})
+                                }).then(e=>e.json()).then(e=>setProjects(e))
                             }}
                             onResize={(e)=>{
                                 e.target.style.left = e.drag.left+'px'
@@ -317,11 +349,18 @@ const Main = () => {
                                 let top = parseInt(e.target.style.top)/canvasSize.width*100+'%'
                                 let layer = e.target.attributes[1].value
                                 let asset = e.target.attributes[2].value
-                                let projectsString = JSON.stringify(projects)
-                                let newProjects = JSON.parse(projectsString)
-                                newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, width: width, height: height, top: top, left: left}
-                                setProjects(newProjects)
-                                console.log(newProjects)
+                                let projectString = JSON.stringify(project)
+                                let newProject = JSON.parse(projectString)
+                                newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, width: width, height: height, top: top, left: left}
+                                fetch('http://localhost:5000/'+activeProject, {
+                                    method: 'PATCH',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({project: newProject})
+                                }).then(e=>e.json()).then((e)=>{
+                                    setProjects(e)
+                                })
                             }}
                             onResizeGroup = {(e) => {
                                 e.targets.forEach((item, i)=>{
@@ -332,8 +371,8 @@ const Main = () => {
                                 })
                             }}
                             onResizeGroupEnd={(e)=>{
-                                let projectsString = JSON.stringify(projects)
-                                let newProjects = JSON.parse(projectsString)
+                                let projectString = JSON.stringify(project)
+                                let newProject = JSON.parse(projectString)
                                 e.events.forEach((e)=>{
                                     let left = e.target.style.left
                                     let top = e.target.style.top
@@ -341,9 +380,15 @@ const Main = () => {
                                     let height = e.target.style.height
                                     let layer = e.target.attributes[1].value
                                     let asset = e.target.attributes[2].value
-                                    newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, top: top, left: left, height: height, width: width}
+                                    newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left, height: height, width: width}
                                 })
-                                setProjects(newProjects)
+                                fetch('http://localhost:5000/'+activeProject, {
+                                        method: 'PATCH',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({project: newProject})
+                                }).then(e=>e.json()).then(e=>setProjects(e))
                             }}
                             onRotate={(e)=>{
                                 e.target.style.transform = e.transform
@@ -352,10 +397,18 @@ const Main = () => {
                                 let layer = e.target.attributes[1].value
                                 let asset = e.target.attributes[2].value
                                 let rotate = `${e.lastEvent.rotate}deg`
-                                let projectsString = JSON.stringify(projects)
-                                let newProjects = JSON.parse(projectsString)
-                                newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, rotate: rotate}
-                                setProjects(newProjects)
+                                let projectString = JSON.stringify(project)
+                                let newProject = JSON.parse(projectString)
+                                newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, rotate: rotate}
+                                fetch('http://localhost:5000/'+activeProject, {
+                                    method: 'PATCH',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({project: newProject})
+                                }).then(e=>e.json()).then((e)=>{
+                                    setProjects(e)
+                                })
                             }}
                             onRotateGroup={(e)=>{
                                 e.events.forEach((event)=>{
@@ -363,17 +416,23 @@ const Main = () => {
                                 })
                             }}
                             onRotateGroupEnd={(e)=>{
-                                let projectsString = JSON.stringify(projects)
-                                let newProjects = JSON.parse(projectsString)
+                                let projectString = JSON.stringify(project)
+                                let newProject = JSON.parse(projectString)
                                 e.events.forEach((e)=>{
                                     let rotate = `${e.lastEvent.rotate}deg`
                                     let left = (parseInt(e.target.style.left.replace('%',''))+e.lastEvent.drag.beforeTranslate[0]/canvasSize.width*100)+'%'
                                     let top = (parseInt(e.target.style.top.replace('%',''))+e.lastEvent.drag.beforeTranslate[1]/canvasSize.height*100)+'%'
                                     let layer = e.target.attributes[1].value
                                     let asset = e.target.attributes[2].value
-                                    newProjects[projects.active]['layers'][layer]['assets'][asset].style = {...newProjects[projects.active]['layers'][layer]['assets'][asset].style, rotate: rotate, left: left, top: top}
+                                    newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, rotate: rotate, left: left, top: top}
                                 })
-                                setProjects(newProjects)
+                                fetch('http://localhost:5000/'+activeProject, {
+                                        method: 'PATCH',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({project: newProject})
+                                }).then(e=>e.json()).then(e=>setProjects(e))
                             }}
                         />
                         :null}

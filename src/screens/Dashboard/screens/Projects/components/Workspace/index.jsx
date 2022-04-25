@@ -1,7 +1,9 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import MoreMenu from '../../../../components/MoreMenu'
+import activeProjectAtom from '../../../activeProjectAtom'
 import projectsAtom from '../../../projectsAtom'
 import searchAtom from '../Title/searchAtom'
 import styles from './_workspace.module.sass'
@@ -17,58 +19,63 @@ const Empty = () => {
     )
 }
 
-const Tile = ({id}) => {
-    const [projects, setProjects] = useRecoilState(projectsAtom)
+const Tile = ({item}) => {
+    const setActiveProject = useSetRecoilState(activeProjectAtom)
     const navigate = useNavigate()
-    const goToEditor = () => {
-        setProjects({...projects, active: id})
-        navigate('editor')
+    const goToEditor = (e) => {
+        if(e.target.nodeName !== 'svg'){
+            setActiveProject(item.id)
+            navigate('editor')
+        }
+    }
+    const deleteProject = () => {
+        fetch('http://localhost:5000/'+item.id, {
+            method: 'DELETE'
+        })
     }
     return (
-        <div className={styles.tile} onMouseDown={goToEditor}>
+        <div className={styles.tile} onMouseDown={(e)=>goToEditor(e)}>
             <div className={styles.canvas}>
                 <div className={styles.container}>
-                    {projects&&projects[id]&&projects[id].snapshot?<img alt='' src={projects[id].snapshot} />:null}
+                    {JSON.parse(item.project).snapshot?<img alt='' src={JSON.parse(item.project).snapshot} />:null}
                 </div>
             </div>
             <div className={styles.title}>
-                <p>{projects[id].name}</p>
-                <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: ()=>{}}]} />
+                <p>{JSON.parse(item.project).name}</p>
+                <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: deleteProject}]} />
             </div>
         </div>
     )
 }
 
 const Workspace = () => {
-    const [projects] = useRecoilState(projectsAtom)
+    const [projects, setProjects] = useRecoilState(projectsAtom)
     const [search] = useRecoilState(searchAtom)
+    useEffect(()=>{
+        fetch('http://localhost:5000/', {
+            method: 'GET'
+        }).then((res)=>res.json()).then((data)=>{
+            if(JSON.stringify(data) !== JSON.stringify(projects)){
+                setProjects(data)
+            }
+        })
+    }, [projects, setProjects])
     return (
         <div className={styles.workspace}>
-            {Object.keys(projects).length<=0?
+            {projects.length<=0?
                 <Empty />
                 :
                 <div className={styles.container}>
                     <div className={styles.files}>
                         {search!==''?
-                            Object.keys(projects).map((item, key)=>{
-                                if(projects[item].name){
-                                    if(item!=='active' && projects[item].name.includes(search)){
-                                        return <Tile key={key} id={item} />
-                                    }else{
-                                        return null
-                                    }
-                                }else{
-                                    return null
-                                }
+                            projects.map((item, key)=>{
+                                return <Tile key={key} item={item} />
                             })
                             :
-                            Object.keys(projects).map((item, key)=>{
-                                if(item!=='active'){
-                                    return <Tile key={key} id={item} />
-                                }else{
-                                    return null
-                                }
-                        })}
+                            projects.map((item, key)=>{
+                                return <Tile key={key} item={item} />
+                            })
+                        }
                     </div>
                 </div>
             }

@@ -3,6 +3,7 @@ import projectsAtom from '../../../projectsAtom'
 import targetAtom from '../Main/targetAtom'
 import styles from './_details.module.sass'
 import React, { useCallback, useState } from 'react'
+import activeProjectAtom from '../../../activeProjectAtom'
 
 const Option = ({title, value, onBlur, type}) => {
     const SingleUnit = () => {
@@ -99,21 +100,23 @@ const Option = ({title, value, onBlur, type}) => {
 
 const Details = () => {
     const [projects, setProjects] = useRecoilState(projectsAtom)
+    const [activeProject] = useRecoilState(activeProjectAtom)
     let style = false
     let onBlur = () => {}
 
     const [target, setTarget] = useRecoilState(targetAtom)
 
+    const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
+
     if(target){
         if(target.length <= 1 && target[0]){
             let layer = target[0].attributes[1].value
             let asset = target[0].attributes[2].value
-            if(projects[projects.active].layers[layer].assets){
-                if(projects[projects.active].layers[layer].assets[asset]){
-                    style = {items: projects[projects.active].layers[layer].assets[asset].style, type: 'layer'}
+            if(project.layers[layer].assets){
+                if(project.layers[layer].assets[asset]){
+                    style = {items: project.layers[layer].assets[asset].style, type: 'layer'}
                     onBlur = (key, value) => {
-                        let projectsString = JSON.stringify(projects)
-                        let newProjects = JSON.parse(projectsString)
+
                         let unit = '%'
                         switch (key.toLowerCase()) {
                             case 'background':
@@ -132,13 +135,26 @@ const Details = () => {
                                 unit = '%'
                             break
                         }
-                        newProjects[projects.active].layers[layer].assets[asset].style[key] = typeof value === 'boolean'?value:value+unit
-                        setProjects({...newProjects})
-                        const setEmpty = async () => {
-                            setTarget(null)
-                        }
-                        setEmpty().then(()=>{
-                            setTarget(target)
+
+                        let projectString = JSON.stringify(project)
+                        let newProject = JSON.parse(projectString)
+                        newProject.layers[layer].assets[asset].style[key] = typeof value === 'boolean'?value:value+unit
+                        
+                        fetch('http://localhost:5000/'+activeProject, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({project: newProject})
+                        }).then(e=>e.json()).then((e)=>{
+                            console.log(e)
+                            setProjects(e)
+                            const setEmpty = async () => {
+                                setTarget(null)
+                            }
+                            setEmpty().then(()=>{
+                                setTarget(target)
+                            })
                         })
                     }
                 }
@@ -147,25 +163,45 @@ const Details = () => {
     }
 
     if(!style){
-        style = {items: projects[projects.active].canvas, type: 'canvas'}
+        style = {items: project.canvas, type: 'canvas'}
         onBlur = (key, value) => {
-            let projectsString = JSON.stringify(projects)
-            let newProjects = JSON.parse(projectsString)
-            newProjects[projects.active].canvas[key] = value
-            setProjects({...newProjects})
+            let projectString = JSON.stringify(project)
+            let newProject = JSON.parse(projectString)
+            newProject.canvas[key] = value
+            fetch('http://localhost:5000/'+activeProject, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({project: newProject})
+            }).then(e=>e.json()).then((e)=>{
+                console.log(e)
+                setProjects(e)
+            })
         }
     }
 
     const changeName = useCallback((_, value) => {
-        let projectsString = JSON.stringify(projects)
-        let newProjects = JSON.parse(projectsString)
-        newProjects[projects.active].name = value
-        setProjects({...newProjects})
-    }, [projects, setProjects])
+
+        let projectString = JSON.stringify(project)
+        let newProject = JSON.parse(projectString)
+        newProject.name = value
+        
+        fetch('http://localhost:5000/'+activeProject, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({project: newProject})
+        }).then(e=>e.json()).then((e)=>{
+            setProjects(e)
+        })
+
+    }, [activeProject, project, setProjects])
 
     return (
         <div className={styles.details}>
-            {style.type==='canvas'?<Option title='Project Name' value={projects[projects.active].name} type='canvas' onBlur={changeName} />:null}
+            {style.type==='canvas'?<Option title='Project Name' value={project.name} type='canvas' onBlur={changeName} />:null}
             {
                 Object.keys(style.items).map((item, key)=>{
                     return <Option key={key} title={item} value={style.items[item]} type={style.type} onBlur={onBlur} />
