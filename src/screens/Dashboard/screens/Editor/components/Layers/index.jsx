@@ -69,14 +69,20 @@ const Layer = ({name}) => {
     const [projects, setProjects] = useRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
     
-    let layers = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project).layers
     const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
+    let layers = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project).layers
 
     const setLayers = (layers) => {
-        let projectsString = JSON.stringify(projects)
-        let newProjects = JSON.parse(projectsString)
-        project.layers = {...layers}
-        setProjects(newProjects)
+        let projectString = JSON.stringify(project)
+        let newProject = JSON.parse(projectString)
+        newProject.layers = {...layers}
+        fetch('http://localhost:5000/'+activeProject, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({project: newProject})
+        }).then(e=>e.json()).then(e=>setProjects(e))
     }
 
     const setModal = useSetRecoilState(modalAtom)
