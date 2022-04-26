@@ -5,6 +5,10 @@ import OutsideClickHandler from 'react-outside-click-handler'
 
 const MoreMenu = ({options}) => {
     const [open, setOpen] = useState(false)
+    const runFunc = (item) => {
+        item.func()
+        setOpen(false)
+    }
     return (
         <OutsideClickHandler onOutsideClick={()=>setOpen(false)}>
             <div className={styles.moremenu}>
@@ -13,7 +17,7 @@ const MoreMenu = ({options}) => {
                     <div className={styles.options}>
                         {options.map((item, key)=>{
                             return (
-                                <div key={key} className={styles.option} onMouseDown={item.func}>
+                                <div key={key} className={styles.option} onMouseDown={()=>runFunc(item)}>
                                     {item.name}
                                 </div>
                             )

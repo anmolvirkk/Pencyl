@@ -129,11 +129,6 @@ const Layer = ({name}) => {
                 let link = e.target.src.replace('png-64','png-512')
                 convertToBase64(link).then((e)=>{
                     let assetId = new Date().valueOf()
-                    let projectsString = JSON.stringify(projects)
-                    let newProjects = JSON.parse(projectsString)
-                    console.log(newProjects)
-                    console.log(activeProject)
-                    console.log(project)
                     Object.keys(project.layers).forEach((item)=>{
                         if(item === name){
                             project.layers[item].active = true

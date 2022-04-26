@@ -39,7 +39,6 @@ const Start = () => {
     }
 
     const startDemo = () => {
-        let id = new Date().valueOf().toString()
         const project = {
             name: 'untitled',
             canvas: {
@@ -47,8 +46,34 @@ const Start = () => {
                 width: 600,
                 background: '#090909'
             },
-            layers: {}
+            layers: {
+                head: {
+                    active: false,
+                    assets: [
+                        {
+                            elem: 'e',
+                            rare: '',
+                            active: true,
+                            id: new Date().valueOf(),
+                            style: {
+                                width: 'auto',
+                                height: 'auto',
+                                lockAspectRatio: true,
+                                top: '0%', 
+                                left: '0%',
+                                rotate: '0deg',
+                                brightness: '100%',
+                                contrast: '100%',
+                                saturatation: '100%',
+                                hue: '0deg',
+                                sepia: '0%'
+                            }
+                        }
+                    ]
+                }
+            }
         }
+        let id = new Date().valueOf().toString()
         fetch('http://localhost:5000/', {
             method: 'POST',
             headers: {

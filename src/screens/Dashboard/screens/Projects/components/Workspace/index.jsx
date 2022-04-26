@@ -22,8 +22,9 @@ const Empty = () => {
 const Tile = ({item}) => {
     const setActiveProject = useSetRecoilState(activeProjectAtom)
     const navigate = useNavigate()
+    const setProjects = useSetRecoilState(projectsAtom)
     const goToEditor = (e) => {
-        if(e.target.nodeName !== 'svg'){
+        if(e.target.nodeName !== 'svg' && !e.target.className.includes('moremenu')){
             setActiveProject(item.id)
             navigate('editor')
         }
@@ -31,7 +32,7 @@ const Tile = ({item}) => {
     const deleteProject = () => {
         fetch('http://localhost:5000/'+item.id, {
             method: 'DELETE'
-        })
+        }).then(e=>e.json()).then(e=>setProjects(e))
     }
     return (
         <div className={styles.tile} onMouseDown={(e)=>goToEditor(e)}>
