@@ -346,7 +346,8 @@ const Main = () => {
                                 let width = e.lastEvent.width/canvasSize.width*100+'%'
                                 let height = e.lastEvent.height/canvasSize.height*100+'%'
                                 let left = parseInt(e.target.style.left)/canvasSize.width*100+'%'
-                                let top = parseInt(e.target.style.top)/canvasSize.width*100+'%'
+                                let top = parseInt(e.target.style.top)/canvasSize.height*100+'%'
+                                console.log(top)
                                 let layer = e.target.attributes[1].value
                                 let asset = e.target.attributes[2].value
                                 let projectString = JSON.stringify(project)
