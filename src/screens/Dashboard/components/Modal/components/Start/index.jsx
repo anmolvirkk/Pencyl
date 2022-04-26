@@ -14,17 +14,34 @@ const Start = () => {
     const setActiveProject = useSetRecoilState(activeProjectAtom)
 
     const startScratch = () => {
-        let name = 'untitled'
-        let num = 1
-        Object.keys(projects).forEach((item)=>{
-            if(item.includes('untitled')){
-                num++
-                name = 'untitled'+num
-            }
-        })
         let id = new Date().valueOf().toString()
         const project = {
-            name: name,
+            name: 'untitled',
+            canvas: {
+                height: 600,
+                width: 600,
+                background: '#090909'
+            },
+            layers: {}
+        }
+        fetch('http://localhost:5000/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: id, project: project})
+        }).then((res)=>res.json()).then((data)=>{
+            setActiveProject(id)
+            setProjects(data)
+            navigate('editor')
+            setModal({type: ''})
+        })
+    }
+
+    const startDemo = () => {
+        let id = new Date().valueOf().toString()
+        const project = {
+            name: 'untitled',
             canvas: {
                 height: 600,
                 width: 600,
@@ -62,7 +79,7 @@ const Start = () => {
                 </div>
             </div>
             <p className={styles.or}>or</p>
-            <div className={styles.btn}>
+            <div className={styles.btn} onMouseDown={startDemo}>
                 <div className={styles.content}>
                     <Layers />
                     <p>Open Demo</p>
