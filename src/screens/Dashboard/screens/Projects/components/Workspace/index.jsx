@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Trash2 } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
@@ -43,7 +44,7 @@ const Tile = ({item}) => {
             </div>
             <div className={styles.title}>
                 <p>{JSON.parse(item.project).name}</p>
-                <MoreMenu options={[{name: 'edit', func: ()=>{}},{name: 'delete', func: deleteProject}]} />
+                <Trash2 onMouseDown={deleteProject} />
             </div>
         </div>
     )
