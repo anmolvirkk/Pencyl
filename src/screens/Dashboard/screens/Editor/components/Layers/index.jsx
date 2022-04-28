@@ -291,21 +291,13 @@ const Layer = ({name}) => {
         const setActiveTarget = (i) => {
             let asset = document.getElementById('asset-'+i)
             if(target){
-                if(asset !== target){
-                    if(Array.isArray(target)){
-                        if(!target.includes(asset)){
-                            setTarget([...target, asset])
-                        }else{
-                            setTarget(target.filter(i=>i!==asset))
-                        }
-                    }else{
-                        setTarget([target, asset])
-                    }
+                if(!target.includes(asset)){
+                    setTarget([...target, asset])
                 }else{
-                    setTarget(null)
+                    setTarget(target.filter(i=>i!==asset))
                 }
             }else{
-                setTarget(asset)
+                setTarget([asset])
             }
         }
         const setActiveAsset = (asset, e) => {
@@ -428,16 +420,8 @@ const Layers = () => {
         }).then(e=>e.json()).then(e=>setProjects(e))
     }
 
-    const [target, setTarget] = useRecoilState(targetAtom)
-
-    const checkTarget = () => {
-        if(target){
-            setTarget(null)
-        }
-    }
-
     return (
-        <div className={styles.layersWrapper} onMouseDown={checkTarget}>
+        <div className={styles.layersWrapper}>
             <DragDropContext onDragEnd={(e)=>reorderLayers(e)}>
                 <Droppable droppableId='droppable-1'>
                     {(provided)=>(

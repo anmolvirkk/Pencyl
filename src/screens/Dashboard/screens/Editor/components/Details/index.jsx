@@ -147,13 +147,13 @@ const Details = () => {
                             },
                             body: JSON.stringify({project: newProject})
                         }).then(e=>e.json()).then((e)=>{
-                            console.log(e)
                             setProjects(e)
+                            let tempTarget = target
                             const setEmpty = async () => {
                                 setTarget(null)
                             }
                             setEmpty().then(()=>{
-                                setTarget(target)
+                                setTarget(tempTarget)
                             })
                         })
                     }
