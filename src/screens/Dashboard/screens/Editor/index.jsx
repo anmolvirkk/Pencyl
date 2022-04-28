@@ -7,12 +7,14 @@ import { useRecoilState } from 'recoil'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import activeProjectAtom from '../activeProjectAtom'
+import projectsAtom from '../projectsAtom'
 
 const Editor = () => {
     const [activeProject] = useRecoilState(activeProjectAtom)
+    const [projects] = useRecoilState(projectsAtom)
     const navigate = useNavigate()
     useEffect(()=>{
-        if(!activeProject){
+        if(!activeProject || !projects.filter(i=>i.id===activeProject)[0].project){
             navigate('/dashboard')
         }
     }, [navigate, activeProject])
