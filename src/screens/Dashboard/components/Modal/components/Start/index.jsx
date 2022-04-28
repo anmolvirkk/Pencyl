@@ -5,6 +5,9 @@ import { useRecoilState, useSetRecoilState } from "recoil"
 import modalAtom from "../../modalAtom"
 import projectsAtom from "../../../../screens/projectsAtom"
 import activeProjectAtom from "../../../../screens/activeProjectAtom"
+import { useState } from "react"
+import loadingData from '../../../../loading.json'
+import Lottie from "react-lottie-player"
 
 const Start = () => {
 
@@ -38,7 +41,10 @@ const Start = () => {
         })
     }
 
+    const [loading, setLoading] = useState(false)
+
     const startFolder = (e) => {
+        setLoading(true)
         const convertToBase64 = async (url) => {
             const data = await fetch(url)
             const blob = await data.blob()
@@ -119,6 +125,7 @@ const Start = () => {
                                             },
                                             body: body
                                         }).then((res)=>res.json()).then((data)=>{
+                                            setLoading(false)
                                             if(data.message){
                                                 setModal({type: 'error', text: data.message})
                                             }else{
@@ -138,36 +145,49 @@ const Start = () => {
         })
     }
 
-    return (
-        <div className={styles.wrapper}>
-            <label>
-                <div className={styles.btn}>
-                    <div className={styles.content}>
-                        <Folder />
-                        <p>Upload folder</p>
-                    </div>
-                </div>
-                <input directory="/public" webkitdirectory="/public" type="file" onChange={startFolder} />
-            </label>
-            <p className={styles.or}>or</p>
-            <div className={styles.btn} onMouseDown={startScratch}>
-                <div className={styles.content}>
-                    <Box />
-                    <p>Start from scratch</p>
-                </div>
+    if(loading){
+        return (
+            <div className={styles.loading}>
+                <Lottie
+                    loop
+                    animationData={loadingData}
+                    play
+                    style={{ width: 150, height: 150 }}
+                />
             </div>
-            <p className={styles.or}>or</p>
-            <label>
-                <div className={styles.btn}>
+        )
+    }else{
+        return (
+            <div className={styles.wrapper}>
+                <label>
+                    <div className={styles.btn}>
+                        <div className={styles.content}>
+                            <Folder />
+                            <p>Upload folder</p>
+                        </div>
+                    </div>
+                    <input directory="/public" webkitdirectory="/public" type="file" onChange={startFolder} />
+                </label>
+                <p className={styles.or}>or</p>
+                <div className={styles.btn} onMouseDown={startScratch}>
                     <div className={styles.content}>
-                        <Layers />
-                        <p>Open Demo</p>
+                        <Box />
+                        <p>Start from scratch</p>
                     </div>
                 </div>
-                <input directory="/public" webkitdirectory="/public" type="file" onChange={e=>console.log(e)} />
-            </label>
-        </div>
-    )
+                <p className={styles.or}>or</p>
+                <label>
+                    <div className={styles.btn}>
+                        <div className={styles.content}>
+                            <Layers />
+                            <p>Open Demo</p>
+                        </div>
+                    </div>
+                    <input directory="/public" webkitdirectory="/public" type="file" onChange={e=>console.log(e)} />
+                </label>
+            </div>
+        )
+    }
 }
 
 export default Start
