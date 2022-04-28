@@ -10,8 +10,8 @@ const Start = () => {
 
     const navigate = useNavigate()
     const setModal = useSetRecoilState(modalAtom)
-    const [projects, setProjects] = useRecoilState(projectsAtom)
     const setActiveProject = useSetRecoilState(activeProjectAtom)
+    const setProjects = useSetRecoilState(projectsAtom)
 
     const startScratch = () => {
         let id = new Date().valueOf().toString()
@@ -38,64 +38,107 @@ const Start = () => {
         })
     }
 
-    const startDemo = () => {
-        const project = {
-            name: 'untitled',
-            canvas: {
-                height: 600,
-                width: 600,
-                background: '#090909'
-            },
-            layers: {
-                head: {
-                    active: false,
-                    assets: [
-                        {
-                            elem: 'e',
-                            rare: '',
-                            active: true,
-                            id: new Date().valueOf(),
-                            style: {
-                                width: 'auto',
-                                height: 'auto',
-                                lockAspectRatio: true,
-                                top: '0%', 
-                                left: '0%',
-                                rotate: '0deg',
-                                brightness: '100%',
-                                contrast: '100%',
-                                saturatation: '100%',
-                                hue: '0deg',
-                                sepia: '0%'
-                            }
-                        }
-                    ]
+    const startFolder = (e) => {
+        const convertToBase64 = async (url) => {
+            const data = await fetch(url)
+            const blob = await data.blob()
+            return new Promise((resolve) => {
+            const reader = new FileReader()
+            reader.readAsDataURL(blob)
+            reader.onloadend = () => {
+                const base64data = reader.result
+                resolve(base64data)
+            }
+            })
+        }
+        let layers = {}
+        let name = e.target.files[0].webkitRelativePath.split('/')[0]
+        let prev = null
+        let tempImg = new Image()
+        tempImg.src = `/${e.target.files[0].webkitRelativePath}`
+        const setLayers = async () => {
+            for(let i = 0; i < e.target.files.length; i++){
+                let path = e.target.files[i].webkitRelativePath.split('/')
+                path.splice(0, 1)
+                let active = false
+                if(prev!==path[0]){
+                    active = true
                 }
+                let layer = {
+                    active: active,
+                    elem: convertToBase64(e.target.files[i].webkitRelativePath),
+                    id: new Date().valueOf().toString()+i,
+                    rare: '',
+                    style: {
+                        width: 'auto',
+                        height: 'auto',
+                        lockAspectRatio: true,
+                        top: '0%', 
+                        left: '0%',
+                        rotate: '0deg',
+                        brightness: '100%',
+                        contrast: '100%',
+                        saturatation: '100%',
+                        hue: '0deg',
+                        sepia: '0%'
+                    }
+                }
+                prev = path[0]
+                layers[path[0]] = {active: false, assets: layers[path[0]]&&layers[path[0]].assets?[...layers[path[0]].assets, layer]:[layer]}
             }
         }
-        let id = new Date().valueOf().toString()
-        fetch('http://localhost:5000/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({id: id, project: project})
-        }).then((res)=>res.json()).then((data)=>{
-            setActiveProject(id)
-            setProjects(data)
-            navigate('editor')
-            setModal({type: ''})
+        setLayers().then(()=>{
+            for(let i = 0; i < Object.keys(layers).length; i++){
+                for(let j = 0; j < layers[Object.keys(layers)[i]].assets.length; j++){
+                    Promise.resolve(layers[Object.keys(layers)[i]].assets[j].elem).then(e=>{
+                        layers[Object.keys(layers)[i]].assets[j].elem = e
+                        if(i === (Object.keys(layers).length - 1) && j === (layers[Object.keys(layers)[i]].assets.length - 1)){
+                            const project = {
+                                name: name,
+                                canvas: {
+                                    height: tempImg.height,
+                                    width: tempImg.width,
+                                    background: '#090909'
+                                },
+                                layers: layers,
+                                snapshot: ''
+                            }
+                            let id = new Date().valueOf().toString()
+                            let body = JSON.stringify({id: id, project: project})
+                            fetch('http://localhost:5000/', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: body
+                            }).then((res)=>res.json()).then((data)=>{
+                                if(data.message){
+                                    setModal({type: 'error', text: data.message})
+                                }else{
+                                    setActiveProject(id)
+                                    setProjects(data)
+                                    navigate('editor')
+                                    setModal({type: ''})
+                                }
+                            })
+                        }
+                    })
+                }
+            }
         })
     }
 
     return (
         <div className={styles.wrapper}>
-            <div className={styles.btn}>
-                <div className={styles.content}>
-                    <Folder />
-                    <p>Upload folder</p>
+            <label>
+                <div className={styles.btn}>
+                    <div className={styles.content}>
+                        <Folder />
+                        <p>Upload folder</p>
+                    </div>
                 </div>
-            </div>
+                <input directory="/public" webkitdirectory="/public" type="file" onChange={startFolder} />
+            </label>
             <p className={styles.or}>or</p>
             <div className={styles.btn} onMouseDown={startScratch}>
                 <div className={styles.content}>
@@ -104,12 +147,15 @@ const Start = () => {
                 </div>
             </div>
             <p className={styles.or}>or</p>
-            <div className={styles.btn} onMouseDown={startDemo}>
-                <div className={styles.content}>
-                    <Layers />
-                    <p>Open Demo</p>
+            <label>
+                <div className={styles.btn}>
+                    <div className={styles.content}>
+                        <Layers />
+                        <p>Open Demo</p>
+                    </div>
                 </div>
-            </div>
+                <input directory="/public" webkitdirectory="/public" type="file" onChange={e=>console.log(e)} />
+            </label>
         </div>
     )
 }

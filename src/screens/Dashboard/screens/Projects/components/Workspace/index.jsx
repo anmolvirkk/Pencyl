@@ -3,7 +3,6 @@ import { Trash2 } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
-import MoreMenu from '../../../../components/MoreMenu'
 import activeProjectAtom from '../../../activeProjectAtom'
 import projectsAtom from '../../../projectsAtom'
 import searchAtom from '../Title/searchAtom'
@@ -25,7 +24,7 @@ const Tile = ({item}) => {
     const navigate = useNavigate()
     const setProjects = useSetRecoilState(projectsAtom)
     const goToEditor = (e) => {
-        if(e.target.nodeName !== 'svg' && !e.target.className.includes('moremenu')){
+        if(e.target.nodeName !== 'svg'){
             setActiveProject(item.id)
             navigate('editor')
         }
