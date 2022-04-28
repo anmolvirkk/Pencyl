@@ -93,34 +93,44 @@ const Start = () => {
                     Promise.resolve(layers[Object.keys(layers)[i]].assets[j].elem).then(e=>{
                         layers[Object.keys(layers)[i]].assets[j].elem = e
                         if(i === (Object.keys(layers).length - 1) && j === (layers[Object.keys(layers)[i]].assets.length - 1)){
-                            const project = {
-                                name: name,
-                                canvas: {
-                                    height: tempImg.height,
-                                    width: tempImg.width,
-                                    background: '#090909'
-                                },
-                                layers: layers,
-                                snapshot: ''
-                            }
-                            let id = new Date().valueOf().toString()
-                            let body = JSON.stringify({id: id, project: project})
-                            fetch('http://localhost:5000/', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: body
-                            }).then((res)=>res.json()).then((data)=>{
-                                if(data.message){
-                                    setModal({type: 'error', text: data.message})
-                                }else{
-                                    setActiveProject(id)
-                                    setProjects(data)
-                                    navigate('editor')
-                                    setModal({type: ''})
+                            let newKeys = Object.keys(layers)
+                            newKeys.sort()
+                            let newLayers = {}
+                            for(let i = 0; i < newKeys.length; i++){
+                                newLayers[newKeys[i]] = layers[newKeys[i]]
+                                if(i === newKeys.length - 1){
+                                    setTimeout(()=>{
+                                        const project = {
+                                            name: name,
+                                            canvas: {
+                                                height: tempImg.height,
+                                                width: tempImg.width,
+                                                background: '#090909'
+                                            },
+                                            layers: newLayers,
+                                            snapshot: ''
+                                        }
+                                        let id = new Date().valueOf().toString()
+                                        let body = JSON.stringify({id: id, project: project})
+                                        fetch('http://localhost:5000/', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: body
+                                        }).then((res)=>res.json()).then((data)=>{
+                                            if(data.message){
+                                                setModal({type: 'error', text: data.message})
+                                            }else{
+                                                setActiveProject(id)
+                                                setProjects(data)
+                                                navigate('editor')
+                                                setModal({type: ''})
+                                            }
+                                        })
+                                    }, 100)
                                 }
-                            })
+                            }
                         }
                     })
                 }
