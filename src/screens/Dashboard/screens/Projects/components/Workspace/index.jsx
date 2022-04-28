@@ -70,7 +70,11 @@ const Workspace = () => {
                     <div className={styles.files}>
                         {search!==''?
                             projects.map((item, key)=>{
-                                return <Tile key={key} item={item} />
+                                if(JSON.parse(item.project).name.includes(search)){
+                                    return <Tile key={key} item={item} />
+                                }else{
+                                    return null
+                                }
                             })
                             :
                             projects.map((item, key)=>{
