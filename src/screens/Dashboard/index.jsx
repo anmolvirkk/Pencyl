@@ -8,6 +8,7 @@ import Modal from "./components/Modal"
 
 const Dashboard = () => {
     const [modal] = useRecoilState(modalAtom)
+
     return (
         <div>
             {modal.type?<Modal />:null}
