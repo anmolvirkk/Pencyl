@@ -68,7 +68,7 @@ const Layer = ({name}) => {
 
     const [projects, setProjects] = useRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
-    
+
     const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
     let layers = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project).layers
 
@@ -255,7 +255,7 @@ const Layer = ({name}) => {
             return null
         }
     }
-
+    
     const Assets = () => {
         const [target, setTarget] = useRecoilState(targetAtom)
     
@@ -293,8 +293,6 @@ const Layer = ({name}) => {
             if(target){
                 if(!target.includes(asset)){
                     setTarget([...target, asset])
-                }else{
-                    setTarget(target.filter(i=>i!==asset))
                 }
             }else{
                 setTarget([asset])

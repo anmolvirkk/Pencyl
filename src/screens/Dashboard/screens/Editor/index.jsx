@@ -17,7 +17,7 @@ const Editor = () => {
         if(!activeProject || !projects.filter(i=>i.id===activeProject)[0].project){
             navigate('/dashboard')
         }
-    }, [navigate, activeProject])
+    }, [navigate, activeProject, projects])
 
     if(activeProject){
         return (
