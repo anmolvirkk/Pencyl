@@ -24,7 +24,7 @@ const Tile = ({item}) => {
     const navigate = useNavigate()
     const setProjects = useSetRecoilState(projectsAtom)
     const goToEditor = (e) => {
-        if(e.target.nodeName !== 'svg'){
+        if(e.target.nodeName !== 'svg' && e.target.nodeName !== 'path' && e.target.nodeName !== 'line'){
             setActiveProject(item.id)
             navigate('editor')
         }
