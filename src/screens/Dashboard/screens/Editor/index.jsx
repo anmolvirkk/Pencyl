@@ -11,15 +11,15 @@ import projectsAtom from '../projectsAtom'
 const Editor = () => {
     const [activeProject] = useRecoilState(activeProjectAtom)
     const [projects] = useRecoilState(projectsAtom)
-
-    if(projects.filter(i=>i.id===activeProject)[0]){
+    let currentProject = projects.filter(i=>i.id===activeProject)[0]
+    if(currentProject){
         return (
             <div className={styles.editor}>
                 <Header />
                 <div className={styles.mainsection}>
-                    <Layers />
-                    <Main />
-                    <Details />
+                    <Layers currentProject={currentProject} />
+                    <Main currentProject={currentProject} />
+                    <Details currentProject={currentProject} />
                 </div>
             </div>
         )

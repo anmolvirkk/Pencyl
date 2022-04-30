@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import projectsAtom from '../../../projectsAtom'
 import targetAtom from '../Main/targetAtom'
 import styles from './_details.module.sass'
@@ -98,15 +98,15 @@ const Option = ({title, value, onBlur, type}) => {
     return <SingleUnit />
 }
 
-const Details = () => {
-    const [projects, setProjects] = useRecoilState(projectsAtom)
+const Details = ({currentProject}) => {
+    const setProjects = useSetRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
     let style = false
     let onBlur = () => {}
 
     const [target, setTarget] = useRecoilState(targetAtom)
 
-    const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
+    const project = JSON.parse(currentProject.project)
 
     if(target){
         if(target.length <= 1 && target[0]){

@@ -1,4 +1,4 @@
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import styles from './_main.module.sass'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import projectsAtom from '../../../projectsAtom'
@@ -8,15 +8,15 @@ import Selecto from "react-selecto"
 import { toJpeg } from 'dom-to-image'
 import activeProjectAtom from '../../../activeProjectAtom'
 
-const Main = () => {
+const Main = ({currentProject}) => {
 
-    const [projects, setProjects] = useRecoilState(projectsAtom)
+    const setProjects = useSetRecoilState(projectsAtom)
 
     const [activeProject] = useRecoilState(activeProjectAtom)
     
-    const layers = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project).layers
+    const layers = JSON.parse(currentProject.project).layers
 
-    const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
+    const project = JSON.parse(currentProject.project)
 
     const setSnapshot = () => {
         if(document.getElementById('canvasWrapper')){

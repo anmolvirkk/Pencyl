@@ -8,16 +8,15 @@ import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
 import targetAtom from '../Main/targetAtom'
 import activeProjectAtom from '../../../activeProjectAtom'
 
-const AddLayer = () => {
+const AddLayer = ({currentProject}) => {
     
     const setModal = useSetRecoilState(modalAtom)
-    
-    const [projects, setProjects] = useRecoilState(projectsAtom)
+    const setProjects = useSetRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
     
-    let layers = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project).layers
+    let layers = JSON.parse(currentProject.project).layers
 
-    const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
+    const project = JSON.parse(currentProject.project)
     
     const addLayer = (layerName) => { 
         let shouldAddLayer = true
@@ -64,13 +63,12 @@ const AddLayer = () => {
     )
 }
 
-const Layer = ({name}) => {
+const Layer = ({name, currentProject}) => {
 
-    const [projects, setProjects] = useRecoilState(projectsAtom)
+    const setProjects = useSetRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
-
-    const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
-    let layers = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project).layers
+    const project = JSON.parse(currentProject.project)
+    let layers = JSON.parse(currentProject.project).layers
 
     const setLayers = (layers) => {
         let projectString = JSON.stringify(project)
@@ -390,13 +388,13 @@ const Layer = ({name}) => {
 
 }
 
-const Layers = () => {
+const Layers = ({currentProject}) => {
 
-    const [projects, setProjects] = useRecoilState(projectsAtom)
+    const setProjects = useSetRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
     
-    let layers = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project).layers
-    const project = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
+    let layers = JSON.parse(currentProject.project).layers
+    const project = JSON.parse(currentProject.project)
 
     const reorderLayers = (e) => {
         let projectString = JSON.stringify(project)
@@ -428,7 +426,7 @@ const Layers = () => {
                                 <Draggable key={i} draggableId={'draggable-'+i} index={i}>
                                     {(provided)=>(
                                         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                            <Layer name={item} />
+                                            <Layer name={item} currentProject={currentProject} />
                                         </div>
                                     )}
                                 </Draggable>
@@ -438,7 +436,7 @@ const Layers = () => {
                     )}
                 </Droppable>
             </DragDropContext>
-            <AddLayer />
+            <AddLayer currentProject={currentProject} />
         </div>
     )
 }
