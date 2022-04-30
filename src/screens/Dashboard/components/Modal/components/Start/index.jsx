@@ -8,6 +8,7 @@ import activeProjectAtom from "../../../../screens/activeProjectAtom"
 import { useState } from "react"
 import loadingData from '../../../../loading.json'
 import Lottie from "react-lottie-player"
+import layersJSON from './layers.json'
 
 const Start = () => {
 
@@ -92,39 +93,73 @@ const Start = () => {
                 let newLayers = {}
                 for(let i = 0; i < newKeys.length; i++){
                     newLayers[newKeys[i]] = layers[newKeys[i]]
-                    if(i === newKeys.length - 1){const project = {
-                        name: name,
-                        canvas: {
-                            height: maxHeight,
-                            width: maxWidth,
-                            background: '#090909'
-                        },
-                        layers: newLayers,
-                        snapshot: ''
-                    }
-                    let id = new Date().valueOf().toString()
-                    let body = JSON.stringify({id: id, project: project})
-                    fetch('http://localhost:5000/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: body
-                    }).then((res)=>res.json()).then((data)=>{
-                        setLoading(false)
-                        if(data.message){
-                            setModal({type: 'error', text: data.message})
-                        }else{
-                            setActiveProject(id)
-                            setProjects(data)
-                            navigate('editor')
-                            setModal({type: ''})
+                    if(i === newKeys.length - 1){
+                        const project = {
+                            name: name,
+                            canvas: {
+                                height: maxHeight,
+                                width: maxWidth,
+                                background: '#090909'
+                            },
+                            layers: newLayers,
+                            snapshot: ''
                         }
-                    })
+                        let id = new Date().valueOf().toString()
+                        let body = JSON.stringify({id: id, project: project})
+                        fetch('http://localhost:5000/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: body
+                        }).then((res)=>res.json()).then((data)=>{
+                            setLoading(false)
+                            if(data.message){
+                                setModal({type: 'error', text: data.message})
+                            }else{
+                                setActiveProject(id)
+                                setProjects(data)
+                                navigate('editor')
+                                setModal({type: ''})
+                            }
+                        })
                     }
                 }
             }
         }
+    }
+
+    const startDemo = () => {
+        setLoading(true)
+        const project = {
+            name: 'demo',
+            canvas: {
+                height: 1000,
+                width: 1000,
+                background: '#090909'
+            },
+            layers: layersJSON,
+            snapshot: ''
+        }
+        let id = new Date().valueOf().toString()
+        let body = JSON.stringify({id: id, project: project})
+        fetch('http://localhost:5000/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: body
+        }).then((res)=>res.json()).then((data)=>{
+            setLoading(false)
+            if(data.message){
+                setModal({type: 'error', text: data.message})
+            }else{
+                setActiveProject(id)
+                setProjects(data)
+                navigate('editor')
+                setModal({type: ''})
+            }
+        })
     }
 
     if(loading){
@@ -158,15 +193,12 @@ const Start = () => {
                     </div>
                 </div>
                 <p className={styles.or}>or</p>
-                <label>
-                    <div className={styles.btn}>
-                        <div className={styles.content}>
-                            <Layers />
-                            <p>Open Demo</p>
-                        </div>
+                <div className={styles.btn} onMouseDown={startDemo}>
+                    <div className={styles.content}>
+                        <Layers />
+                        <p>Open Demo</p>
                     </div>
-                    <input directory="/public" webkitdirectory="/public" type="file" onChange={e=>console.log(e)} />
-                </label>
+                </div>
             </div>
         )
     }
