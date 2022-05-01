@@ -112,7 +112,7 @@ const Details = ({currentProject}) => {
         if(target.length <= 1 && target[0]){
             let layer = target[0].attributes[1].value
             let asset = target[0].attributes[2].value
-            if(project.layers[layer].assets){
+            if(project&&project.layers&&project.layers[layer]&&project.layers[layer].assets){
                 if(project.layers[layer].assets[asset]){
                     style = {items: project.layers[layer].assets[asset].style, type: 'layer'}
                     onBlur = (key, value) => {
