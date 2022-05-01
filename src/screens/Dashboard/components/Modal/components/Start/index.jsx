@@ -48,22 +48,26 @@ const Start = () => {
         setLoading(true)
         let name = e.target.files[0].webkitRelativePath.split('/')[0]
         let layers = {}
-        let prev = null
         let maxHeight = 0
         let maxWidth = 0
-        for(let i = 0; i < e.target.files.length; i++){
+        let activeLayerAssets = {}
+        for(let i = 0;  i < e.target.files.length; i++){
             let tempImg = new Image()
             tempImg.src = `/${e.target.files[i].webkitRelativePath}`
-            if(tempImg.height > maxHeight){
-                maxHeight = tempImg.height
+            tempImg.onload = () => afterLoad(tempImg.height, tempImg.width, i)
+        }
+        const afterLoad = (height, width, i) => {
+            if(height > maxHeight){
+                maxHeight = height
             }
-            if(tempImg.width > maxWidth){
-                maxWidth = tempImg.width
+            if(width > maxWidth){
+                maxWidth = width
             }
             let path = e.target.files[i].webkitRelativePath.split('/')
             path.splice(0, 1)
             let active = false
-            if(prev!==path[0]){
+            if(!activeLayerAssets[path[0]]){
+                activeLayerAssets[path[0]] = true
                 active = true
             }
             let layer = {
@@ -85,7 +89,6 @@ const Start = () => {
                     sepia: '0%'
                 }
             }
-            prev = path[0]
             layers[path[0]] = {active: false, assets: layers[path[0]]&&layers[path[0]].assets?[...layers[path[0]].assets, layer]:[layer]}
             if(i === e.target.files.length-1){
                 let newKeys = Object.keys(layers)
