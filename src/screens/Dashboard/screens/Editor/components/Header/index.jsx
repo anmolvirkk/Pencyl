@@ -1,31 +1,81 @@
 import styles from './_header.module.sass'
-import {User} from 'react-feather'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useRecoilState } from 'recoil'
+import projectsAtom from '../../../projectsAtom'
+import activeProjectAtom from '../../../activeProjectAtom'
+import { useEffect, useRef, useState, useCallback } from 'react'
 
-const Upgrade = () => {
-    return (
-        <button className={styles.upgrade}>
-            Upgrade
-        </button>
-    )
-}
+const Generate = () => {
+    const [projects] = useRecoilState(projectsAtom)
+    const [activeProject] = useRecoilState(activeProjectAtom)
+    
+    let maxRef = useRef(1)
+    const [max, setMax] = useState(0)
 
-const Profile = () => {
+    useEffect(()=>{
+        if(max !== maxRef.current){
+            let currentProject = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
+            Object.keys(currentProject.layers).forEach((item)=>{
+                maxRef.current = maxRef.current * currentProject.layers[item].assets.length
+            })
+            setMax(maxRef.current)
+        }
+    }, [maxRef, max, setMax, projects, activeProject])
+
+    
+    const [inputText, setInputText] = useState('')
+
+    const validate = useCallback((e) => {
+        let shouldPrevent = false
+        if(e.nativeEvent.data){
+            if(!e.nativeEvent.data.match(/^\d+$/i)){
+                shouldPrevent = true
+            }
+        }
+        if(shouldPrevent){
+            e.preventDefault()
+        }else{
+            setInputText(e.target.value)
+        }
+    }, [])
+
+    const [error, setError] = useState(false)
+
+    const nav = useNavigate()
+
+    const generate = () => {
+        if(inputText){
+            nav('generate')
+        }else{
+            setError(true)
+        }
+    }
+
     return (
-        <div className={styles.profile}>
-            <User />
+        <div className={styles.generateWrapper}>
+            <div className={styles.inputWrapper}>
+                <div className={`${styles.input} ${error?styles.error:''}`}>
+                    <input type='text' placeholder={!error?'Supply':'Please Enter Supply'} value={inputText} onChange={(e)=>validate(e)} />
+                    <div className={styles.max}>Max : {max}</div>
+                </div>
+            </div>
+            <button className={styles.generate} onClick={generate}>
+                Generate
+            </button>
         </div>
     )
 }
 
-const Header = () => {
+const Header = ({type}) => {
+    const nav = useNavigate()
     return (
         <header className={styles.header}>
-            <Link to='/dashboard'><img alt='' src='/logo.png' /></Link>
-            <div className={styles.menu}>
-                <Upgrade />
-                <Profile />
-            </div>
+            <button onMouseDown={() => nav(-1)}><img alt='' src='/logo.png' /></button>
+            {type!=='generate'?
+                <div className={styles.menu}>
+                    <Generate />
+                </div>
+            :null}
         </header>
     )
 }

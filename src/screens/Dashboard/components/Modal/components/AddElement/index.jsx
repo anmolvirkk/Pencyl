@@ -6,7 +6,7 @@ import elementsAtom from './elementsAtom'
 import Lottie from 'react-lottie-player'
 import loadingData from '../../../../loading.json'
 
-const Header = ({setLoading, onClick}) => {
+const Header = ({setLoading}) => {
     const Searchbar = () => {
 
         const query = useRef('')
