@@ -70,7 +70,7 @@ const Generate = () => {
         <div className={styles.generateWrapper}>
             <div className={styles.inputWrapper}>
                 <div className={`${styles.input} ${error?styles.error:''}`}>
-                    <input onMouseDown={()=>setError(false)} type='text' placeholder={!error?'Enter Supply':error} value={!error?inputText:''} onChange={(e)=>validate(e)} />
+                    <input onMouseDown={error?()=>setError(false):null} type='text' placeholder={!error?'Enter Supply':error} value={!error?inputText:''} onChange={(e)=>validate(e)} />
                     <div className={styles.max}>Max : {max}</div>
                 </div>
             </div>
