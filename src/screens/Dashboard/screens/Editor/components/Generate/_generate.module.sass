@@ -4,9 +4,6 @@
     display: flex
     align-items: center
 
-.images
-    width: 100%
-
 .settings
     width: 300px
     min-width: 300px
@@ -41,3 +38,17 @@
                     width: 100%
                     background-color: transparent
                     padding: 12px
+
+.images
+    width: 100%
+    height: calc( 100vh - 60px )
+    display: grid
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
+    .image
+        width: 100%
+        position: relative
+        .asset
+            width: 100%
+            position: absolute
+            img
+                width: 100%

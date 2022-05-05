@@ -6,7 +6,7 @@ import activeProjectAtom from '../../../activeProjectAtom'
 import { useEffect, useRef, useState, useCallback } from 'react'
 
 const Generate = () => {
-    const [projects] = useRecoilState(projectsAtom)
+    const [projects, setProjects] = useRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
     
     let maxRef = useRef(1)
@@ -45,7 +45,18 @@ const Generate = () => {
 
     const generate = () => {
         if(inputText){
-            nav('generate')
+            let projectString = projects.filter(i=>i.id===activeProject)[0].project
+            let newProject = JSON.parse(projectString)
+            newProject.supply = inputText
+            fetch('http://localhost:5000/'+activeProject, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({project: newProject})
+            }).then(e=>e.json()).then(e=>setProjects(e)).then(()=>{
+                nav('generate')
+            })
         }else{
             setError(true)
         }
@@ -55,7 +66,7 @@ const Generate = () => {
         <div className={styles.generateWrapper}>
             <div className={styles.inputWrapper}>
                 <div className={`${styles.input} ${error?styles.error:''}`}>
-                    <input type='text' placeholder={!error?'Supply':'Please Enter Supply'} value={inputText} onChange={(e)=>validate(e)} />
+                    <input type='text' placeholder={!error?'Enter Supply':'Please Enter Supply'} value={inputText} onChange={(e)=>validate(e)} />
                     <div className={styles.max}>Max : {max}</div>
                 </div>
             </div>
