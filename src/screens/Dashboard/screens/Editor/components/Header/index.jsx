@@ -45,20 +45,24 @@ const Generate = () => {
 
     const generate = () => {
         if(inputText){
-            let projectString = projects.filter(i=>i.id===activeProject)[0].project
-            let newProject = JSON.parse(projectString)
-            newProject.supply = inputText
-            fetch('http://localhost:5000/'+activeProject, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({project: newProject})
-            }).then(e=>e.json()).then(e=>setProjects(e)).then(()=>{
-                nav('generate')
-            })
+            if(parseInt(inputText) <= max){
+                let projectString = projects.filter(i=>i.id===activeProject)[0].project
+                let newProject = JSON.parse(projectString)
+                newProject.supply = inputText
+                fetch('http://localhost:5000/'+activeProject, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({project: newProject})
+                }).then(e=>e.json()).then(e=>setProjects(e)).then(()=>{
+                    nav('generate')
+                })
+            }else{
+                setError('Supply cannot be > max')
+            }
         }else{
-            setError(true)
+            setError('Supply cannot be empty')
         }
     }
 
@@ -66,7 +70,7 @@ const Generate = () => {
         <div className={styles.generateWrapper}>
             <div className={styles.inputWrapper}>
                 <div className={`${styles.input} ${error?styles.error:''}`}>
-                    <input type='text' placeholder={!error?'Enter Supply':'Please Enter Supply'} value={inputText} onChange={(e)=>validate(e)} />
+                    <input onMouseDown={()=>setError(false)} type='text' placeholder={!error?'Enter Supply':error} value={!error?inputText:''} onChange={(e)=>validate(e)} />
                     <div className={styles.max}>Max : {max}</div>
                 </div>
             </div>
