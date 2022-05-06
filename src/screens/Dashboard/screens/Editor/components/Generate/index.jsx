@@ -35,13 +35,35 @@ const Images = () => {
             </div>
           )
           document.getElementById('images').innerHTML = document.getElementById('images').innerHTML+html
-          window.scrollTo(0, document.body.scrollHeight)
+          document.getElementById('imagesWrapper').scrollTo(0, document.getElementById('imagesWrapper').scrollHeight)
+          document.getElementById('currentImage').innerHTML = i+1
+          document.getElementById('totalImages').innerHTML = currentProject.supply
         }, 0)
       }
     }
   }, [currentProject])
   return (
-    <div className={styles.images} id='images' />
+    <div className={styles.imagesWrapper} id='imagesWrapper'>
+      <div className={styles.images} id='images' />
+    </div>
+  )
+}
+
+const Footer = () => {
+  return (
+    <div className={styles.footer} id='footer'>
+      <div className={styles.index}>
+        <div id='currentImage' /> / <div id='totalImages' />
+      </div>
+      <div className={styles.btns}>
+        <button className={styles.btn}>
+            Export Zip
+        </button>
+        <button className={styles.btn}>
+            Create NFT Collection
+        </button>
+      </div>
+    </div>
   )
 }
 
@@ -50,6 +72,7 @@ const Generate = () => {
     <div className={styles.generate}>
         <Header type='generate' />
         <Images />
+        <Footer />
     </div>
   )
 }

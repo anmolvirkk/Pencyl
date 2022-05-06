@@ -39,16 +39,48 @@
                     background-color: transparent
                     padding: 12px
 
-.images
+.imagesWrapper
     width: 100%
-    max-height: calc( 100vh - 60px )
-    display: grid
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
-    .image
+    height: calc( 100vh - 120px )
+    overflow-y: auto
+    .images
         width: 100%
-        position: relative
-        .asset
+        display: grid
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
+        .image
             width: 100%
-            position: absolute
-            img
+            position: relative
+            .asset
                 width: 100%
+                position: absolute
+                img
+                    width: 100%
+
+.footer
+    padding: 12px
+    display: flex
+    justify-content: space-between
+    align-items: center
+    height: 60px
+    width: 100%
+    background-color: var(--black)
+    .index
+        display: flex
+        align-items: center
+    .btns
+        display: flex
+        .btn
+            border: none
+            outline: none
+            font-size: 16px
+            padding: 0 24px
+            background-color: var(--primary)
+            color: white
+            cursor: pointer
+            height: 42px
+            border-radius: 7px 7px
+            font-weight: 400
+            text-decoration: none
+            +mixins.center
+            line-height: 0
+            margin-left: 12px
