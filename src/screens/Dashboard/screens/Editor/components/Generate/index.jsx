@@ -38,6 +38,7 @@ const Images = () => {
           document.getElementById('imagesWrapper').scrollTo(0, document.getElementById('imagesWrapper').scrollHeight)
           document.getElementById('currentImage').innerHTML = i+1
           document.getElementById('totalImages').innerHTML = currentProject.supply
+          document.getElementById('progress').style.width = (((i+1)/parseInt(currentProject.supply))*100)+'%'
         }, 0)
       }
     }
@@ -53,7 +54,10 @@ const Footer = () => {
   return (
     <div className={styles.footer} id='footer'>
       <div className={styles.index}>
-        <div id='currentImage' /> / <div id='totalImages' />
+        <div id='currentImage' /> &nbsp;/&nbsp; <div id='totalImages' />
+      </div>
+      <div className={styles.progressbar}>
+        <div className={styles.progress} id='progress' />
       </div>
       <div className={styles.btns}>
         <button className={styles.btn}>
