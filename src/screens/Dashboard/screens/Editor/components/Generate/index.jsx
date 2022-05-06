@@ -7,11 +7,13 @@ import styles from './_generate.module.sass'
 import ReactDOMServer from 'react-dom/server'
 
 const Images = () => {
+
   const [projects] = useRecoilState(projectsAtom)
   const [activeProject] = useRecoilState(activeProjectAtom)
   let currentProject = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
   let layerKeys = Object.keys(currentProject.layers)
   layerKeys.reverse()
+
   useEffect(()=>{
     if(document.getElementById('images').children.length < parseInt(currentProject.supply)){
       const addImage = (res) => {
@@ -54,14 +56,17 @@ const Images = () => {
       }
 
       doNextPromise(0)
+
     }
 
   }, [currentProject, layerKeys])
+
   return (
     <div className={styles.imagesWrapper} id='imagesWrapper'>
       <div className={styles.images} id='images' />
     </div>
   )
+
 }
 
 const Footer = () => {
