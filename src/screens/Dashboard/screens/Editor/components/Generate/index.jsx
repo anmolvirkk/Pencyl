@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import activeProjectAtom from '../../../activeProjectAtom'
 import projectsAtom from '../../../projectsAtom'
@@ -15,6 +15,11 @@ const Images = React.memo(() => {
   layerKeys.reverse()
 
   const images = useRef({})
+
+  const [resize, setResize] = useState(false)
+  window.onresize = () => {
+    setResize(!resize)
+  }
 
   const Image = React.memo(({style, columnIndex, rowIndex}) => {
     let index = 'image'+parseInt(`${columnIndex}${rowIndex}`)
