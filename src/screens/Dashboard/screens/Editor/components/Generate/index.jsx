@@ -71,7 +71,7 @@ const Images = React.memo(() => {
         height={window.innerHeight - 120}
         width={window.innerWidth}
         rowHeight={300}
-        columnWidth={300}
+        columnWidth={300 + (((window.innerWidth - 2) / 300) - Math.floor((window.innerWidth - 2) / 300))*300/Math.floor((window.innerWidth - 2) / 300)}
       >
       {Image}
       </Grid>
