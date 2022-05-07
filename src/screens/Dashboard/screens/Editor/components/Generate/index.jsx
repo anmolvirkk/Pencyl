@@ -83,9 +83,6 @@ const Images = React.memo(() => {
 const Footer = React.memo(() => {
   return (
     <div className={styles.footer} id='footer'>
-      <div className={styles.progressbar}>
-        <div className={styles.progress} id='progress' />
-      </div>
       <div className={styles.btns}>
         <button className={styles.btn}>
             Export Zip
