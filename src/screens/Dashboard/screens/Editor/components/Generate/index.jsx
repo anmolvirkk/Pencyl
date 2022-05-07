@@ -21,6 +21,8 @@ const Images = React.memo(() => {
     setResize(!resize)
   }
 
+  const imagesData = useRef([])
+
   const Image = React.memo(({style, columnIndex, rowIndex}) => {
     let index = 'image'+parseInt(`${columnIndex}${rowIndex}`)
     const randomNumbers = useRef([])
@@ -32,6 +34,7 @@ const Images = React.memo(() => {
         image.push(currentProject.layers[layerKeys[i]].assets[random].elem)
       }
       images.current = {...images.current, [index]: image}
+      // imagesData.current = [...imagesData]
       return (
         <div className={styles.imageWrapper} style={{...style, aspectRatio: `${currentProject.canvas.width}/${currentProject.canvas.height}`}}>
           <div className={styles.image} style={{background: currentProject.canvas.background}}>

@@ -1,4 +1,3 @@
-import React from "react"
 import { Routes, Route } from "react-router-dom"
 import Projects from "./screens/Projects"
 import Editor from "./screens/Editor"
