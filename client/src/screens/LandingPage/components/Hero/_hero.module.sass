@@ -1,0 +1,32 @@
+.hero
+    height: 35vw
+    background-color: var(--primary)
+    .wrapper
+        display: flex
+        align-items: center
+        position: relative
+        height: 100%
+        margin-bottom: -35vw
+        z-index: 1
+        .content
+            padding: 24px
+            h1
+                font-size: 2.5vw
+            p
+                font-size: 1.15vw
+                padding-left: 0.25vw
+                margin-top: 24px
+                margin-bottom: 40px
+            a
+                all: unset
+                background-color: var(--primary)
+                padding: 14px 24px
+                cursor: pointer
+                box-shadow: 0 5px 10px rgba(0,0,0,0.25)
+                border-radius: 7px 7px
+                font-weight: 400
+    video
+        width: 100%
+        object-fit: cover
+        height: 100%
+        filter: hue-rotate(35deg) brightness(75%) contrast(150%) saturate(120%)
