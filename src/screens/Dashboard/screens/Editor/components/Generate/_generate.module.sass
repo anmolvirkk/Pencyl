@@ -42,19 +42,18 @@
 .imagesWrapper
     width: 100%
     height: calc( 100vh - 120px )
-    overflow-y: auto
-    .images
+.images
+    width: 100%
+    display: grid
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
+.image
+    width: 100%
+    position: relative
+    .asset
         width: 100%
-        display: grid
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))
-        .image
+        position: absolute
+        img
             width: 100%
-            position: relative
-            .asset
-                width: 100%
-                position: absolute
-                img
-                    width: 100%
 
 .footer
     padding: 12px
@@ -65,17 +64,10 @@
     width: 100%
     background-color: var(--black)
 
-    .index
-        display: flex
-        align-items: center
-        min-width: fit-content
-
     .progressbar
         width: 100%
         background-color: var(--lightblack3)
         height: 3px
-        margin-left: 24px
-        margin-right: 12px
         .progress
             height: 100%
             width: 0%
