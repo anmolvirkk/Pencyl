@@ -20,9 +20,6 @@ const Images = React.memo(({images}) => {
     setResize(!resize)
   }
 
-  const rowCount = Math.ceil(parseInt(currentProject.supply)/Math.floor(window.innerWidth / 300))
-  const columnCount = Math.floor(window.innerWidth / 300)
-
   const gridIndex = useRef([])
 
   const Image = React.memo(({style, rowIndex, columnIndex}) => {
@@ -53,8 +50,8 @@ const Images = React.memo(({images}) => {
   return (
     <div className={styles.imagesWrapper} id='imagesWrapper'>
       <Grid 
-        rowCount={rowCount}
-        columnCount={columnCount}
+        rowCount={Math.ceil(parseInt(currentProject.supply)/Math.floor(window.innerWidth / 300))}
+        columnCount={Math.floor(window.innerWidth / 300)}
         height={window.innerHeight - 120}
         width={window.innerWidth}
         rowHeight={300}
