@@ -1,9 +1,10 @@
 import styles from './_header.module.sass'
 import { useNavigate } from 'react-router-dom'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import projectsAtom from '../../../projectsAtom'
 import activeProjectAtom from '../../../activeProjectAtom'
 import { useEffect, useRef, useState, useCallback } from 'react'
+import loadingAtom from '../../../loadingAtom'
 
 const Generate = () => {
     const [projects, setProjects] = useRecoilState(projectsAtom)
@@ -43,7 +44,10 @@ const Generate = () => {
 
     const nav = useNavigate()
 
+    const setLoading = useSetRecoilState(loadingAtom)
+
     const generate = () => {
+        setLoading(true)
         if(inputText){
             if(parseInt(inputText) <= max){
                 let projectString = projects.filter(i=>i.id===activeProject)[0].project
@@ -59,9 +63,11 @@ const Generate = () => {
                     nav('generate')
                 })
             }else{
+                setLoading(false)
                 setError('Supply cannot be > max')
             }
         }else{
+            setLoading(false)
             setError('Supply cannot be empty')
         }
     }

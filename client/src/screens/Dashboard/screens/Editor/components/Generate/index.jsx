@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import activeProjectAtom from '../../../activeProjectAtom'
 import projectsAtom from '../../../projectsAtom'
 import Header from '../Header'
@@ -7,6 +7,7 @@ import styles from './_generate.module.sass'
 import { FixedSizeGrid as Grid } from "react-window"
 import ReactDOMServer from 'react-dom/server'
 import { toJpeg } from 'dom-to-image'
+import loadingAtom from '../../../loadingAtom'
 
 const Images = React.memo(({images}) => {
 
@@ -148,6 +149,8 @@ const Generate = () => {
 
   const images = useRef([])
 
+  const setLoading = useSetRecoilState(loadingAtom)
+
   for(let i = 0; i < parseInt(currentProject.supply); i++){
     let image = []
     for(let i = 0; i < layerKeys.length; i++){
@@ -155,6 +158,11 @@ const Generate = () => {
       image.push(currentProject.layers[layerKeys[i]].assets[random].elem)
     }
     images.current.push(image)
+    if(i === parseInt(currentProject.supply) - 1){
+      setTimeout(()=>{
+        setLoading(false)
+      }, 1100)
+    }
   }
 
   return (
