@@ -30,9 +30,7 @@ const makeFolder = async (req) => {
     openFolder = folder.replace(os.userInfo().username, os.userInfo().username.toUpperCase().replace(' ', '').substring(0, 6)+'~1')
   }
 
-  exec(`start ${openFolder}`, err=>{
-    console.log(err)
-  })
+  exec(`start ${openFolder}`)
 
   return folder
 
