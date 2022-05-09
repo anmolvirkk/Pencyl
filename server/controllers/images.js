@@ -26,7 +26,7 @@ const makeFolder = async (req) => {
 
   let openFolder = folder
 
-  if(os.userInfo().homedir.includes(' ')){
+  if(os.userInfo().username.includes(' ')){
     openFolder = folder.replace(os.userInfo().username, os.userInfo().username.toUpperCase().replace(' ', '').substring(0, 6)+'~1')
   }
 
