@@ -30,7 +30,7 @@ const Images = React.memo(({images}) => {
     if(!gridIndex.current.includes(index)){
       gridIndex.current.push(index)
     }
-    if(gridIndex.current.length <= images.current.length){
+    if(images.current[gridIndex.current.indexOf(index)]){
       let image = images.current[gridIndex.current.indexOf(index)]
       return (
         <div style={{...style, aspectRatio: `${currentProject.canvas.width}/${currentProject.canvas.height}`}}>
