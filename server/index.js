@@ -19,5 +19,5 @@ app.use(express.json({limit: '50mb'}))
 app.use(router)
 
 app.listen(5000, ()=>{
-    console.log(`Server is running`)
+    console.log('Server is running')
 })

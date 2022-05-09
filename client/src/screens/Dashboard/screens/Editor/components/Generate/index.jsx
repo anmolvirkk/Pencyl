@@ -97,41 +97,53 @@ const Footer = React.memo(() => {
   }, [])
 
   const download = () => {
-    for(let i = 0; i < parseInt(currentProject.supply); i++){
-      setTimeout(()=>{
-        document.getElementById('current').innerHTML = i + 1
-        document.getElementById('progressIndicator').style.width = (((i + 1)/parseInt(currentProject.supply))*100)+'%'
-        let image = []
-        for(let i = 0; i < layerKeys.length; i++){
-          const random = Math.floor(Math.random() * (currentProject.layers[layerKeys[i]].assets.length - 1))
-          image.push(currentProject.layers[layerKeys[i]].assets[random].elem)
-        }
-        let div = document.createElement('div')
-        div.innerHTML = ReactDOMServer.renderToStaticMarkup(
-          <div style={{background: currentProject.canvas.background, position: 'relative', height: '784px', width: '784px'}}>
-              {image.map((item, key)=>{
-                return (
-                  <div key={key} style={{position: 'absolute', width: '100%'}}>
-                    <img src={item} alt='' style={{width: '100%'}} />
-                  </div>
-                )
-              })}
-          </div>
-        )
-        document.getElementById('download').append(div)
-        toJpeg(div.childNodes[0]).then((e)=>{
-            if(e !== 'data:,'){
-                fetch('http://localhost:5000/image', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({folder: currentProject.name, image: e})
-                }).then(e=>console.log(e))
-            }
-        })
-      }, 0)
+    const supplyImage = (i) => {
+      if(i < parseInt(currentProject.supply)){
+          document.getElementById('current').innerHTML = i + 1
+          document.getElementById('progressIndicator').style.width = (((i + 1)/parseInt(currentProject.supply))*100)+'%'
+          let image = []
+          const addLayer = (j) => {
+              if(j < layerKeys.length){
+                const random = Math.floor(Math.random() * (currentProject.layers[layerKeys[j]].assets.length - 1))
+                image.push(currentProject.layers[layerKeys[j]].assets[random].elem)
+                addLayer(j + 1)
+              }else{
+                  let div = document.createElement('div')
+                  let targetHTML = ReactDOMServer.renderToStaticMarkup(
+                    <div style={{background: currentProject.canvas.background, position: 'relative', height: '784px', width: '784px'}}>
+                        {image.map((item, key)=>{
+                          return (
+                            <div key={key} style={{position: 'absolute', width: '100%'}}>
+                              <img src={item} alt='' style={{width: '100%'}} />
+                            </div>
+                          )
+                        })}
+                    </div>
+                  )
+                  div.innerHTML = targetHTML
+                  document.getElementById('download').append(div)
+                  setTimeout(()=>{
+                    toJpeg(div.childNodes[0]).then((e)=>{
+                      if(e !== 'data:,'){
+                        fetch('http://localhost:5000/image', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({folder: currentProject.name, image: e})
+                        }).then(()=>{
+                          document.getElementById('download').innerHTML = ''
+                          supplyImage(i+1)
+                        })
+                      }
+                    })
+                  }, 1000)
+              }
+          }
+          addLayer(0)
+      }
     }
+    supplyImage(0)
   }
   return (
     <div className={styles.footer} id='footer'>
@@ -143,7 +155,7 @@ const Footer = React.memo(() => {
       </div>
       <div className={styles.btns}>
         <button className={styles.btn} onMouseDown={download}>
-            Export Zip
+            Download Images
         </button>
         <button className={styles.btn}>
             Create NFT Collection
@@ -159,7 +171,7 @@ const Generate = () => {
         <Header type='generate' />
         <Images />
         <Footer />
-        <div id='download'></div>
+        <div id='download' className={styles.download} />
     </div>
   )
 }
