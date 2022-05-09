@@ -78,10 +78,16 @@ const Footer = React.memo(({images}) => {
 
   const download = () => {
     let promises = []
+    let progress = 0
+    const setProgress = async () => {
+      progress = progress + 1
+      setTimeout(()=>{
+        document.getElementById('current').innerHTML = progress
+        document.getElementById('progressIndicator').style.width = (((progress)/parseInt(currentProject.supply))*100)+'%'  
+      }, 0)
+    }
     const supplyImage = (i) => {
       if(i < parseInt(currentProject.supply)){
-          document.getElementById('current').innerHTML = i + 1
-          document.getElementById('progressIndicator').style.width = (((i + 1)/parseInt(currentProject.supply))*100)+'%'
           let image = images.current[i]
           let div = document.createElement('div')
           let targetHTML = ReactDOMServer.renderToStaticMarkup(
@@ -109,7 +115,9 @@ const Footer = React.memo(({images}) => {
                         },
                         body: JSON.stringify({folder: currentProject.name, image: e})
                       }).then((e)=>{
-                        res(e)
+                        setProgress().then(()=>{
+                          res(e)
+                        })
                     })
                   )
                 }
