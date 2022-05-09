@@ -1,6 +1,5 @@
 import os from 'os'
 import fs from 'fs'
-import nodeHtmlToImage from 'node-html-to-image'
 
 export const addImage = async (req, res) => {
     try {
@@ -8,17 +7,24 @@ export const addImage = async (req, res) => {
         if (!fs.existsSync(folder)) {
           fs.mkdirSync(folder)
         }
-        let i = 0
-        for(const image of req.body.images){
-            console.log(image)
-            nodeHtmlToImage({
-                output: folder+'\\'+req.body.folder+i+'.jpg',
-                html: image
-            }).then(()=>{
-                console.log('image created')
-            })
-            i++
+        const decodeBase64Image = async (dataString) => {
+            var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+              response = {}
+          
+            if (matches.length !== 3) {
+              return new Error('Invalid input string')
+            }
+          
+            response.type = matches[1];
+            response.data = Buffer.from(matches[2], 'base64')
+          
+            return response
         }
+        decodeBase64Image(req.body.image).then((e)=>{
+            fs.readdir(folder, (_, files) => {
+                fs.writeFile(folder+'\\'+req.body.folder+'_#'+files.length+'.jpg', e.data, (err)=>{console.log(err)})
+            })
+        })
     } catch (error) {
         res.json({message: error.message})
     }

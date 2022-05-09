@@ -6,6 +6,7 @@ import Header from '../Header'
 import styles from './_generate.module.sass'
 import { FixedSizeGrid as Grid } from "react-window"
 import ReactDOMServer from 'react-dom/server'
+import { toJpeg } from 'dom-to-image'
 
 const Images = React.memo(() => {
 
@@ -94,23 +95,8 @@ const Footer = React.memo(() => {
       document.getElementById('total').innerHTML = currentProject.supply
     }
   }, [])
-  
-  const convertToBase64 = async (url) => {
-      const data = await fetch(url)
-      const blob = await data.blob()
-      return new Promise((resolve) => {
-      const reader = new FileReader()
-      reader.readAsDataURL(blob)
-      reader.onloadend = () => {
-          const base64data = reader.result
-          resolve(base64data)
-      }
-    })
-  }
 
   const download = () => {
-    let images = []
-    let imageElements = []
     for(let i = 0; i < parseInt(currentProject.supply); i++){
       setTimeout(()=>{
         document.getElementById('current').innerHTML = i + 1
@@ -118,40 +104,32 @@ const Footer = React.memo(() => {
         let image = []
         for(let i = 0; i < layerKeys.length; i++){
           const random = Math.floor(Math.random() * (currentProject.layers[layerKeys[i]].assets.length - 1))
-          image.push(convertToBase64(currentProject.layers[layerKeys[i]].assets[random].elem))
+          image.push(currentProject.layers[layerKeys[i]].assets[random].elem)
         }
-        images.push(image)
-        if(i === parseInt(currentProject.supply) - 1){
-          const resolvePromises = (i) => {
-            if(i < images.length){
-              Promise.all(images[i]).then(e=>{
-                imageElements.push(
-                  ReactDOMServer.renderToStaticMarkup(
-                    <div style={{background: currentProject.canvas.background, position: 'relative', height: '784px', width: '784px'}}>
-                        {e.map((item, key)=>{
-                          return (
-                            <div key={key} style={{position: 'absolute', width: '100%'}}>
-                              <img src={item} alt='' style={{width: '100%'}} />
-                            </div>
-                          )
-                        })}
-                    </div>
-                  )
+        let div = document.createElement('div')
+        div.innerHTML = ReactDOMServer.renderToStaticMarkup(
+          <div style={{background: currentProject.canvas.background, position: 'relative', height: '784px', width: '784px'}}>
+              {image.map((item, key)=>{
+                return (
+                  <div key={key} style={{position: 'absolute', width: '100%'}}>
+                    <img src={item} alt='' style={{width: '100%'}} />
+                  </div>
                 )
-                resolvePromises(i+1)
-              })
-            }else{
-              fetch('http://localhost:5000/images', {
-                  method: 'POST',
+              })}
+          </div>
+        )
+        document.getElementById('download').append(div)
+        toJpeg(div.childNodes[0]).then((e)=>{
+            if(e !== 'data:,'){
+                fetch('http://localhost:5000/image', {
+                    method: 'POST',
                     headers: {
-                      'Content-Type': 'application/json'
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({folder: currentProject.name, images: imageElements})
-              }).then(e=>e.json()).then(e=>console.log(e))
+                    body: JSON.stringify({folder: currentProject.name, image: e})
+                }).then(e=>console.log(e))
             }
-          }
-          resolvePromises(0)
-        }
+        })
       }, 0)
     }
   }
@@ -181,6 +159,7 @@ const Generate = () => {
         <Header type='generate' />
         <Images />
         <Footer />
+        <div id='download'></div>
     </div>
   )
 }

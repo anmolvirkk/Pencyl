@@ -10,6 +10,6 @@ router.post('/', createProject)
 router.patch('/:id', updateProject)
 router.delete('/:id', deleteProject)
 
-router.post('/images', addImage)
+router.post('/image', addImage)
 
 export default router
