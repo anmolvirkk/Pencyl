@@ -77,6 +77,7 @@ const Footer = React.memo(({images}) => {
   }, [])
 
   const download = () => {
+    let promises = []
     const supplyImage = (i) => {
       if(i < parseInt(currentProject.supply)){
           document.getElementById('current').innerHTML = i + 1
@@ -96,22 +97,28 @@ const Footer = React.memo(({images}) => {
           )
           div.innerHTML = targetHTML
           document.getElementById('download').append(div)
-          setTimeout(()=>{
-            toJpeg(div.childNodes[0]).then((e)=>{
-              if(e !== 'data:,'){
-                fetch('http://localhost:5000/image', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({folder: currentProject.name, image: e})
-                }).then(()=>{
-                  document.getElementById('download').innerHTML = ''
-                  supplyImage(i+1)
-                })
-              }
+          promises.push(
+            new Promise(res=>{
+              toJpeg(div.childNodes[0]).then((e)=>{
+                if(e !== 'data:,'){
+                  promises.push(
+                      fetch('http://localhost:5000/image', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({folder: currentProject.name, image: e})
+                      }).then((e)=>{
+                        res(e)
+                    })
+                  )
+                }
+              })
             })
-          }, 70)
+          )
+          supplyImage(i+1)
+      }else{
+        Promise.all(promises)
       }
     }
     supplyImage(0)

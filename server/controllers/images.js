@@ -23,16 +23,16 @@ export const addImage = async (req, res) => {
           await decodeBase64Image(req.body.image).then((e)=>{
             fs.readdir(folder, (_, files) => {
                 fs.writeFile(folder+'\\'+req.body.folder+'_#'+files.length+'.jpg', e.data, ()=>{console.log('image added')})
-                res.json()
             })
           })
+          res.json()
         }else{
           await decodeBase64Image(req.body.image).then((e)=>{
             fs.readdir(folder, (_, files) => {
                 fs.writeFile(folder+'\\'+req.body.folder+'_#'+files.length+'.jpg', e.data, ()=>{console.log('image added')})
-                res.json()
             })
           })
+          res.json()
         }
     } catch (error) {
         res.json({message: error.message})
