@@ -161,7 +161,7 @@ const Generate = () => {
     if(i === parseInt(currentProject.supply) - 1){
       setTimeout(()=>{
         setLoading(false)
-      }, 1100)
+      }, 0)
     }
   }
 
