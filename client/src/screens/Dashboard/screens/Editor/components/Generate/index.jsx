@@ -111,7 +111,7 @@ const Footer = React.memo(({images}) => {
                 })
               }
             })
-          }, 1000)
+          }, 70)
       }
     }
     supplyImage(0)
@@ -148,17 +148,19 @@ const Generate = () => {
 
   const setLoading = useSetRecoilState(loadingAtom)
 
-  for(let i = 0; i < parseInt(currentProject.supply); i++){
-    let image = []
-    for(let i = 0; i < layerKeys.length; i++){
-      const random = Math.floor(Math.random() * (currentProject.layers[layerKeys[i]].assets.length - 1))
-      image.push(currentProject.layers[layerKeys[i]].assets[random].elem)
-    }
-    images.current.push(image)
-    if(i === parseInt(currentProject.supply) - 1){
-      setTimeout(()=>{
-        setLoading(false)
-      }, 0)
+  if(images.current.length === 0){
+    for(let i = 0; i < parseInt(currentProject.supply); i++){
+      let image = []
+      for(let i = 0; i < layerKeys.length; i++){
+        const random = Math.floor(Math.random() * (currentProject.layers[layerKeys[i]].assets.length - 1))
+        image.push(currentProject.layers[layerKeys[i]].assets[random].elem)
+      }
+      images.current.push(image)
+      if(i === parseInt(currentProject.supply) - 1){
+        setTimeout(()=>{
+          setLoading(false)
+        }, 0)
+      }
     }
   }
 
