@@ -16,9 +16,18 @@ const Images = React.memo(({images}) => {
   const [activeProject] = useRecoilState(activeProjectAtom)
   let currentProject = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
 
+  let rowHeight = 300*(currentProject.canvas.height/currentProject.canvas.width)
+  let columnWidth = rowHeight*(currentProject.canvas.width/currentProject.canvas.height)
+
   const [resize, setResize] = useState(false)
   window.onresize = () => {
     setResize(!resize)
+    let newRowHeight = 300*(currentProject.canvas.height/currentProject.canvas.width)
+    let newColumnWidth = rowHeight*(currentProject.canvas.width/currentProject.canvas.height)
+    if(rowHeight !== newRowHeight && columnWidth !== newColumnWidth){
+      rowHeight = newRowHeight
+      columnWidth = newColumnWidth
+    }
   }
 
   const gridIndex = useRef([])
@@ -48,10 +57,6 @@ const Images = React.memo(({images}) => {
       return null
     }
   })
-
-  const rowHeight = 300*(currentProject.canvas.height/currentProject.canvas.width)
-  const columnWidth = rowHeight*(currentProject.canvas.width/currentProject.canvas.height)
-
   return (
     <div className={styles.imagesWrapper} id='imagesWrapper'>
       <Grid 
@@ -59,7 +64,7 @@ const Images = React.memo(({images}) => {
         columnCount={Math.floor(window.innerWidth / columnWidth)}
         height={window.innerHeight - 120}
         width={window.innerWidth}
-        rowHeight={rowHeight}
+        rowHeight={rowHeight + (((window.innerWidth - 6) / columnWidth) - Math.floor((window.innerWidth - 6) / columnWidth))*columnWidth/Math.floor((window.innerWidth - 6) / columnWidth)}
         columnWidth={columnWidth + (((window.innerWidth - 6) / columnWidth) - Math.floor((window.innerWidth - 6) / columnWidth))*columnWidth/Math.floor((window.innerWidth - 6) / columnWidth)}
       >
       {Image}
