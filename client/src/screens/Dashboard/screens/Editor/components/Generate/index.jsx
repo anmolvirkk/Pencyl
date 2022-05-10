@@ -33,9 +33,10 @@ const Images = React.memo(({images}) => {
         <div style={{...style, aspectRatio: `${currentProject.canvas.width}/${currentProject.canvas.height}`}}>
           <div className={styles.image} style={{backgroundColor: currentProject.canvas.background, width: '100%', height: '100%'}}>
               {image.map((item, key)=>{
+                let style = {...item.style, width: '100%', height: '100%', left: 0, top: 0, transform: 'none', filter: `brightness(${item.style.brightness}) contrast(${item.style.contrast}) saturate(${item.style.saturatation}) hue-rotate(${item.style.hue}) sepia(${item.style.sepia})`}
                 return (
-                  <div key={key} className={styles.asset} style={{...item.style}}>
-                    <img src={item.elem} alt='' />
+                  <div key={key} className={styles.asset} style={{top: item.style.top, left: item.style.left, width: item.style.width, height: item.style.height, transform: `rotate(${item.style.rotate})`}}>
+                    <img src={item.elem} alt='' style={{...style}} />
                   </div>
                 )
               })}
@@ -47,15 +48,18 @@ const Images = React.memo(({images}) => {
     }
   })
 
+  const rowHeight = 300*(currentProject.canvas.height/currentProject.canvas.width)
+  const columnWidth = rowHeight*(currentProject.canvas.width/currentProject.canvas.height)
+
   return (
     <div className={styles.imagesWrapper} id='imagesWrapper'>
       <Grid 
-        rowCount={Math.ceil(parseInt(currentProject.supply)/Math.floor(window.innerWidth / 300))}
-        columnCount={Math.floor(window.innerWidth / 300)}
+        rowCount={Math.ceil(parseInt(currentProject.supply)/Math.floor(window.innerWidth / rowHeight))}
+        columnCount={Math.floor(window.innerWidth / columnWidth)}
         height={window.innerHeight - 120}
         width={window.innerWidth}
-        rowHeight={300}
-        columnWidth={300 + (((window.innerWidth - 6) / 300) - Math.floor((window.innerWidth - 6) / 300))*300/Math.floor((window.innerWidth - 6) / 300)}
+        rowHeight={rowHeight}
+        columnWidth={columnWidth + (((window.innerWidth - 6) / columnWidth) - Math.floor((window.innerWidth - 6) / columnWidth))*columnWidth/Math.floor((window.innerWidth - 6) / columnWidth)}
       >
       {Image}
       </Grid>
@@ -93,9 +97,10 @@ const Footer = React.memo(({images}) => {
           let targetHTML = ReactDOMServer.renderToStaticMarkup(
             <div style={{backgroundColor: currentProject.canvas.background, position: 'relative', height: `${currentProject.canvas.height}px`, width: `${currentProject.canvas.width}px`}}>
                 {image.map((item, key)=>{
+                  let style = {...item.style, width: '100%', height: '100%', left: 0, top: 0, transform: 'none', filter: `brightness(${item.style.brightness}) contrast(${item.style.contrast}) saturate(${item.style.saturatation}) hue-rotate(${item.style.hue}) sepia(${item.style.sepia})`}
                   return (
-                    <div key={key} style={{...item.style, position: 'absolute'}}>
-                      <img src={item.elem} alt='' style={{width: '100%'}} />
+                    <div key={key} style={{position: 'absolute', top: item.style.top, left: item.style.left, width: item.style.width, height: item.style.height, transform: `rotate(${item.style.rotate})`}}>
+                      <img src={item.elem} alt='' style={{...style}} />
                     </div>
                   )
                 })}
