@@ -31,11 +31,11 @@ const Images = React.memo(({images}) => {
       let image = images.current[gridIndex.current.indexOf(index)]
       return (
         <div style={{...style, aspectRatio: `${currentProject.canvas.width}/${currentProject.canvas.height}`}}>
-          <div className={styles.image} style={{background: currentProject.canvas.background}}>
+          <div className={styles.image} style={{backgroundColor: currentProject.canvas.background, width: '100%', height: '100%'}}>
               {image.map((item, key)=>{
                 return (
-                  <div key={key} className={styles.asset}>
-                    <img src={item} alt='' />
+                  <div key={key} className={styles.asset} style={{...item.style}}>
+                    <img src={item.elem} alt='' />
                   </div>
                 )
               })}
@@ -55,7 +55,7 @@ const Images = React.memo(({images}) => {
         height={window.innerHeight - 120}
         width={window.innerWidth}
         rowHeight={300}
-        columnWidth={300 + (((window.innerWidth - 2) / 300) - Math.floor((window.innerWidth - 2) / 300))*300/Math.floor((window.innerWidth - 2) / 300)}
+        columnWidth={300 + (((window.innerWidth - 6) / 300) - Math.floor((window.innerWidth - 6) / 300))*300/Math.floor((window.innerWidth - 6) / 300)}
       >
       {Image}
       </Grid>
@@ -91,11 +91,11 @@ const Footer = React.memo(({images}) => {
           let image = images.current[i]
           let div = document.createElement('div')
           let targetHTML = ReactDOMServer.renderToStaticMarkup(
-            <div style={{background: currentProject.canvas.background, position: 'relative', height: `${currentProject.canvas.height}px`, width: `${currentProject.canvas.width}px`}}>
+            <div style={{backgroundColor: currentProject.canvas.background, position: 'relative', height: `${currentProject.canvas.height}px`, width: `${currentProject.canvas.width}px`}}>
                 {image.map((item, key)=>{
                   return (
-                    <div key={key} style={{position: 'absolute', width: '100%'}}>
-                      <img src={item} alt='' style={{width: '100%'}} />
+                    <div key={key} style={{...item.style, position: 'absolute'}}>
+                      <img src={item.elem} alt='' style={{width: '100%'}} />
                     </div>
                   )
                 })}
@@ -168,7 +168,7 @@ const Generate = () => {
       let image = []
       for(let i = 0; i < layerKeys.length; i++){
         const random = Math.floor(Math.random() * (currentProject.layers[layerKeys[i]].assets.length - 1))
-        image.push(currentProject.layers[layerKeys[i]].assets[random].elem)
+        image.push(currentProject.layers[layerKeys[i]].assets[random])
       }
       images.current.push(image)
       if(i === parseInt(currentProject.supply) - 1){
