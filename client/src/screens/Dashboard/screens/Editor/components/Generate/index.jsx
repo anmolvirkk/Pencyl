@@ -38,7 +38,7 @@ const Images = React.memo(({images}) => {
   }
 
   const Image = React.memo(({style, rowIndex, columnIndex}) => {
-    let index = (rowIndex * columnIndex) + rowIndex
+    let index = (rowIndex * columnCount) + columnIndex
     if(images.current[index]){
       let image = images.current[index]
       return (
