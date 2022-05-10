@@ -270,172 +270,172 @@ const Main = ({currentProject}) => {
                             }
                         })}
                         {target&&target[0]?
-                        <Moveable
-                            snappable={true}
-                            elementGuidelines={target}
-                            snapThreshold={5}
-                            isDisplaySnapDigit={true}
-                            snapGap={true}
-                            snapDirections={{'top': true, 'right': true, 'bottom': true, 'left': true}}
-                            elementSnapDirections={{'top': true, 'right': true, 'bottom': true, 'left': true}}
-                            snapDigit={0}
-                            target={target}
-                            draggable={true}
-                            resizable={true}
-                            rotatable={true}
-                            keepRatio={JSON.parse(target[0].attributes[3].value)}
-                            throttleDrag={0}
-                            startDragRotate={0}
-                            throttleDragRotate={0}
-                            zoom={1}
-                            origin={true}
-                            padding={{"left":0,"top":0,"right":0,"bottom":0}}
-                            onDrag={(e) => {
-                                e.target.style.left = e.left/canvasSize.width*100+'%'
-                                e.target.style.top = e.top/canvasSize.height*100+'%'
-                            }}
-                            onDragGroup={(e)=>{
-                                e.targets.forEach((item, i)=>{
-                                    item.style.left = e.events[i].left/canvasSize.width*100+'%'
-                                    item.style.top = e.events[i].top/canvasSize.height*100+'%'
-                                })
-                            }}
-                            onDragEnd={(e)=>{
-                                let left = e.target.style.left
-                                let top = e.target.style.top
-                                let layer = e.target.attributes[1].value
-                                let asset = e.target.attributes[2].value
-                                let projectString = JSON.stringify(project)
-                                let newProject = JSON.parse(projectString)
-                                newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left}
-                                fetch('http://localhost:5000/'+activeProject, {
-                                    method: 'PATCH',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({project: newProject})
-                                }).then(e=>e.json()).then((e)=>{
-                                    setProjects(e)
-                                })
-                            }}
-                            onDragGroupEnd={(e)=>{
-                                let projectString = JSON.stringify(project)
-                                let newProject = JSON.parse(projectString)
-                                e.events.forEach((x)=>{
-                                    let left = x.target.style.left
-                                    let top = x.target.style.top
-                                    let layer = x.target.attributes[1].value
-                                    let asset = x.target.attributes[2].value
-                                    newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left}
-                                })
-                                fetch('http://localhost:5000/'+activeProject, {
-                                        method: 'PATCH',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({project: newProject})
-                                }).then(e=>e.json()).then(e=>setProjects(e))
-                            }}
-                            onResize={(e)=>{
-                                e.target.style.left = e.drag.left+'px'
-                                e.target.style.top = e.drag.top+'px'
-                                e.target.style.width = e.width/canvasSize.width*100+'%'
-                                e.target.style.height  = e.height/canvasSize.height*100+'%'
-                            }}
-                            onResizeEnd={(e)=>{
-                                let width = e.lastEvent.width/canvasSize.width*100+'%'
-                                let height = e.lastEvent.height/canvasSize.height*100+'%'
-                                let left = parseInt(e.target.style.left)/canvasSize.width*100+'%'
-                                let top = parseInt(e.target.style.top)/canvasSize.height*100+'%'
-                                console.log(top)
-                                let layer = e.target.attributes[1].value
-                                let asset = e.target.attributes[2].value
-                                let projectString = JSON.stringify(project)
-                                let newProject = JSON.parse(projectString)
-                                newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, width: width, height: height, top: top, left: left}
-                                fetch('http://localhost:5000/'+activeProject, {
-                                    method: 'PATCH',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({project: newProject})
-                                }).then(e=>e.json()).then((e)=>{
-                                    setProjects(e)
-                                })
-                            }}
-                            onResizeGroup = {(e) => {
-                                e.targets.forEach((item, i)=>{
-                                    item.style.left = (e.events[i].drag.left)/canvasSize.width*100+'%'
-                                    item.style.top = (e.events[i].drag.top)/canvasSize.height*100+'%'
-                                    item.style.height = e.events[i].height/canvasSize.height*100+'%'
-                                    item.style.width = e.events[i].width/canvasSize.width*100+'%'
-                                })
-                            }}
-                            onResizeGroupEnd={(e)=>{
-                                let projectString = JSON.stringify(project)
-                                let newProject = JSON.parse(projectString)
-                                e.events.forEach((e)=>{
+                            <Moveable
+                                snappable={true}
+                                elementGuidelines={target}
+                                snapThreshold={5}
+                                isDisplaySnapDigit={true}
+                                snapGap={true}
+                                snapDirections={{'top': true, 'right': true, 'bottom': true, 'left': true}}
+                                elementSnapDirections={{'top': true, 'right': true, 'bottom': true, 'left': true}}
+                                snapDigit={0}
+                                target={target}
+                                draggable={true}
+                                resizable={true}
+                                rotatable={true}
+                                keepRatio={JSON.parse(target[0].attributes[3].value)}
+                                throttleDrag={0}
+                                startDragRotate={0}
+                                throttleDragRotate={0}
+                                zoom={1}
+                                origin={true}
+                                padding={{"left":0,"top":0,"right":0,"bottom":0}}
+                                onDrag={(e) => {
+                                    e.target.style.left = e.left/canvasSize.width*100+'%'
+                                    e.target.style.top = e.top/canvasSize.height*100+'%'
+                                }}
+                                onDragGroup={(e)=>{
+                                    e.targets.forEach((item, i)=>{
+                                        item.style.left = e.events[i].left/canvasSize.width*100+'%'
+                                        item.style.top = e.events[i].top/canvasSize.height*100+'%'
+                                    })
+                                }}
+                                onDragEnd={(e)=>{
                                     let left = e.target.style.left
                                     let top = e.target.style.top
-                                    let width = e.target.style.width
-                                    let height = e.target.style.height
                                     let layer = e.target.attributes[1].value
                                     let asset = e.target.attributes[2].value
-                                    newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left, height: height, width: width}
-                                })
-                                fetch('http://localhost:5000/'+activeProject, {
+                                    let projectString = JSON.stringify(project)
+                                    let newProject = JSON.parse(projectString)
+                                    newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left}
+                                    fetch('http://localhost:5000/'+activeProject, {
                                         method: 'PATCH',
                                         headers: {
                                             'Content-Type': 'application/json'
                                         },
                                         body: JSON.stringify({project: newProject})
-                                }).then(e=>e.json()).then(e=>setProjects(e))
-                            }}
-                            onRotate={(e)=>{
-                                e.target.style.transform = e.transform
-                            }}
-                            onRotateEnd={(e)=>{
-                                let layer = e.target.attributes[1].value
-                                let asset = e.target.attributes[2].value
-                                let rotate = `${e.lastEvent.rotate}deg`
-                                let projectString = JSON.stringify(project)
-                                let newProject = JSON.parse(projectString)
-                                newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, rotate: rotate}
-                                fetch('http://localhost:5000/'+activeProject, {
-                                    method: 'PATCH',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({project: newProject})
-                                }).then(e=>e.json()).then((e)=>{
-                                    setProjects(e)
-                                })
-                            }}
-                            onRotateGroup={(e)=>{
-                                e.events.forEach((event)=>{
-                                    event.target.style.transform = event.drag.transform
-                                })
-                            }}
-                            onRotateGroupEnd={(e)=>{
-                                let projectString = JSON.stringify(project)
-                                let newProject = JSON.parse(projectString)
-                                e.events.forEach((e)=>{
+                                    }).then(e=>e.json()).then((e)=>{
+                                        setProjects(e)
+                                    })
+                                }}
+                                onDragGroupEnd={(e)=>{
+                                    let projectString = JSON.stringify(project)
+                                    let newProject = JSON.parse(projectString)
+                                    e.events.forEach((x)=>{
+                                        let left = x.target.style.left
+                                        let top = x.target.style.top
+                                        let layer = x.target.attributes[1].value
+                                        let asset = x.target.attributes[2].value
+                                        newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left}
+                                    })
+                                    fetch('http://localhost:5000/'+activeProject, {
+                                            method: 'PATCH',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({project: newProject})
+                                    }).then(e=>e.json()).then(e=>setProjects(e))
+                                }}
+                                onResize={(e)=>{
+                                    e.target.style.left = e.drag.left+'px'
+                                    e.target.style.top = e.drag.top+'px'
+                                    e.target.style.width = e.width/canvasSize.width*100+'%'
+                                    e.target.style.height  = e.height/canvasSize.height*100+'%'
+                                }}
+                                onResizeEnd={(e)=>{
+                                    let width = e.lastEvent.width/canvasSize.width*100+'%'
+                                    let height = e.lastEvent.height/canvasSize.height*100+'%'
+                                    let left = parseInt(e.target.style.left)/canvasSize.width*100+'%'
+                                    let top = parseInt(e.target.style.top)/canvasSize.height*100+'%'
+                                    console.log(top)
+                                    let layer = e.target.attributes[1].value
+                                    let asset = e.target.attributes[2].value
+                                    let projectString = JSON.stringify(project)
+                                    let newProject = JSON.parse(projectString)
+                                    newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, width: width, height: height, top: top, left: left}
+                                    fetch('http://localhost:5000/'+activeProject, {
+                                        method: 'PATCH',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({project: newProject})
+                                    }).then(e=>e.json()).then((e)=>{
+                                        setProjects(e)
+                                    })
+                                }}
+                                onResizeGroup = {(e) => {
+                                    e.targets.forEach((item, i)=>{
+                                        item.style.left = (e.events[i].drag.left)/canvasSize.width*100+'%'
+                                        item.style.top = (e.events[i].drag.top)/canvasSize.height*100+'%'
+                                        item.style.height = e.events[i].height/canvasSize.height*100+'%'
+                                        item.style.width = e.events[i].width/canvasSize.width*100+'%'
+                                    })
+                                }}
+                                onResizeGroupEnd={(e)=>{
+                                    let projectString = JSON.stringify(project)
+                                    let newProject = JSON.parse(projectString)
+                                    e.events.forEach((e)=>{
+                                        let left = e.target.style.left
+                                        let top = e.target.style.top
+                                        let width = e.target.style.width
+                                        let height = e.target.style.height
+                                        let layer = e.target.attributes[1].value
+                                        let asset = e.target.attributes[2].value
+                                        newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left, height: height, width: width}
+                                    })
+                                    fetch('http://localhost:5000/'+activeProject, {
+                                            method: 'PATCH',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({project: newProject})
+                                    }).then(e=>e.json()).then(e=>setProjects(e))
+                                }}
+                                onRotate={(e)=>{
+                                    e.target.style.transform = e.transform
+                                }}
+                                onRotateEnd={(e)=>{
+                                    let layer = e.target.attributes[1].value
+                                    let asset = e.target.attributes[2].value
                                     let rotate = `${e.lastEvent.rotate}deg`
-                                    let left = (parseInt(e.target.style.left.replace('%',''))+e.lastEvent.drag.beforeTranslate[0]/canvasSize.width*100)+'%'
-                                    let top = (parseInt(e.target.style.top.replace('%',''))+e.lastEvent.drag.beforeTranslate[1]/canvasSize.height*100)+'%'
-                                    let layer = e.target.attributes[1].value
-                                    let asset = e.target.attributes[2].value
-                                    newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, rotate: rotate, left: left, top: top}
-                                })
-                                fetch('http://localhost:5000/'+activeProject, {
+                                    let projectString = JSON.stringify(project)
+                                    let newProject = JSON.parse(projectString)
+                                    newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, rotate: rotate}
+                                    fetch('http://localhost:5000/'+activeProject, {
                                         method: 'PATCH',
                                         headers: {
                                             'Content-Type': 'application/json'
                                         },
                                         body: JSON.stringify({project: newProject})
-                                }).then(e=>e.json()).then(e=>setProjects(e))
-                            }}
-                        />
+                                    }).then(e=>e.json()).then((e)=>{
+                                        setProjects(e)
+                                    })
+                                }}
+                                onRotateGroup={(e)=>{
+                                    e.events.forEach((event)=>{
+                                        event.target.style.transform = event.drag.transform
+                                    })
+                                }}
+                                onRotateGroupEnd={(e)=>{
+                                    let projectString = JSON.stringify(project)
+                                    let newProject = JSON.parse(projectString)
+                                    e.events.forEach((e)=>{
+                                        let rotate = `${e.lastEvent.rotate}deg`
+                                        let left = (parseInt(e.target.style.left.replace('%',''))+e.lastEvent.drag.beforeTranslate[0]/canvasSize.width*100)+'%'
+                                        let top = (parseInt(e.target.style.top.replace('%',''))+e.lastEvent.drag.beforeTranslate[1]/canvasSize.height*100)+'%'
+                                        let layer = e.target.attributes[1].value
+                                        let asset = e.target.attributes[2].value
+                                        newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, rotate: rotate, left: left, top: top}
+                                    })
+                                    fetch('http://localhost:5000/'+activeProject, {
+                                            method: 'PATCH',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({project: newProject})
+                                    }).then(e=>e.json()).then(e=>setProjects(e))
+                                }}
+                            />
                         :null}
                         <Selecto
                             dragContainer={'#main'}

@@ -423,7 +423,7 @@ const Layers = ({currentProject}) => {
                     {(provided)=>(
                         <div className={styles.layers} ref={provided.innerRef} {...provided.droppableProps}>
                             {Object.keys(layers).map((item, i)=>(
-                                <Draggable key={i} draggableId={'draggable-'+i} index={i}>
+                                <Draggable key={i} draggableId={`draggable-${i}`} index={i}>
                                     {(provided)=>(
                                         <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                             <Layer name={item} currentProject={currentProject} />
