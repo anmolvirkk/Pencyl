@@ -18,7 +18,13 @@ const decodeBase64Image = async (dataString) => {
 
 const makeFolder = async (req) => {
 
-  let folder = os.homedir()+'\\downloads'+'\\'+req.body.folder.replace(' ', '_')
+  let rootFolder = os.homedir()+'\\downloads\\pencyl'
+
+  if (!fs.existsSync(rootFolder)) {
+    fs.mkdirSync(rootFolder)
+  }
+
+  let folder = rootFolder + '\\' + req.body.folder.replace(' ', '_')
 
   if (!fs.existsSync(folder)) {
     fs.mkdirSync(folder)
