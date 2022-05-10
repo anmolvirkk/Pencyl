@@ -19,26 +19,28 @@ const Images = React.memo(({images}) => {
   let rowHeight = 300*(currentProject.canvas.height/currentProject.canvas.width)
   let columnWidth = rowHeight*(currentProject.canvas.width/currentProject.canvas.height)
 
+  let rowCount = Math.ceil(parseInt(currentProject.supply)/Math.floor(window.innerWidth / rowHeight))
+  let columnCount = Math.floor(window.innerWidth / columnWidth)
+
   const [resize, setResize] = useState(false)
   window.onresize = () => {
     setResize(!resize)
     let newRowHeight = 300*(currentProject.canvas.height/currentProject.canvas.width)
     let newColumnWidth = rowHeight*(currentProject.canvas.width/currentProject.canvas.height)
-    if(rowHeight !== newRowHeight && columnWidth !== newColumnWidth){
+    let newRowCount = Math.ceil(parseInt(currentProject.supply)/Math.floor(window.innerWidth / newRowHeight))
+    let newColumnCount = Math.floor(window.innerWidth / newColumnWidth)
+    if(rowHeight !== newRowHeight && columnWidth !== newColumnWidth && rowCount !== newRowCount && columnCount !== newColumnCount){
       rowHeight = newRowHeight
       columnWidth = newColumnWidth
+      rowCount = newRowCount
+      columnCount = newColumnCount
     }
   }
 
-  const gridIndex = useRef([])
-
   const Image = React.memo(({style, rowIndex, columnIndex}) => {
-    let index = `${rowIndex}${columnIndex}`
-    if(!gridIndex.current.includes(index)){
-      gridIndex.current.push(index)
-    }
-    if(images.current[gridIndex.current.indexOf(index)]){
-      let image = images.current[gridIndex.current.indexOf(index)]
+    let index = (rowIndex * columnIndex) + rowIndex
+    if(images.current[index]){
+      let image = images.current[index]
       return (
         <div style={{...style, aspectRatio: `${currentProject.canvas.width}/${currentProject.canvas.height}`}}>
           <div className={styles.image} style={{backgroundColor: currentProject.canvas.background, width: '100%', height: '100%'}}>
@@ -60,8 +62,8 @@ const Images = React.memo(({images}) => {
   return (
     <div className={styles.imagesWrapper} id='imagesWrapper'>
       <Grid 
-        rowCount={Math.ceil(parseInt(currentProject.supply)/Math.floor(window.innerWidth / rowHeight))}
-        columnCount={Math.floor(window.innerWidth / columnWidth)}
+        rowCount={rowCount}
+        columnCount={columnCount}
         height={window.innerHeight - 120}
         width={window.innerWidth}
         rowHeight={rowHeight + (((window.innerWidth - 6) / columnWidth) - Math.floor((window.innerWidth - 6) / columnWidth))*columnWidth/Math.floor((window.innerWidth - 6) / columnWidth)}
