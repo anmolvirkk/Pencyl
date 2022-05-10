@@ -91,7 +91,7 @@ const Footer = React.memo(({images}) => {
           let image = images.current[i]
           let div = document.createElement('div')
           let targetHTML = ReactDOMServer.renderToStaticMarkup(
-            <div style={{background: currentProject.canvas.background, position: 'relative', height: '784px', width: '784px'}}>
+            <div style={{background: currentProject.canvas.background, position: 'relative', height: `${currentProject.canvas.height}px`, width: `${currentProject.canvas.width}px`}}>
                 {image.map((item, key)=>{
                   return (
                     <div key={key} style={{position: 'absolute', width: '100%'}}>
