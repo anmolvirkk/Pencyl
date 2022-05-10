@@ -1,10 +1,11 @@
 import React from 'react'
+import Loader from './components/Loader'
 import styles from './_loading.module.sass'
 
 const Loading = () => {
   return (
     <div className={styles.loading}>
-        <div className={styles.loader} />
+      <Loader />
     </div>
   )
 }

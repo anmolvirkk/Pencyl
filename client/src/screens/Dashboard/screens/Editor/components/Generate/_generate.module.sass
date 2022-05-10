@@ -112,3 +112,12 @@
     margin-top: -1px
     overflow-y: auto
     pointer-events: none
+
+.loading
+    position: fixed
+    top: 60px
+    z-index: 99
+    height: calc( 100vh - 120px )
+    width: 100%
+    +mixins.center
+    background-color: rgba(0, 0, 0, 0.85)

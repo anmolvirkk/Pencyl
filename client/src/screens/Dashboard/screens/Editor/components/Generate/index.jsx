@@ -8,6 +8,7 @@ import { FixedSizeGrid as Grid } from "react-window"
 import ReactDOMServer from 'react-dom/server'
 import { toJpeg } from 'dom-to-image'
 import loadingAtom from '../../../loadingAtom'
+import Loader from '../../../Loading/components/Loader'
 
 const Images = React.memo(({images}) => {
 
@@ -68,7 +69,7 @@ const Images = React.memo(({images}) => {
 
 })
 
-const Footer = React.memo(({images}) => {
+const Footer = React.memo(({images, loading, setLoading}) => {
 
   const [projects] = useRecoilState(projectsAtom)
   const [activeProject] = useRecoilState(activeProjectAtom)
@@ -81,6 +82,7 @@ const Footer = React.memo(({images}) => {
   }, [])
 
   const download = () => {
+    setLoading(true)
     let promises = []
     let progress = 0
     const setProgress = async () => {
@@ -131,7 +133,9 @@ const Footer = React.memo(({images}) => {
           )
           supplyImage(i+1)
       }else{
-        Promise.all(promises)
+        Promise.all(promises).then(()=>{
+          setLoading(false)
+        })
       }
     }
     supplyImage(0)
@@ -145,10 +149,10 @@ const Footer = React.memo(({images}) => {
         </div>
       </div>
       <div className={styles.btns}>
-        <button className={styles.btn} onMouseDown={download}>
+        <button className={styles.btn} onMouseDown={download} disabled={loading}>
             Download Images
         </button>
-        <button className={styles.btn}>
+        <button className={styles.btn} disabled={loading}>
             Create NFT Collection
         </button>
       </div>
@@ -184,11 +188,22 @@ const Generate = () => {
     }
   }
 
+  const [loadingScreen, setLoadingScreen] = useState(false)
+
+  const Loading = () => {
+    return (
+      <div className={styles.loading}>
+        <Loader />
+      </div>
+    )
+  }
+
   return (
     <div className={styles.generate}>
+        {loadingScreen?<Loading />:null}
         <Header type='generate' />
         <Images images={images} />
-        <Footer images={images} />
+        <Footer images={images} loading={loadingScreen} setLoading={setLoadingScreen} />
         <div id='download' className={styles.download} />
     </div>
   )
