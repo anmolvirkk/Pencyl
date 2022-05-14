@@ -9,6 +9,7 @@ import ReactDOMServer from 'react-dom/server'
 import { toJpeg } from 'dom-to-image'
 import loadingAtom from '../../../loadingAtom'
 import Loader from '../../../Loading/components/Loader'
+import modalAtom from '../../../../components/Modal/modalAtom'
 
 const Images = React.memo(({images}) => {
 
@@ -147,6 +148,13 @@ const Footer = React.memo(({images, loading, setLoading}) => {
     }
     supplyImage(0)
   }
+
+  const setModal = useSetRecoilState(modalAtom)
+
+  const createNFT = () => {
+    setModal({type: 'error', text: 'NFT creation is not available yet'})
+  }
+
   return (
     <div className={styles.footer} id='footer'>
       <div className={styles.progress}>
@@ -159,7 +167,7 @@ const Footer = React.memo(({images, loading, setLoading}) => {
         <button className={styles.btn} onMouseDown={download} disabled={loading}>
             Download Images
         </button>
-        <button className={styles.btn} disabled={loading}>
+        <button className={styles.btn} onMouseDown={createNFT}>
             Create NFT Collection
         </button>
       </div>
