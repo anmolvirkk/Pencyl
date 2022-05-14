@@ -1,7 +1,6 @@
 import express from 'express'
 import { createProject, deleteProject, getProjectById, getProjects, updateProject } from '../controllers/projects.js'
 import { addImage } from '../controllers/images.js'
-import { createNFT } from '../controllers/nfts/index.js'
 
 const router = express.Router()
 
