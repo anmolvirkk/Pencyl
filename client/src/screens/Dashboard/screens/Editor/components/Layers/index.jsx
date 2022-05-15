@@ -271,7 +271,7 @@ const Layer = React.memo(({name, currentProject}) => {
                 setTarget([asset])
             }
         }, [])
-        const setActiveAsset = useCallback((asset, e) => {
+        const setActiveAsset = (asset, e) => {
             let isMoreMenu = e.target.className && typeof e.target.className === 'string' && e.target.className.split('_').indexOf('moremenu') > 0
             if(e.target.tagName !== 'svg' && !isMoreMenu){
                 let layersString = JSON.stringify(layers)
@@ -299,7 +299,7 @@ const Layer = React.memo(({name, currentProject}) => {
                 layersParse[name] = {...layerParse}
                 setLayers({...layersParse})
             }
-        }, [])
+        }
         const deleteAsset = useCallback((item) => {
             let assetRemoved = layers[name]['assets'].filter(i=>i.id!==item.id)
             assetRemoved = assetRemoved.map((item, i)=>{
