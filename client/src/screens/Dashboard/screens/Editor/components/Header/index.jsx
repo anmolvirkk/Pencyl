@@ -57,7 +57,7 @@ const Generate = () => {
                 let projectString = JSON.stringify(projects[activeProject])
                 let newProject = JSON.parse(projectString)
                 newProject.supply = inputText
-                fetch('http://localhost:5000/'+activeProject, {
+                fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                         method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json'

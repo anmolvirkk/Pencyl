@@ -29,7 +29,7 @@ const Main = () => {
                 toJpeg(canvas).then((e)=>{
                     if(e !== 'data:,'){
                         let newProject = {...project, snapshot: e}
-                        fetch('http://localhost:5000/'+activeProject, {
+                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                             method: 'PATCH',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ const Main = () => {
             let projectString = JSON.stringify(project)
             let newProject = JSON.parse(projectString)
             newProject.layers = {...layers}
-            fetch('http://localhost:5000/'+activeProject, {
+            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -186,7 +186,7 @@ const Main = () => {
                                     newProject['layers'][layer]['assets'] = null
                                 }
                             })
-                            fetch('http://localhost:5000/'+activeProject, {
+                            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                                     method: 'PATCH',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -238,7 +238,7 @@ const Main = () => {
                                 newProject['layers'][layer]['assets'][asset].style[direction] = item.style[direction]
                             }
                         })
-                        fetch('http://localhost:5000/'+activeProject, {
+                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                                 method: 'PATCH',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -313,7 +313,7 @@ const Main = () => {
                                         let projectString = JSON.stringify(project)
                                         let newProject = JSON.parse(projectString)
                                         newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left}
-                                        fetch('http://localhost:5000/'+activeProject, {
+                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                                             method: 'PATCH',
                                             headers: {
                                                 'Content-Type': 'application/json'
@@ -333,7 +333,7 @@ const Main = () => {
                                             let asset = x.target.attributes[2].value
                                             newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left}
                                         })
-                                        fetch('http://localhost:5000/'+activeProject, {
+                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                                                 method: 'PATCH',
                                                 headers: {
                                                     'Content-Type': 'application/json'
@@ -357,7 +357,7 @@ const Main = () => {
                                         let projectString = JSON.stringify(project)
                                         let newProject = JSON.parse(projectString)
                                         newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, width: width, height: height, top: top, left: left}
-                                        fetch('http://localhost:5000/'+activeProject, {
+                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                                             method: 'PATCH',
                                             headers: {
                                                 'Content-Type': 'application/json'
@@ -387,7 +387,7 @@ const Main = () => {
                                             let asset = e.target.attributes[2].value
                                             newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left, height: height, width: width}
                                         })
-                                        fetch('http://localhost:5000/'+activeProject, {
+                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                                                 method: 'PATCH',
                                                 headers: {
                                                     'Content-Type': 'application/json'
@@ -405,7 +405,7 @@ const Main = () => {
                                         let projectString = JSON.stringify(project)
                                         let newProject = JSON.parse(projectString)
                                         newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, rotate: rotate}
-                                        fetch('http://localhost:5000/'+activeProject, {
+                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                                             method: 'PATCH',
                                             headers: {
                                                 'Content-Type': 'application/json'
@@ -431,7 +431,7 @@ const Main = () => {
                                             let asset = e.target.attributes[2].value
                                             newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, rotate: rotate, left: left, top: top}
                                         })
-                                        fetch('http://localhost:5000/'+activeProject, {
+                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                                                 method: 'PATCH',
                                                 headers: {
                                                     'Content-Type': 'application/json'

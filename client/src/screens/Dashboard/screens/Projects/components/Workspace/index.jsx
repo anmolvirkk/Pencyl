@@ -30,7 +30,7 @@ const Tile = ({id}) => {
         }
     }
     const deleteProject = () => {
-        fetch('http://localhost:5000/'+id, {
+        fetch('https://pencyl.herokuapp.com/data'+id, {
             method: 'DELETE'
         }).then(e=>e.json()).then(e=>setProjects(e))
     }
@@ -57,7 +57,7 @@ const Workspace = () => {
     const [projects, setProjects] = useRecoilState(projectsAtom)
     const [search] = useRecoilState(searchAtom)
     useEffect(()=>{
-        fetch('http://localhost:5000/', {
+        fetch('https://pencyl.herokuapp.com/data', {
             method: 'GET'
         }).then((res)=>res.json()).then((data)=>{
             if(JSON.stringify(data) !== JSON.stringify(projects)){

@@ -49,6 +49,8 @@ export const addImage = async (req, res) => {
           fs.readdir(folder, (_, files) => {
               fs.writeFileSync(folder+'\\'+req.body.folder+'_#'+files.length+'.jpg', e.data, ()=>{console.log('image added')})
               res.json()
+              res.header('Access-Control-Allow-Origin', '*')
+              res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
           })
         })
       })

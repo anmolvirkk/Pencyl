@@ -143,7 +143,7 @@ const Details = () => {
                             let newProject = JSON.parse(projectString)
                             newProject.layers[layer].assets[asset].style[key] = typeof value === 'boolean'?value:value+unit
                             
-                            fetch('http://localhost:5000/'+activeProject, {
+                            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                                 method: 'PATCH',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -171,7 +171,7 @@ const Details = () => {
                 let projectString = JSON.stringify(project)
                 let newProject = JSON.parse(projectString)
                 newProject.canvas[key] = value
-                fetch('http://localhost:5000/'+activeProject, {
+                fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -189,7 +189,7 @@ const Details = () => {
             let newProject = JSON.parse(projectString)
             newProject.name = value
             
-            fetch('http://localhost:5000/'+activeProject, {
+            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

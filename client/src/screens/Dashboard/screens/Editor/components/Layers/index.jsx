@@ -34,7 +34,7 @@ const AddLayer = React.memo(({currentProject}) => {
                     let projectString = JSON.stringify(project)
                     let newProject = JSON.parse(projectString)
                     newProject.layers = {...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
-                    fetch('http://localhost:5000/'+activeProject, {
+                    fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                         method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ const Layer = React.memo(({name, currentProject}) => {
         let projectString = JSON.stringify(project)
         let newProject = JSON.parse(projectString)
         newProject.layers = {...layers}
-        fetch('http://localhost:5000/'+activeProject, {
+        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -112,7 +112,7 @@ const Layer = React.memo(({name, currentProject}) => {
                 let projectString = JSON.stringify(project)
                 let newProject = JSON.parse(projectString)
                 newProject.layers = {...newLayers}
-                fetch('http://localhost:5000/'+activeProject, {
+                fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -169,7 +169,7 @@ const Layer = React.memo(({name, currentProject}) => {
                             let newProjects = projects
                             newProject[newProject.id] = newProject
                             setProjects(newProjects)
-                            fetch('http://localhost:5000/'+activeProject, {
+                            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                                 method: 'PATCH',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -186,7 +186,7 @@ const Layer = React.memo(({name, currentProject}) => {
                             id: assetId,
                             style: layerStyle
                         }]
-                        fetch('http://localhost:5000/'+activeProject, {
+                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                             method: 'PATCH',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -230,7 +230,7 @@ const Layer = React.memo(({name, currentProject}) => {
                         newLayers = {...newLayers, [newItem]: project.layers[item]}
                     })
                     newProject.layers = newLayers
-                    fetch('http://localhost:5000/'+activeProject, {
+                    fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                             method: 'PATCH',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -419,7 +419,7 @@ const Layers = React.memo(() => {
             let newProjects = JSON.parse(projectsString)
             newProjects[newProject.id] = newProject
             setProjects(newProjects)
-            fetch('http://localhost:5000/'+activeProject, {
+            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'

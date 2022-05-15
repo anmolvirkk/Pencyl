@@ -4,11 +4,11 @@ import { addImage } from '../controllers/images.js'
 
 const router = express.Router()
 
-router.get('/', getProjects)
-router.get('/:id', getProjectById)
-router.post('/', createProject)
-router.patch('/:id', updateProject)
-router.delete('/:id', deleteProject)
+router.get('/data', getProjects)
+router.get('/data:id', getProjectById)
+router.post('/data', createProject)
+router.patch('/data:id', updateProject)
+router.delete('/data:id', deleteProject)
 
 router.post('/image', addImage)
 
