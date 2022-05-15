@@ -7,11 +7,11 @@ import styles from './_layers.module.sass'
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
 import targetAtom from '../Main/targetAtom'
 import activeProjectAtom from '../../../activeProjectAtom'
-import React, { useCallback } from 'react'
+import React from 'react'
 import { db } from '../../../../../../firebase'
 import { doc, updateDoc } from 'firebase/firestore'
  
-const AddLayer = React.memo(({currentProject}) => {
+const AddLayer = ({currentProject}) => {
     
     const setModal = useSetRecoilState(modalAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
@@ -58,26 +58,26 @@ const AddLayer = React.memo(({currentProject}) => {
             </div>
         </div>
     )
-})
+}
 
-const Layer = React.memo(({name, currentProject}) => {
+const Layer = ({name, currentProject}) => {
 
     const [activeProject] = useRecoilState(activeProjectAtom)
     const project = currentProject.data
     let layers = currentProject.data.layers
 
-    const setLayers = useCallback((layers) => {
+    const setLayers = (layers) => {
         let projectString = JSON.stringify(project)
         let newProject = JSON.parse(projectString)
         newProject.layers = {...layers}
         updateDoc(doc(db, 'projects', activeProject), {
             ...newProject
         })
-    }, [])
+    }
 
     const setModal = useSetRecoilState(modalAtom)
                 
-    const convertToBase64 = useCallback(async (url) => {
+    const convertToBase64 = async (url) => {
         const data = await fetch(url)
         const blob = await data.blob()
         return new Promise((resolve) => {
@@ -88,12 +88,12 @@ const Layer = React.memo(({name, currentProject}) => {
             resolve(base64data)
         }
         })
-    }, [])
+    }
 
-    const Title = React.memo(() => {
+    const Title = () => {
         const [activeProject] = useRecoilState(activeProjectAtom)
         if(name){
-            const removeLayer = useCallback(() => {
+            const removeLayer = () => {
                 let newLayers = {}
                 Object.keys(layers).forEach((item)=>{
                     if(item !== name){
@@ -108,9 +108,9 @@ const Layer = React.memo(({name, currentProject}) => {
                 }).then(()=>{
                     setModal({type: null})
                 })
-            }, [])
+            }
 
-            const addElement = useCallback((e) => {
+            const addElement = (e) => {
                 let link = e.target.src.replace('png-64','png-512')
                 convertToBase64(link).then((e)=>{
                     let assetId = new Date().valueOf()
@@ -172,8 +172,8 @@ const Layer = React.memo(({name, currentProject}) => {
                     }
                     setModal({type: null})
                 })
-            }, [])
-            const editLayerModal = useCallback(() => {
+            }
+            const editLayerModal = () => {
                 const editLayer = (newName) => {
                     let projectString = JSON.stringify(project)
                     let newProject = JSON.parse(projectString)
@@ -212,7 +212,7 @@ const Layer = React.memo(({name, currentProject}) => {
                     }
                 }
                 setModal({type: 'editLayer', func: editLayer})
-            }, [])
+            }
             return (
                 <div className={styles.layerbtn}>
                     <p>{name}</p>
@@ -227,9 +227,9 @@ const Layer = React.memo(({name, currentProject}) => {
         }else{
             return null
         }
-    })
+    }
     
-    const Assets = React.memo(() => {
+    const Assets = () => {
         const [target, setTarget] = useRecoilState(targetAtom)
     
         let targets = []
@@ -261,7 +261,7 @@ const Layer = React.memo(({name, currentProject}) => {
             })
         }
 
-        const setActiveTarget = useCallback((i) => {
+        const setActiveTarget = (i) => {
             let asset = document.getElementById('asset-'+i)
             if(target){
                 if(!target.includes(asset)){
@@ -270,7 +270,7 @@ const Layer = React.memo(({name, currentProject}) => {
             }else{
                 setTarget([asset])
             }
-        }, [])
+        }
         const setActiveAsset = (asset, e) => {
             let isMoreMenu = e.target.className && typeof e.target.className === 'string' && e.target.className.split('_').indexOf('moremenu') > 0
             if(e.target.tagName !== 'svg' && !isMoreMenu){
@@ -300,7 +300,7 @@ const Layer = React.memo(({name, currentProject}) => {
                 setLayers({...layersParse})
             }
         }
-        const deleteAsset = useCallback((item) => {
+        const deleteAsset = (item) => {
             let assetRemoved = layers[name]['assets'].filter(i=>i.id!==item.id)
             assetRemoved = assetRemoved.map((item, i)=>{
                 let newItem = {...item}
@@ -316,9 +316,9 @@ const Layer = React.memo(({name, currentProject}) => {
             }else{
                 setLayers({...layers, [name]: {...layers[name], assets: null, active: false}})
             }
-        }, [])
+        }
 
-        const changeAsset = useCallback((item) => {
+        const changeAsset = (item) => {
             const editElement = (e) => {
                 convertToBase64(e.target.src).then((e)=>{
                     let layersString = JSON.stringify(layers)
@@ -337,7 +337,7 @@ const Layer = React.memo(({name, currentProject}) => {
                 })
             }
             setModal({type: 'editElement', func: editElement})
-        }, [])
+        }
         if(layers[name]&&layers[name]['assets']){
             return (
                 <div className={styles.assets}>
@@ -352,7 +352,7 @@ const Layer = React.memo(({name, currentProject}) => {
         }else{
             return null
         }
-    })
+    }
 
     return (
         <div className={styles.layer}>
@@ -361,9 +361,9 @@ const Layer = React.memo(({name, currentProject}) => {
         </div>
     )
 
-})
+}
 
-const Layers = React.memo(() => {
+const Layers = () => {
 
     const [projects] = useRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
@@ -373,14 +373,14 @@ const Layers = React.memo(() => {
 
         let layers = currentProject.data.layers
     
-        const reorderLayers = useCallback((e) => {
+        const reorderLayers = () => {
             let projectString = JSON.stringify(currentProject)
             let newProject = JSON.parse(projectString)
             newProject.data.layers = newLayers
             updateDoc(doc(db, 'projects', activeProject), {
                 ...newProject
             })
-        }, [])
+        }
 
         const displayLayers = Object.keys(layers).sort((a, b)=>layers[a].index-layers[b].index)
 
@@ -412,6 +412,6 @@ const Layers = React.memo(() => {
         return null
     }
 
-})
+}
 
 export default Layers
