@@ -1,0 +1,28 @@
+@use '../../../../mixins'
+
+.moremenu
+    +mixins.center
+    position: relative
+    cursor: pointer
+    svg
+        color: white
+    .options
+        position: absolute
+        top: 30px
+        right: 0
+        background-color: var(--lightblack3)
+        padding: 6px
+        z-index: 99
+        border-radius: 7px 7px
+        box-shadow: 0 0 10px rgba(0,0,0,0.2)
+        color: white
+        .option
+            background-color: var(--lightblack)
+            box-shadow: 0 0 10px rgba(0,0,0,0.2)
+            padding: 6px 16px
+            +mixins.center
+            border-radius: 7px 7px
+            margin-bottom: 6px
+            font-size: 16px
+        .option:last-child
+            margin-bottom: 0

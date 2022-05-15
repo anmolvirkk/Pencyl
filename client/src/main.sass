@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap')
+  
+:root
+  --primary: #FF004C
+  --primaryRGB: 255,0,76
+  --black: #070707
+  --black2: #090909
+  --black3: #121212
+  --lightblack: #141414
+  --lightblack2: #606060
+  --lightblack3: #202020
+  --red: #ff0015
+
+.moveable-control-box
+  --moveable-color: var(--primary) !important
+  .moveable-control
+    border: none !important
+    width: 7px !important
+    height: 7px !important
+    margin-top: -3.5px !important
+    margin-left: -3.5px !important
+  .moveable-rotation-control
+    background: var(--primary) !important
+
+html, body
+  background-color: var(--black2)
+  color: white
+
+*
+  box-sizing: border-box
+  font-family: 'Ubuntu', sans-serif
+  font-weight: 300
+  padding: 0
+  margin: 0
+  -webkit-touch-callout: none
+  -webkit-user-select: none
+  -khtml-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+  user-select: none
+  color: white
+
+input::placeholder
+  color: white
+  
+::-webkit-scrollbar 
+  width: 2px
+  height: 2px
+
+::-webkit-scrollbar-track 
+  background: var(--lightblack)
+
+::-webkit-scrollbar-thumb 
+  background: var(--primary)
