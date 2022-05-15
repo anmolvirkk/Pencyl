@@ -6,8 +6,9 @@ import modalAtom from "./components/Modal/modalAtom"
 import Modal from "./components/Modal"
 import loadingAtom from "./screens/loadingAtom"
 import Loading from "./screens/Loading"
+import React from "react"
 
-const Dashboard = () => {
+const Dashboard = React.memo(() => {
     const [modal] = useRecoilState(modalAtom)
     const [loading] = useRecoilState(loadingAtom)
     return (
@@ -20,6 +21,6 @@ const Dashboard = () => {
             </Routes>
         </div>
     )
-}
+})
 
 export default Dashboard

@@ -3,40 +3,29 @@ import Header from './components/Header'
 import Main from './components/Main'
 import styles from './_editor.module.sass'
 import Layers from './components/Layers'
-import { useRecoilState } from 'recoil'
-import activeProjectAtom from '../activeProjectAtom'
-import { Navigate, Route, Routes } from 'react-router-dom'
-import projectsAtom from '../projectsAtom'
+import { Route, Routes } from 'react-router-dom'
 import Generate from './components/Generate'
+import React from 'react'
 
-const Editor = () => {
-    const [activeProject] = useRecoilState(activeProjectAtom)
-    const [projects] = useRecoilState(projectsAtom)
-    let currentProject = projects.filter(i=>i.id===activeProject)[0]
-
-    const Designer = () => {
+const Editor = React.memo(() => {
+    const Designer = React.memo(() => {
         return (
             <div className={styles.editor}>
                 <Header />
                 <div className={styles.mainsection}>
-                    <Layers currentProject={currentProject} />
-                    <Main currentProject={currentProject} />
-                    <Details currentProject={currentProject} />
+                    <Layers />
+                    <Main />
+                    <Details />
                 </div>
             </div>
         )
-    }
-
-    if(currentProject){
-        return (
-            <Routes>
-                <Route index element={<Designer />} />
-                <Route path='generate' element={<Generate />} />
-            </Routes>
-        )
-    }else{
-        return <Navigate to='/dashboard' />
-    }
-}
+    })
+    return (
+        <Routes>
+            <Route index element={<Designer />} />
+            <Route path='generate' element={<Generate />} />
+        </Routes>
+    )
+})
 
 export default Editor

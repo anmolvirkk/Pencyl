@@ -7,16 +7,17 @@ import styles from './_layers.module.sass'
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
 import targetAtom from '../Main/targetAtom'
 import activeProjectAtom from '../../../activeProjectAtom'
+import React, { useCallback } from 'react'
 
-const AddLayer = ({currentProject}) => {
+const AddLayer = React.memo(({currentProject}) => {
     
     const setModal = useSetRecoilState(modalAtom)
     const setProjects = useSetRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
     
-    let layers = JSON.parse(currentProject.project).layers
+    let layers = currentProject.layers
 
-    const project = JSON.parse(currentProject.project)
+    const project = currentProject
     
     const addLayer = (layerName) => { 
         let shouldAddLayer = true
@@ -38,7 +39,7 @@ const AddLayer = ({currentProject}) => {
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({project: newProject})
+                        body: JSON.stringify(newProject)
                     }).then(e=>e.json()).then((e)=>{
                         setProjects(e)
                         setModal({type: null})
@@ -61,16 +62,16 @@ const AddLayer = ({currentProject}) => {
             </div>
         </div>
     )
-}
+})
 
-const Layer = ({name, currentProject}) => {
+const Layer = React.memo(({name, currentProject}) => {
 
     const setProjects = useSetRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
-    const project = JSON.parse(currentProject.project)
-    let layers = JSON.parse(currentProject.project).layers
+    const project = currentProject
+    let layers = currentProject.layers
 
-    const setLayers = (layers) => {
+    const setLayers = useCallback((layers) => {
         let projectString = JSON.stringify(project)
         let newProject = JSON.parse(projectString)
         newProject.layers = {...layers}
@@ -79,13 +80,13 @@ const Layer = ({name, currentProject}) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({project: newProject})
+                body: JSON.stringify(newProject)
         }).then(e=>e.json()).then(e=>setProjects(e))
-    }
+    }, [])
 
     const setModal = useSetRecoilState(modalAtom)
                 
-    const convertToBase64 = async (url) => {
+    const convertToBase64 = useCallback(async (url) => {
         const data = await fetch(url)
         const blob = await data.blob()
         return new Promise((resolve) => {
@@ -96,12 +97,12 @@ const Layer = ({name, currentProject}) => {
             resolve(base64data)
         }
         })
-    }
+    }, [])
 
-    const Title = () => {
+    const Title = React.memo(() => {
         const [activeProject] = useRecoilState(activeProjectAtom)
         if(name){
-            const removeLayer = () => {
+            const removeLayer = useCallback(() => {
                 let newLayers = {}
                 Object.keys(layers).forEach((item)=>{
                     if(item !== name){
@@ -116,22 +117,24 @@ const Layer = ({name, currentProject}) => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({project: newProject})
+                    body: JSON.stringify(newProject)
                 }).then(e=>e.json()).then((e)=>{
                     setProjects(e)
                     setModal({type: null})
                 })
-            }
+            }, [])
 
-            const addElement = (e) => {
+            const addElement = useCallback((e) => {
                 let link = e.target.src.replace('png-64','png-512')
                 convertToBase64(link).then((e)=>{
                     let assetId = new Date().valueOf()
                     Object.keys(project.layers).forEach((item)=>{
-                        if(item === name){
-                            project.layers[item].active = true
-                        }else{
-                            project.layers[item].active = false
+                        if(project.layers[item]['active']){
+                            if(item === name){
+                                project.layers[item]['active'] = true
+                            }else{
+                                project.layers[item]['active'] = false
+                            }
                         }
                     })
                     let layerStyle = {
@@ -162,14 +165,16 @@ const Layer = ({name, currentProject}) => {
                                 id: assetId,
                                 style: layerStyle
                             }]
+                            const [projects] = useRecoilState(projectsAtom)
+                            let newProjects = projects
+                            newProject[newProject.id] = newProject
+                            setProjects(newProjects)
                             fetch('http://localhost:5000/'+activeProject, {
                                 method: 'PATCH',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify({project: newProject})
-                            }).then(e=>e.json()).then((e)=>{
-                                setProjects(e)
+                                body: JSON.stringify(newProject)
                             })
                     }else{
                         let projectString = JSON.stringify(project)
@@ -186,15 +191,15 @@ const Layer = ({name, currentProject}) => {
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({project: newProject})
+                            body: JSON.stringify(newProject)
                         }).then(e=>e.json()).then((e)=>{
                             setProjects(e)
                         })
                     }
                     setModal({type: null})
                 })
-            }
-            const editLayerModal = () => {
+            }, [])
+            const editLayerModal = useCallback(() => {
                 const editLayer = (newName) => {
                     let projectString = JSON.stringify(project)
                     let newProject = JSON.parse(projectString)
@@ -230,14 +235,14 @@ const Layer = ({name, currentProject}) => {
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({project: newProject})
+                            body: JSON.stringify(newProject)
                     }).then(e=>e.json()).then(e=>setProjects(e))
                     if(rename && isNaN(newName.toLowerCase().replaceAll(/\s/g,'').charAt(0))){
                         setModal({type: null})
                     }
                 }
                 setModal({type: 'editLayer', func: editLayer})
-            }
+            }, [])
             return (
                 <div className={styles.layerbtn}>
                     <p>{name}</p>
@@ -252,9 +257,9 @@ const Layer = ({name, currentProject}) => {
         }else{
             return null
         }
-    }
+    })
     
-    const Assets = () => {
+    const Assets = React.memo(() => {
         const [target, setTarget] = useRecoilState(targetAtom)
     
         let targets = []
@@ -286,7 +291,7 @@ const Layer = ({name, currentProject}) => {
             })
         }
 
-        const setActiveTarget = (i) => {
+        const setActiveTarget = useCallback((i) => {
             let asset = document.getElementById('asset-'+i)
             if(target){
                 if(!target.includes(asset)){
@@ -295,8 +300,8 @@ const Layer = ({name, currentProject}) => {
             }else{
                 setTarget([asset])
             }
-        }
-        const setActiveAsset = (asset, e) => {
+        }, [])
+        const setActiveAsset = useCallback((asset, e) => {
             let isMoreMenu = e.target.className && typeof e.target.className === 'string' && e.target.className.split('_').indexOf('moremenu') > 0
             if(e.target.tagName !== 'svg' && !isMoreMenu){
                 let layersString = JSON.stringify(layers)
@@ -324,8 +329,8 @@ const Layer = ({name, currentProject}) => {
                 layersParse[name] = {...layerParse}
                 setLayers({...layersParse})
             }
-        }
-        const deleteAsset = (item) => {
+        }, [])
+        const deleteAsset = useCallback((item) => {
             let assetRemoved = layers[name]['assets'].filter(i=>i.id!==item.id)
             assetRemoved = assetRemoved.map((item, i)=>{
                 let newItem = {...item}
@@ -341,9 +346,9 @@ const Layer = ({name, currentProject}) => {
             }else{
                 setLayers({...layers, [name]: {...layers[name], assets: null, active: false}})
             }
-        }
+        }, [])
 
-        const changeAsset = (item) => {
+        const changeAsset = useCallback((item) => {
             const editElement = (e) => {
                 convertToBase64(e.target.src).then((e)=>{
                     let layersString = JSON.stringify(layers)
@@ -362,7 +367,7 @@ const Layer = ({name, currentProject}) => {
                 })
             }
             setModal({type: 'editElement', func: editElement})
-        }
+        }, [])
         if(layers[name]&&layers[name]['assets']){
             return (
                 <div className={styles.assets}>
@@ -377,7 +382,7 @@ const Layer = ({name, currentProject}) => {
         }else{
             return null
         }
-    }
+    })
 
     return (
         <div className={styles.layer}>
@@ -386,59 +391,71 @@ const Layer = ({name, currentProject}) => {
         </div>
     )
 
-}
+})
 
-const Layers = ({currentProject}) => {
+const Layers = React.memo(() => {
 
-    const setProjects = useSetRecoilState(projectsAtom)
+    const [projects, setProjects] = useRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
-    
-    let layers = JSON.parse(currentProject.project).layers
-    const project = JSON.parse(currentProject.project)
+    let currentProject = projects[activeProject]
 
-    const reorderLayers = (e) => {
-        let projectString = JSON.stringify(project)
-        let newProject = JSON.parse(projectString)
-        let newLayers = project.layers
-        let newLayersKeys = Object.keys(newLayers)
-        newLayersKeys.splice(e.destination.index, 0, newLayersKeys.splice(e.source.index, 1)[0])
-        let finalLayers = {}
-        newLayersKeys.forEach((item)=>{
-            finalLayers = {...finalLayers, [item]: newLayers[item]}
-        })
-        newProject.layers = finalLayers
-        fetch('http://localhost:5000/'+activeProject, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({project: newProject})
-        }).then(e=>e.json()).then(e=>setProjects(e))
+    if(currentProject){
+
+        let layers = currentProject.layers
+        const project = currentProject
+    
+        const reorderLayers = useCallback((e) => {
+            let projectString = JSON.stringify(project)
+            let newProject = JSON.parse(projectString)
+            let newLayers = newProject.layers
+            let newLayersKeys = Object.keys(newLayers)
+            newLayersKeys.splice(e.destination.index, 0, newLayersKeys.splice(e.source.index, 1)[0])
+            let finalLayers = {}
+            newLayersKeys.forEach((item)=>{
+                finalLayers = {...finalLayers, [item]: newLayers[item]}
+            })
+            newProject.layers = finalLayers
+            let projectsString = JSON.stringify(projects)
+            let newProjects = JSON.parse(projectsString)
+            newProjects[newProject.id] = newProject
+            setProjects(newProjects)
+            fetch('http://localhost:5000/'+activeProject, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newProject)
+            })
+        }, [])
+    
+        return (
+            <div className={styles.layersWrapper}>
+                <DragDropContext onDragEnd={(e)=>reorderLayers(e)}>
+                    <Droppable droppableId='droppable-1'>
+                        {(provided)=>(
+                            <div className={styles.layers} ref={provided.innerRef} {...provided.droppableProps}>
+                                {Object.keys(layers).map((item, i)=>(
+                                    <Draggable key={i} draggableId={`draggable-${i}`} index={i}>
+                                        {(provided)=>(
+                                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                <Layer name={item} currentProject={currentProject} />
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
+                <AddLayer currentProject={currentProject} />
+            </div>
+        )
+        
+    }else{
+        return null
     }
 
-    return (
-        <div className={styles.layersWrapper}>
-            <DragDropContext onDragEnd={(e)=>reorderLayers(e)}>
-                <Droppable droppableId='droppable-1'>
-                    {(provided)=>(
-                        <div className={styles.layers} ref={provided.innerRef} {...provided.droppableProps}>
-                            {Object.keys(layers).map((item, i)=>(
-                                <Draggable key={i} draggableId={`draggable-${i}`} index={i}>
-                                    {(provided)=>(
-                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                            <Layer name={item} currentProject={currentProject} />
-                                        </div>
-                                    )}
-                                </Draggable>
-                            ))}
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
-            <AddLayer currentProject={currentProject} />
-        </div>
-    )
-}
+})
 
 export default Layers

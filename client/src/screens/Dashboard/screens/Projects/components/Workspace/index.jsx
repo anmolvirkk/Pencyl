@@ -19,34 +19,38 @@ const Empty = () => {
     )
 }
 
-const Tile = ({item}) => {
+const Tile = ({id}) => {
+    const [projects, setProjects] = useRecoilState(projectsAtom)
     const setActiveProject = useSetRecoilState(activeProjectAtom)
     const navigate = useNavigate()
-    const setProjects = useSetRecoilState(projectsAtom)
     const goToEditor = (e) => {
         if(e.target.nodeName !== 'svg' && e.target.nodeName !== 'path' && e.target.nodeName !== 'line'){
-            setActiveProject(item.id)
+            setActiveProject(id)
             navigate('editor')
         }
     }
     const deleteProject = () => {
-        fetch('http://localhost:5000/'+item.id, {
+        fetch('http://localhost:5000/'+id, {
             method: 'DELETE'
         }).then(e=>e.json()).then(e=>setProjects(e))
     }
-    return (
-        <div className={styles.tile} onMouseDown={(e)=>goToEditor(e)}>
-            <div className={styles.canvas}>
-                <div className={styles.container}>
-                    {JSON.parse(item.project).snapshot?<img alt='' src={JSON.parse(item.project).snapshot} />:null}
+    if(projects[id]){
+        return (
+            <div className={styles.tile} onMouseDown={(e)=>goToEditor(e)}>
+                <div className={styles.canvas}>
+                    <div className={styles.container}>
+                        {projects[id].snapshot?<img alt='' src={projects[id].snapshot} />:null}
+                    </div>
+                </div>
+                <div className={styles.title}>
+                    <p>{projects[id].name}</p>
+                    <Trash2 onMouseDown={deleteProject} />
                 </div>
             </div>
-            <div className={styles.title}>
-                <p>{JSON.parse(item.project).name}</p>
-                <Trash2 onMouseDown={deleteProject} />
-            </div>
-        </div>
-    )
+        )
+    }else{
+        return null
+    }
 }
 
 const Workspace = () => {
@@ -63,22 +67,22 @@ const Workspace = () => {
     }, [projects, setProjects])
     return (
         <div className={styles.workspace}>
-            {projects.length<=0?
+            {Object.keys(projects).length<=0?
                 <Empty />
                 :
                 <div className={styles.container}>
                     <div className={styles.files}>
                         {search!==''?
-                            projects.map((item, key)=>{
-                                if(JSON.parse(item.project).name.includes(search)){
-                                    return <Tile key={key} item={item} />
+                            Object.keys(projects).map((item, key)=>{
+                                if(item.name.includes(search)){
+                                    return <Tile key={key} id={item} />
                                 }else{
                                     return null
                                 }
                             })
                             :
-                            projects.map((item, key)=>{
-                                return <Tile key={key} item={item} />
+                            Object.keys(projects).map((item, key)=>{
+                                return <Tile key={key} id={item} />
                             })
                         }
                     </div>

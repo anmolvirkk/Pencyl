@@ -20,6 +20,7 @@ const Start = () => {
     const startScratch = () => {
         let id = new Date().valueOf().toString()
         const project = {
+            id: id,
             name: 'untitled',
             canvas: {
                 height: 600,
@@ -33,7 +34,7 @@ const Start = () => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({id: id, project: project})
+            body: JSON.stringify(project)
         }).then((res)=>res.json()).then((data)=>{
             setActiveProject(id)
             setProjects(data)
@@ -97,7 +98,9 @@ const Start = () => {
                 for(let i = 0; i < newKeys.length; i++){
                     newLayers[newKeys[i]] = layers[newKeys[i]]
                     if(i === newKeys.length - 1){
+                        let id = new Date().valueOf().toString()
                         const project = {
+                            id: id,
                             name: name,
                             canvas: {
                                 height: maxHeight,
@@ -107,8 +110,7 @@ const Start = () => {
                             layers: newLayers,
                             snapshot: ''
                         }
-                        let id = new Date().valueOf().toString()
-                        let body = JSON.stringify({id: id, project: project})
+                        let body = JSON.stringify(project)
                         fetch('http://localhost:5000/', {
                             method: 'POST',
                             headers: {
@@ -134,7 +136,9 @@ const Start = () => {
 
     const startDemo = () => {
         setLoading(true)
+        let id = new Date().valueOf().toString()
         const project = {
+            id: id,
             name: 'demo',
             canvas: {
                 height: 1000,
@@ -144,8 +148,7 @@ const Start = () => {
             layers: layersJSON,
             snapshot: ''
         }
-        let id = new Date().valueOf().toString()
-        let body = JSON.stringify({id: id, project: project})
+        let body = JSON.stringify(project)
         fetch('http://localhost:5000/', {
             method: 'POST',
             headers: {

@@ -15,11 +15,15 @@ const Generate = () => {
 
     useEffect(()=>{
         if(max !== maxRef.current){
-            let currentProject = JSON.parse(projects.filter(i=>i.id===activeProject)[0].project)
-            Object.keys(currentProject.layers).forEach((item)=>{
-                maxRef.current = maxRef.current * currentProject.layers[item].assets.length
-            })
-            setMax(maxRef.current)
+            let currentProject = projects[activeProject]
+            if(currentProject){
+                Object.keys(currentProject.layers).forEach((item)=>{
+                    if(currentProject.layers[item].assets){
+                        maxRef.current = maxRef.current * currentProject.layers[item].assets.length
+                    }
+                })
+                setMax(maxRef.current)
+            }
         }
     }, [maxRef, max, setMax, projects, activeProject])
 
@@ -50,7 +54,7 @@ const Generate = () => {
         setLoading(true)
         if(inputText){
             if(parseInt(inputText) <= max){
-                let projectString = projects.filter(i=>i.id===activeProject)[0].project
+                let projectString = JSON.stringify(projects[activeProject])
                 let newProject = JSON.parse(projectString)
                 newProject.supply = inputText
                 fetch('http://localhost:5000/'+activeProject, {
@@ -58,7 +62,7 @@ const Generate = () => {
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({project: newProject})
+                        body: JSON.stringify(newProject)
                 }).then(e=>e.json()).then(e=>setProjects(e)).then(()=>{
                     nav('generate')
                 })

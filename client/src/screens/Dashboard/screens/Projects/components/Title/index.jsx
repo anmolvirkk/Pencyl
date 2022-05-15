@@ -3,8 +3,9 @@ import { Plus, Search } from 'react-feather'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import searchAtom from './searchAtom'
+import React from 'react'
 
-const Searchbar = () => {
+const Searchbar = React.memo(() => {
 
     const Options = () => {
         const setModal = useSetRecoilState(modalAtom)
@@ -29,15 +30,15 @@ const Searchbar = () => {
             <Options />
         </div>
     )
-}
+})
 
-const Title = () => {
+const Title = React.memo(() => {
     return (
         <div className={styles.title}>
             <h3>My Workspace</h3>
             <Searchbar />
         </div>
     )
-}
+})
 
 export default Title

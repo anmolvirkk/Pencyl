@@ -5,7 +5,7 @@ import Title from './components/Title'
 import Workspace from './components/Workspace'
 import Footer from '../../../LandingPage/components/Footer'
 
-const Projects = () => {
+const Projects = React.memo(() => {
     return (
         <div className={styles.projects}>
             <div style={{width: '100%'}}>
@@ -16,6 +16,6 @@ const Projects = () => {
             <Footer />
         </div>
     )
-}
+})
 
 export default Projects

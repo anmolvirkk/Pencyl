@@ -1,9 +1,24 @@
-import Project from "../models/projectModel.js"
+import os from 'os'
+import fs from 'fs'
+
+const writeOrReadData = async () => {
+    let folder = os.homedir()+'\\downloads\\pencyl'
+    if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder)
+    }
+    let file = folder+'\\data.json'
+    if (!fs.existsSync(file)) {
+        fs.writeFileSync(file, JSON.stringify({}))
+    }
+    return file
+}
 
 export const getProjects = async (_, res) => {
     try {
-        const projects = await Project.findAll()
-        res.json(projects)
+        writeOrReadData().then((data)=>{
+            const projects = JSON.parse(fs.readFileSync(data))
+            res.json(projects)
+        })
     } catch (error) {
         res.json({message: error.message})
     }
@@ -11,9 +26,12 @@ export const getProjects = async (_, res) => {
 
 export const createProject = async (req, res) => {
     try {
-        await Project.create(req.body)
-        const projects = await Project.findAll()
-        res.json(projects)
+        writeOrReadData().then((data)=>{
+            const projects = JSON.parse(fs.readFileSync(data))
+            let newProjects = {...projects, [req.body.id]: req.body}
+            fs.writeFileSync(data, JSON.stringify(newProjects))
+            res.json(newProjects)
+        })
     } catch (error) {
         res.json({message: error.message})
     }
@@ -21,12 +39,10 @@ export const createProject = async (req, res) => {
 
 export const getProjectById = async (req, res) => {
     try {
-        const project = await Project.findAll({
-            where: {
-                id: req.params.id
-            }
+        writeOrReadData().then((data)=>{
+            const projects = JSON.parse(fs.readFileSync(data))
+            res.json(projects[req.body.id])
         })
-        res.json(project[0])
     } catch (error) {
         res.json({message: error.message})
     }
@@ -34,13 +50,12 @@ export const getProjectById = async (req, res) => {
 
 export const updateProject = async (req, res) => {
     try {
-        await Project.update(req.body, {
-            where: {
-                id: req.params.id
-            }
+        writeOrReadData().then((data)=>{
+            const projects = JSON.parse(fs.readFileSync(data))
+            projects[req.body.id] = req.body
+            fs.writeFileSync(data, JSON.stringify(projects))
+            res.json(projects)
         })
-        const projects = await Project.findAll()
-        res.json(projects)
     } catch (error) {
         res.json({message: error.message})
     }
@@ -48,13 +63,12 @@ export const updateProject = async (req, res) => {
 
 export const deleteProject = async (req, res) => {
     try {
-        await Project.destroy({
-            where: {
-                id: req.params.id
-            }
+        writeOrReadData().then((data)=>{
+            const projects = JSON.parse(fs.readFileSync(data))
+            const {[req.params.id]: remove, ...rest} = projects
+            fs.writeFileSync(data, JSON.stringify(rest))
+            res.json(rest)
         })
-        const projects = await Project.findAll()
-        res.json(projects)
     } catch (error) {
         res.json({message: error.message})
     }

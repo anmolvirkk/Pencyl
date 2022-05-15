@@ -98,117 +98,122 @@ const Option = ({title, value, onBlur, type}) => {
     return <SingleUnit />
 }
 
-const Details = ({currentProject}) => {
+const Details = () => {
     const setProjects = useSetRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
-    let style = false
-    let onBlur = () => {}
-
-    const [target, setTarget] = useRecoilState(targetAtom)
-
-    const project = JSON.parse(currentProject.project)
-
-    if(target){
-        if(target.length <= 1 && target[0]){
-            let layer = target[0].attributes[1].value
-            let asset = target[0].attributes[2].value
-            if(project&&project.layers&&project.layers[layer]&&project.layers[layer].assets){
-                if(project.layers[layer].assets[asset]){
-                    style = {items: project.layers[layer].assets[asset].style, type: 'layer'}
-                    onBlur = (key, value) => {
-
-                        let unit = '%'
-                        switch (key.toLowerCase()) {
-                            case 'background':
-                                unit = ''
-                            break
-                            case 'lockaspectratio':
-                                unit = ''
-                            break
-                            case 'rotate':
-                                unit = 'deg'
-                            break
-                            case 'hue':
-                                unit = 'deg'
-                            break
-                            default:
-                                unit = '%'
-                            break
-                        }
-
-                        let projectString = JSON.stringify(project)
-                        let newProject = JSON.parse(projectString)
-                        newProject.layers[layer].assets[asset].style[key] = typeof value === 'boolean'?value:value+unit
-                        
-                        fetch('http://localhost:5000/'+activeProject, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({project: newProject})
-                        }).then(e=>e.json()).then((e)=>{
-                            setProjects(e)
-                            let tempTarget = target
-                            const setEmpty = async () => {
-                                setTarget(null)
+    const [projects] = useRecoilState(projectsAtom)
+    let currentProject = projects[activeProject]
+    if(currentProject){
+        let style = false
+        let onBlur = () => {}
+    
+        const [target, setTarget] = useRecoilState(targetAtom)
+    
+        const project = currentProject
+    
+        if(target){
+            if(target.length <= 1 && target[0]){
+                let layer = target[0].attributes[1].value
+                let asset = target[0].attributes[2].value
+                if(project&&project.layers&&project.layers[layer]&&project.layers[layer].assets){
+                    if(project.layers[layer].assets[asset]){
+                        style = {items: project.layers[layer].assets[asset].style, type: 'layer'}
+                        onBlur = (key, value) => {
+    
+                            let unit = '%'
+                            switch (key.toLowerCase()) {
+                                case 'background':
+                                    unit = ''
+                                break
+                                case 'lockaspectratio':
+                                    unit = ''
+                                break
+                                case 'rotate':
+                                    unit = 'deg'
+                                break
+                                case 'hue':
+                                    unit = 'deg'
+                                break
+                                default:
+                                    unit = '%'
+                                break
                             }
-                            setEmpty().then(()=>{
-                                setTarget(tempTarget)
+    
+                            let projectString = JSON.stringify(project)
+                            let newProject = JSON.parse(projectString)
+                            newProject.layers[layer].assets[asset].style[key] = typeof value === 'boolean'?value:value+unit
+                            
+                            fetch('http://localhost:5000/'+activeProject, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(newProject)
+                            }).then(e=>e.json()).then((e)=>{
+                                setProjects(e)
+                                let tempTarget = target
+                                const setEmpty = async () => {
+                                    setTarget(null)
+                                }
+                                setEmpty().then(()=>{
+                                    setTarget(tempTarget)
+                                })
                             })
-                        })
+                        }
                     }
                 }
             }
         }
-    }
-
-    if(!style){
-        style = {items: project.canvas, type: 'canvas'}
-        onBlur = (key, value) => {
+    
+        if(!style){
+            style = {items: project.canvas, type: 'canvas'}
+            onBlur = (key, value) => {
+                let projectString = JSON.stringify(project)
+                let newProject = JSON.parse(projectString)
+                newProject.canvas[key] = value
+                fetch('http://localhost:5000/'+activeProject, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newProject)
+                }).then(e=>e.json()).then((e)=>{
+                    setProjects(e)
+                })
+            }
+        }
+    
+        const changeName = useCallback((_, value) => {
+    
             let projectString = JSON.stringify(project)
             let newProject = JSON.parse(projectString)
-            newProject.canvas[key] = value
+            newProject.name = value
+            
             fetch('http://localhost:5000/'+activeProject, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({project: newProject})
+                body: JSON.stringify(newProject)
             }).then(e=>e.json()).then((e)=>{
-                console.log(e)
                 setProjects(e)
             })
-        }
+    
+        }, [activeProject, project, setProjects])
+    
+        return (
+            <div className={styles.details}>
+                {style.type==='canvas'?<Option title='Project Name' value={project.name} type='canvas' onBlur={changeName} />:null}
+                {
+                    Object.keys(style.items).map((item, key)=>{
+                        return <Option key={key} title={item} value={style.items[item]} type={style.type} onBlur={onBlur} />
+                    })
+                }
+            </div>
+        )
+    }else{
+        return null
     }
-
-    const changeName = useCallback((_, value) => {
-
-        let projectString = JSON.stringify(project)
-        let newProject = JSON.parse(projectString)
-        newProject.name = value
-        
-        fetch('http://localhost:5000/'+activeProject, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({project: newProject})
-        }).then(e=>e.json()).then((e)=>{
-            setProjects(e)
-        })
-
-    }, [activeProject, project, setProjects])
-
-    return (
-        <div className={styles.details}>
-            {style.type==='canvas'?<Option title='Project Name' value={project.name} type='canvas' onBlur={changeName} />:null}
-            {
-                Object.keys(style.items).map((item, key)=>{
-                    return <Option key={key} title={item} value={style.items[item]} type={style.type} onBlur={onBlur} />
-                })
-            }
-        </div>
-    )
 }
 
 export default Details
