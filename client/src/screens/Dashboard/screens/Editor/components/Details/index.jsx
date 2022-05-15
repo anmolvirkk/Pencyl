@@ -4,6 +4,8 @@ import targetAtom from '../Main/targetAtom'
 import styles from './_details.module.sass'
 import React, { useCallback, useState } from 'react'
 import activeProjectAtom from '../../../activeProjectAtom'
+import { db } from '../../../../../../firebase'
+import { updateDoc, doc } from 'firebase/firestore'
 
 const Option = ({title, value, onBlur, type}) => {
     const SingleUnit = () => {
@@ -102,14 +104,14 @@ const Details = () => {
     const setProjects = useSetRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
     const [projects] = useRecoilState(projectsAtom)
-    let currentProject = projects[activeProject]
+    let currentProject = projects.filter(i=>i.id===activeProject)[0]
     if(currentProject){
         let style = false
         let onBlur = () => {}
     
         const [target, setTarget] = useRecoilState(targetAtom)
     
-        const project = currentProject
+        const project = currentProject.data
     
         if(target){
             if(target.length <= 1 && target[0]){
@@ -138,19 +140,12 @@ const Details = () => {
                                     unit = '%'
                                 break
                             }
-    
                             let projectString = JSON.stringify(project)
                             let newProject = JSON.parse(projectString)
                             newProject.layers[layer].assets[asset].style[key] = typeof value === 'boolean'?value:value+unit
-                            
-                            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                                method: 'PATCH',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(newProject)
-                            }).then(e=>e.json()).then((e)=>{
-                                setProjects(e)
+                            updateDoc(doc(db, 'projects', activeProject), {
+                                ...newProject
+                            }).then(()=>{
                                 let tempTarget = target
                                 const setEmpty = async () => {
                                     setTarget(null)
@@ -171,14 +166,8 @@ const Details = () => {
                 let projectString = JSON.stringify(project)
                 let newProject = JSON.parse(projectString)
                 newProject.canvas[key] = value
-                fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(newProject)
-                }).then(e=>e.json()).then((e)=>{
-                    setProjects(e)
+                updateDoc(doc(db, 'projects', activeProject), {
+                    ...newProject
                 })
             }
         }
@@ -188,15 +177,8 @@ const Details = () => {
             let projectString = JSON.stringify(project)
             let newProject = JSON.parse(projectString)
             newProject.name = value
-            
-            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newProject)
-            }).then(e=>e.json()).then((e)=>{
-                setProjects(e)
+            updateDoc(doc(db, 'projects', activeProject), {
+                ...newProject
             })
     
         }, [activeProject, project, setProjects])

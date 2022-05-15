@@ -10,26 +10,27 @@ import { toJpeg } from 'dom-to-image'
 import loadingAtom from '../../../loadingAtom'
 import Loader from '../../../Loading/components/Loader'
 import modalAtom from '../../../../components/Modal/modalAtom'
+import { Navigate } from 'react-router-dom'
 
 const Images = React.memo(({images}) => {
 
   const [projects] = useRecoilState(projectsAtom)
   const [activeProject] = useRecoilState(activeProjectAtom)
-  let currentProject = projects[activeProject]
+  let currentProject = projects.filter(i=>i.id===activeProject)[0]
 
   if(currentProject){
-    let rowHeight = 300*(currentProject.canvas.height/currentProject.canvas.width)
-    let columnWidth = rowHeight*(currentProject.canvas.width/currentProject.canvas.height)
+    let rowHeight = 300*(currentProject.data.canvas.height/currentProject.data.canvas.width)
+    let columnWidth = rowHeight*(currentProject.data.canvas.width/currentProject.data.canvas.height)
 
-    let rowCount = Math.ceil(parseInt(currentProject.supply)/Math.floor(window.innerWidth / rowHeight))
+    let rowCount = Math.ceil(parseInt(currentProject.data.supply)/Math.floor(window.innerWidth / rowHeight))
     let columnCount = Math.floor(window.innerWidth / columnWidth)
 
     const [resize, setResize] = useState(false)
     window.onresize = () => {
       setResize(!resize)
-      let newRowHeight = 300*(currentProject.canvas.height/currentProject.canvas.width)
-      let newColumnWidth = rowHeight*(currentProject.canvas.width/currentProject.canvas.height)
-      let newRowCount = Math.ceil(parseInt(currentProject.supply)/Math.floor(window.innerWidth / newRowHeight))
+      let newRowHeight = 300*(currentProject.data.canvas.height/currentProject.data.canvas.width)
+      let newColumnWidth = rowHeight*(currentProject.data.canvas.width/currentProject.data.canvas.height)
+      let newRowCount = Math.ceil(parseInt(currentProject.data.supply)/Math.floor(window.innerWidth / newRowHeight))
       let newColumnCount = Math.floor(window.innerWidth / newColumnWidth)
       if(rowHeight !== newRowHeight && columnWidth !== newColumnWidth && rowCount !== newRowCount && columnCount !== newColumnCount){
         rowHeight = newRowHeight
@@ -44,8 +45,8 @@ const Images = React.memo(({images}) => {
       if(images.current[index]){
         let image = images.current[index]
         return (
-          <div style={{...style, aspectRatio: `${currentProject.canvas.width}/${currentProject.canvas.height}`}}>
-            <div className={styles.image} style={{backgroundColor: currentProject.canvas.background, width: '100%', height: '100%'}}>
+          <div style={{...style, aspectRatio: `${currentProject.data.canvas.width}/${currentProject.data.canvas.height}`}}>
+            <div className={styles.image} style={{backgroundColor: currentProject.data.canvas.background, width: '100%', height: '100%'}}>
                 {image.map((item, key)=>{
                   let style = {...item.style, width: '100%', height: '100%', left: 0, top: 0, transform: 'none', filter: `brightness(${item.style.brightness}) contrast(${item.style.contrast}) saturate(${item.style.saturatation}) hue-rotate(${item.style.hue}) sepia(${item.style.sepia})`}
                   return (
@@ -85,11 +86,11 @@ const Footer = React.memo(({images, loading, setLoading}) => {
 
   const [projects] = useRecoilState(projectsAtom)
   const [activeProject] = useRecoilState(activeProjectAtom)
-  let currentProject = projects[activeProject]
+  let currentProject = projects.filter(i=>i.id===activeProject)[0]
   if(currentProject){
     useEffect(()=>{
       if(document.getElementById('total')){
-        document.getElementById('total').innerHTML = currentProject.supply
+        document.getElementById('total').innerHTML = currentProject.data.supply
       }
     }, [])
   
@@ -101,15 +102,15 @@ const Footer = React.memo(({images, loading, setLoading}) => {
         progress = progress + 1
         setTimeout(()=>{
           document.getElementById('current').innerHTML = progress
-          document.getElementById('progressIndicator').style.width = (((progress)/parseInt(currentProject.supply))*100)+'%'  
+          document.getElementById('progressIndicator').style.width = (((progress)/parseInt(currentProject.data.supply))*100)+'%'  
         }, 0)
       }
       const supplyImage = (i) => {
-        if(i < parseInt(currentProject.supply)){
+        if(i < parseInt(currentProject.data.supply)){
             let image = images.current[i]
             let div = document.createElement('div')
             let targetHTML = ReactDOMServer.renderToStaticMarkup(
-              <div style={{backgroundColor: currentProject.canvas.background, position: 'relative', height: `${currentProject.canvas.height}px`, width: `${currentProject.canvas.width}px`}}>
+              <div style={{backgroundColor: currentProject.data.canvas.background, position: 'relative', height: `${currentProject.data.canvas.height}px`, width: `${currentProject.data.canvas.width}px`}}>
                   {image.map((item, key)=>{
                     let style = {...item.style, width: '100%', height: '100%', left: 0, top: 0, transform: 'none', filter: `brightness(${item.style.brightness}) contrast(${item.style.contrast}) saturate(${item.style.saturatation}) hue-rotate(${item.style.hue}) sepia(${item.style.sepia})`}
                     return (
@@ -132,7 +133,7 @@ const Footer = React.memo(({images, loading, setLoading}) => {
                           headers: {
                               'Content-Type': 'application/json'
                           },
-                          body: JSON.stringify({folder: currentProject.name, image: e})
+                          body: JSON.stringify({folder: currentProject.data.name, image: e})
                         }).then((e)=>{
                           setProgress().then(()=>{
                             res(e)
@@ -186,24 +187,25 @@ const Generate = () => {
 
   const [projects] = useRecoilState(projectsAtom)
   const [activeProject] = useRecoilState(activeProjectAtom)
-  let currentProject = projects[activeProject]
+  let currentProject = projects.filter(i=>i.id===activeProject)[0]
   if(currentProject){
-    let layerKeys = Object.keys(currentProject.layers)
-    layerKeys.reverse()
+
+    const displayLayers = Object.keys(currentProject.data.layers).sort((a, b)=>currentProject.data.layers[a].index-currentProject.data.layers[b].index)
+    displayLayers.reverse()
   
     const images = useRef([])
   
     const setLoading = useSetRecoilState(loadingAtom)
   
     if(images.current.length === 0){
-      for(let i = 0; i < parseInt(currentProject.supply); i++){
+      for(let i = 0; i < parseInt(currentProject.data.supply); i++){
         let image = []
-        for(let i = 0; i < layerKeys.length; i++){
-          const random = Math.floor(Math.random() * (currentProject.layers[layerKeys[i]].assets.length - 1))
-          image.push(currentProject.layers[layerKeys[i]].assets[random])
+        for(let i = 0; i < displayLayers.length; i++){
+          const random = Math.floor(Math.random() * (currentProject.data.layers[displayLayers[i]].assets.length - 1))
+          image.push(currentProject.data.layers[displayLayers[i]].assets[random])
         }
         images.current.push(image)
-        if(i === parseInt(currentProject.supply) - 1){
+        if(i === parseInt(currentProject.data.supply) - 1){
           setTimeout(()=>{
             setLoading(false)
           }, 0)
@@ -231,7 +233,7 @@ const Generate = () => {
       </div>
     )
   }else{
-    return null
+    return <Navigate to='/dashboard' />
   }
 }
 

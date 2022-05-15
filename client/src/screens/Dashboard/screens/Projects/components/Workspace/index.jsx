@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Trash2 } from 'react-feather'
 import { useNavigate } from 'react-router-dom'
 import { useRecoilState, useSetRecoilState } from 'recoil'
@@ -7,6 +7,11 @@ import activeProjectAtom from '../../../activeProjectAtom'
 import projectsAtom from '../../../projectsAtom'
 import searchAtom from '../Title/searchAtom'
 import styles from './_workspace.module.sass'
+import { db } from '../../../../../../firebase'
+import {collection, query, onSnapshot, deleteDoc, doc} from 'firebase/firestore'
+import Loader from '../../../Loading/components/Loader'
+import loadingAtom from './workspaceLoadingAtom'
+import workspaceLoadingAtom from './workspaceLoadingAtom'
 
 const Empty = () => {
     const setModal = useSetRecoilState(modalAtom)
@@ -19,31 +24,33 @@ const Empty = () => {
     )
 }
 
-const Tile = ({id}) => {
-    const [projects, setProjects] = useRecoilState(projectsAtom)
+const Tile = ({item}) => {
     const setActiveProject = useSetRecoilState(activeProjectAtom)
     const navigate = useNavigate()
     const goToEditor = (e) => {
         if(e.target.nodeName !== 'svg' && e.target.nodeName !== 'path' && e.target.nodeName !== 'line'){
-            setActiveProject(id)
+            setActiveProject(item.id)
             navigate('editor')
         }
     }
     const deleteProject = () => {
-        fetch('https://pencyl.herokuapp.com/data'+id, {
-            method: 'DELETE'
-        }).then(e=>e.json()).then(e=>setProjects(e))
+        const ref = doc(db, 'projects', item.id)
+        try {
+            deleteDoc(ref)
+        } catch (error) {
+            console.log(error)  
+        }
     }
-    if(projects[id]){
+    if(item){
         return (
             <div className={styles.tile} onMouseDown={(e)=>goToEditor(e)}>
                 <div className={styles.canvas}>
                     <div className={styles.container}>
-                        {projects[id].snapshot?<img alt='' src={projects[id].snapshot} />:null}
+                        {item.data.snapshot?<img alt='' src={item.data.snapshot} />:null}
                     </div>
                 </div>
                 <div className={styles.title}>
-                    <p>{projects[id].name}</p>
+                    <p>{item.data.name}</p>
                     <Trash2 onMouseDown={deleteProject} />
                 </div>
             </div>
@@ -56,40 +63,57 @@ const Tile = ({id}) => {
 const Workspace = () => {
     const [projects, setProjects] = useRecoilState(projectsAtom)
     const [search] = useRecoilState(searchAtom)
+    const [loading, setLoading] = useRecoilState(workspaceLoadingAtom)
+
     useEffect(()=>{
-        fetch('https://pencyl.herokuapp.com/data', {
-            method: 'GET'
-        }).then((res)=>res.json()).then((data)=>{
-            if(JSON.stringify(data) !== JSON.stringify(projects)){
-                setProjects(data)
+        const ref = query(collection(db, 'projects'))
+        setLoading(true)
+        onSnapshot(ref, snapshot => {
+            let newProjects = snapshot.docs.map(doc => ({
+                id: doc.id,
+                data: doc.data()
+            }))
+            if(JSON.stringify(projects) !== JSON.stringify(newProjects)){
+                setProjects(newProjects)
             }
+            setLoading(false)
         })
     }, [projects, setProjects])
-    return (
-        <div className={styles.workspace}>
-            {Object.keys(projects).length<=0?
-                <Empty />
-                :
-                <div className={styles.container}>
-                    <div className={styles.files}>
-                        {search!==''?
-                            Object.keys(projects).map((item, key)=>{
-                                if(item.name.includes(search)){
-                                    return <Tile key={key} id={item} />
-                                }else{
-                                    return null
-                                }
-                            })
-                            :
-                            Object.keys(projects).map((item, key)=>{
-                                return <Tile key={key} id={item} />
-                            })
-                        }
+
+    if(loading){
+        return (
+            <div className={styles.loading}>
+                <Loader />
+            </div>
+        )
+    }else{
+        return (
+            <div className={styles.workspace}>
+                {projects.length<=0?
+                    <Empty />
+                    :
+                    <div className={styles.container}>
+                        <div className={styles.files}>
+                            {search!==''?
+                                projects.map((item, key)=>{
+                                    console.log(item)
+                                    if(item.name.includes(search)){
+                                        return <Tile key={key} item={item} />
+                                    }else{
+                                        return null
+                                    }
+                                })
+                                :
+                                projects.map((item, key)=>{
+                                    return <Tile key={key} item={item} />
+                                })
+                            }
+                        </div>
                     </div>
-                </div>
-            }
-        </div>
-    )
+                }
+            </div>
+        )
+    }
 }
 
 export default Workspace

@@ -5,7 +5,7 @@ import LandingPage from './screens/LandingPage'
 import { RecoilRoot } from 'recoil'
 import React from 'react'
 
-const App = React.memo(() => {
+const App = React.memo(() => {  
   return (
     <RecoilRoot>
       <BrowserRouter>

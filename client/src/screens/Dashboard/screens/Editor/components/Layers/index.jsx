@@ -8,16 +8,17 @@ import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
 import targetAtom from '../Main/targetAtom'
 import activeProjectAtom from '../../../activeProjectAtom'
 import React, { useCallback } from 'react'
-
+import { db } from '../../../../../../firebase'
+import { doc, updateDoc } from 'firebase/firestore'
+ 
 const AddLayer = React.memo(({currentProject}) => {
     
     const setModal = useSetRecoilState(modalAtom)
-    const setProjects = useSetRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
     
-    let layers = currentProject.layers
+    let layers = currentProject.data.layers
 
-    const project = currentProject
+    const project = currentProject.data
     
     const addLayer = (layerName) => { 
         let shouldAddLayer = true
@@ -34,15 +35,10 @@ const AddLayer = React.memo(({currentProject}) => {
                     let projectString = JSON.stringify(project)
                     let newProject = JSON.parse(projectString)
                     newProject.layers = {...layers, [layerName.toLowerCase().replaceAll(/\s/g,'')]: {}}
-                    fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(newProject)
-                    }).then(e=>e.json()).then((e)=>{
-                        setProjects(e)
-                        setModal({type: null})
+                    updateDoc(doc(db, 'projects', activeProject), {
+                        ...newProject
+                    }).then(()=>{
+                        setModal({type: ''})
                     })
                 }else{
                     setModal({type: 'addLayer', func: addLayer, error: 'Layer name cannot start with a number'})
@@ -66,22 +62,17 @@ const AddLayer = React.memo(({currentProject}) => {
 
 const Layer = React.memo(({name, currentProject}) => {
 
-    const setProjects = useSetRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
-    const project = currentProject
-    let layers = currentProject.layers
+    const project = currentProject.data
+    let layers = currentProject.data.layers
 
     const setLayers = useCallback((layers) => {
         let projectString = JSON.stringify(project)
         let newProject = JSON.parse(projectString)
         newProject.layers = {...layers}
-        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newProject)
-        }).then(e=>e.json()).then(e=>setProjects(e))
+        updateDoc(doc(db, 'projects', activeProject), {
+            ...newProject
+        })
     }, [])
 
     const setModal = useSetRecoilState(modalAtom)
@@ -112,14 +103,9 @@ const Layer = React.memo(({name, currentProject}) => {
                 let projectString = JSON.stringify(project)
                 let newProject = JSON.parse(projectString)
                 newProject.layers = {...newLayers}
-                fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(newProject)
-                }).then(e=>e.json()).then((e)=>{
-                    setProjects(e)
+                updateDoc(doc(db, 'projects', activeProject), {
+                    ...newProject
+                }).then(()=>{
                     setModal({type: null})
                 })
             }, [])
@@ -165,16 +151,10 @@ const Layer = React.memo(({name, currentProject}) => {
                                 id: assetId,
                                 style: layerStyle
                             }]
-                            const [projects] = useRecoilState(projectsAtom)
-                            let newProjects = projects
-                            newProject[newProject.id] = newProject
-                            setProjects(newProjects)
-                            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                                method: 'PATCH',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(newProject)
+                            updateDoc(doc(db, 'projects', activeProject), {
+                                ...newProject
+                            }).then(()=>{
+                                setModal({type: ''})
                             })
                     }else{
                         let projectString = JSON.stringify(project)
@@ -186,14 +166,8 @@ const Layer = React.memo(({name, currentProject}) => {
                             id: assetId,
                             style: layerStyle
                         }]
-                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(newProject)
-                        }).then(e=>e.json()).then((e)=>{
-                            setProjects(e)
+                        updateDoc(doc(db, 'projects', activeProject), {
+                            ...newProject
                         })
                     }
                     setModal({type: null})
@@ -230,13 +204,9 @@ const Layer = React.memo(({name, currentProject}) => {
                         newLayers = {...newLayers, [newItem]: project.layers[item]}
                     })
                     newProject.layers = newLayers
-                    fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(newProject)
-                    }).then(e=>e.json()).then(e=>setProjects(e))
+                    updateDoc(doc(db, 'projects', activeProject), {
+                        ...newProject
+                    })
                     if(rename && isNaN(newName.toLowerCase().replaceAll(/\s/g,'').charAt(0))){
                         setModal({type: null})
                     }
@@ -395,46 +365,32 @@ const Layer = React.memo(({name, currentProject}) => {
 
 const Layers = React.memo(() => {
 
-    const [projects, setProjects] = useRecoilState(projectsAtom)
+    const [projects] = useRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
-    let currentProject = projects[activeProject]
+    let currentProject = projects.filter(i=>i.id===activeProject)[0]
 
     if(currentProject){
 
-        let layers = currentProject.layers
-        const project = currentProject
+        let layers = currentProject.data.layers
     
         const reorderLayers = useCallback((e) => {
-            let projectString = JSON.stringify(project)
+            let projectString = JSON.stringify(currentProject)
             let newProject = JSON.parse(projectString)
-            let newLayers = newProject.layers
-            let newLayersKeys = Object.keys(newLayers)
-            newLayersKeys.splice(e.destination.index, 0, newLayersKeys.splice(e.source.index, 1)[0])
-            let finalLayers = {}
-            newLayersKeys.forEach((item)=>{
-                finalLayers = {...finalLayers, [item]: newLayers[item]}
-            })
-            newProject.layers = finalLayers
-            let projectsString = JSON.stringify(projects)
-            let newProjects = JSON.parse(projectsString)
-            newProjects[newProject.id] = newProject
-            setProjects(newProjects)
-            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(newProject)
+            newProject.data.layers = newLayers
+            updateDoc(doc(db, 'projects', activeProject), {
+                ...newProject
             })
         }, [])
-    
+
+        const displayLayers = Object.keys(layers).sort((a, b)=>layers[a].index-layers[b].index)
+
         return (
             <div className={styles.layersWrapper}>
                 <DragDropContext onDragEnd={(e)=>reorderLayers(e)}>
                     <Droppable droppableId='droppable-1'>
                         {(provided)=>(
                             <div className={styles.layers} ref={provided.innerRef} {...provided.droppableProps}>
-                                {Object.keys(layers).map((item, i)=>(
+                                {displayLayers.map((item, i)=>(
                                     <Draggable key={i} draggableId={`draggable-${i}`} index={i}>
                                         {(provided)=>(
                                             <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>

@@ -3,24 +3,19 @@ import styles from './_start.module.sass'
 import {useNavigate} from 'react-router-dom'
 import { useSetRecoilState } from "recoil"
 import modalAtom from "../../modalAtom"
-import projectsAtom from "../../../../screens/projectsAtom"
 import activeProjectAtom from "../../../../screens/activeProjectAtom"
-import { useState } from "react"
-import loadingData from '../../../../loading.json'
-import Lottie from "react-lottie-player"
 import layersJSON from './layers.json'
+import { db } from "../../../../../../firebase"
+import {collection, addDoc} from 'firebase/firestore'
 
-const Start = () => {
+const Start = ({setLoading}) => {
 
     const navigate = useNavigate()
     const setModal = useSetRecoilState(modalAtom)
     const setActiveProject = useSetRecoilState(activeProjectAtom)
-    const setProjects = useSetRecoilState(projectsAtom)
 
     const startScratch = () => {
-        let id = new Date().valueOf().toString()
         const project = {
-            id: id,
             name: 'untitled',
             canvas: {
                 height: 600,
@@ -29,21 +24,14 @@ const Start = () => {
             },
             layers: {}
         }
-        fetch('http://localhost:5000/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(project)
-        }).then((res)=>res.json()).then((data)=>{
-            setActiveProject(id)
-            setProjects(data)
+        addDoc(collection(db, 'projects'), {
+            ...project
+        }).then((e)=>{
+            setActiveProject(e.id)
             navigate('editor')
             setModal({type: ''})
         })
     }
-
-    const [loading, setLoading] = useState(false)
 
     const startFolder = (e) => {
         setLoading(true)
@@ -98,9 +86,7 @@ const Start = () => {
                 for(let i = 0; i < newKeys.length; i++){
                     newLayers[newKeys[i]] = layers[newKeys[i]]
                     if(i === newKeys.length - 1){
-                        let id = new Date().valueOf().toString()
                         const project = {
-                            id: id,
                             name: name,
                             canvas: {
                                 height: maxHeight,
@@ -110,23 +96,13 @@ const Start = () => {
                             layers: newLayers,
                             snapshot: ''
                         }
-                        let body = JSON.stringify(project)
-                        fetch('http://localhost:5000/', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: body
-                        }).then((res)=>res.json()).then((data)=>{
+                        addDoc(collection(db, 'projects'), {
+                            ...project
+                        }).then((e)=>{
                             setLoading(false)
-                            if(data.message){
-                                setModal({type: 'error', text: data.message})
-                            }else{
-                                setActiveProject(id)
-                                setProjects(data)
-                                navigate('editor')
-                                setModal({type: ''})
-                            }
+                            setActiveProject(e.id)
+                            navigate('editor')
+                            setModal({type: ''})
                         })
                     }
                 }
@@ -136,9 +112,7 @@ const Start = () => {
 
     const startDemo = () => {
         setLoading(true)
-        let id = new Date().valueOf().toString()
         const project = {
-            id: id,
             name: 'demo',
             canvas: {
                 height: 1000,
@@ -148,66 +122,44 @@ const Start = () => {
             layers: layersJSON,
             snapshot: ''
         }
-        let body = JSON.stringify(project)
-        fetch('http://localhost:5000/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: body
-        }).then((res)=>res.json()).then((data)=>{
+        addDoc(collection(db, 'projects'), {
+            ...project
+        }).then((e)=>{
             setLoading(false)
-            if(data.message){
-                setModal({type: 'error', text: data.message})
-            }else{
-                setActiveProject(id)
-                setProjects(data)
-                navigate('editor')
-                setModal({type: ''})
-            }
+            setActiveProject(e.id)
+            navigate('editor')
+            setModal({type: ''})
         })
     }
 
-    if(loading){
-        return (
-            <div className={styles.loading}>
-                <Lottie
-                    loop
-                    animationData={loadingData}
-                    play
-                    style={{ width: 150, height: 150 }}
-                />
-            </div>
-        )
-    }else{
-        return (
-            <div className={styles.wrapper}>
-                <label>
-                    <div className={styles.btn}>
-                        <div className={styles.content}>
-                            <Folder />
-                            <p>Upload folder</p>
-                        </div>
-                    </div>
-                    <input directory="/public" webkitdirectory="/public" type="file" onChange={startFolder} />
-                </label>
-                <p className={styles.or}>or</p>
-                <div className={styles.btn} onMouseDown={startScratch}>
+    return (
+        <div className={styles.wrapper}>
+            <label>
+                <div className={styles.btn}>
                     <div className={styles.content}>
-                        <Box />
-                        <p>Start from scratch</p>
+                        <Folder />
+                        <p>Upload folder</p>
                     </div>
                 </div>
-                <p className={styles.or}>or</p>
-                <div className={styles.btn} onMouseDown={startDemo}>
-                    <div className={styles.content}>
-                        <Layers />
-                        <p>Open Demo</p>
-                    </div>
+                <input directory="/public" webkitdirectory="/public" type="file" onChange={startFolder} />
+            </label>
+            <p className={styles.or}>or</p>
+            <div className={styles.btn} onMouseDown={startScratch}>
+                <div className={styles.content}>
+                    <Box />
+                    <p>Start from scratch</p>
                 </div>
             </div>
-        )
-    }
+            <p className={styles.or}>or</p>
+            <div className={styles.btn} onMouseDown={startDemo}>
+                <div className={styles.content}>
+                    <Layers />
+                    <p>Open Demo</p>
+                </div>
+            </div>
+        </div>
+    )
+
 }
 
 export default Start

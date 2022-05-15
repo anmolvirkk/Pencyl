@@ -8,6 +8,8 @@ import Selecto from "react-selecto"
 import { toJpeg } from 'dom-to-image'
 import activeProjectAtom from '../../../activeProjectAtom'
 import { Navigate } from 'react-router-dom'
+import { db } from '../../../../../../firebase'
+import { doc, updateDoc } from 'firebase/firestore'
 
 const Main = () => {
 
@@ -15,13 +17,13 @@ const Main = () => {
 
     const [activeProject] = useRecoilState(activeProjectAtom)
     const [projects] = useRecoilState(projectsAtom)
-    let currentProject = projects[activeProject]
+    let currentProject = projects.filter(i=>i.id===activeProject)[0]
 
     if(currentProject){
 
-        const layers = currentProject.layers
+        const layers = currentProject.data.layers
 
-        const project = currentProject
+        const project = currentProject.data
     
         const setSnapshot = () => {
             if(document.getElementById('canvasWrapper')){
@@ -29,12 +31,8 @@ const Main = () => {
                 toJpeg(canvas).then((e)=>{
                     if(e !== 'data:,'){
                         let newProject = {...project, snapshot: e}
-                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(newProject)
+                        updateDoc(doc(db, 'projects', activeProject), {
+                            ...newProject
                         })
                     }
                 })
@@ -51,13 +49,9 @@ const Main = () => {
             let projectString = JSON.stringify(project)
             let newProject = JSON.parse(projectString)
             newProject.layers = {...layers}
-            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(newProject)
-            }).then(e=>e.json()).then(e=>setProjects(e))
+            updateDoc(doc(db, 'projects', activeProject), {
+                ...newProject
+            })
         }, [setProjects, activeProject, project])
     
         let onChange = useRef(null)
@@ -113,9 +107,6 @@ const Main = () => {
                 setTarget(null)
             }
         }
-    
-        let displayLayers = Object.keys(layers)
-        displayLayers.reverse()
     
         if(document.getElementById('main')){
             document.getElementById('main').onmousedown = (e) => {
@@ -186,13 +177,9 @@ const Main = () => {
                                     newProject['layers'][layer]['assets'] = null
                                 }
                             })
-                            fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                                    method: 'PATCH',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify(newProject)
-                            }).then(e=>e.json()).then(e=>setProjects(e))
+                            updateDoc(doc(db, 'projects', activeProject), {
+                                ...newProject
+                            })
                         break
                         default:
                             direction = false
@@ -238,13 +225,9 @@ const Main = () => {
                                 newProject['layers'][layer]['assets'][asset].style[direction] = item.style[direction]
                             }
                         })
-                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                                method: 'PATCH',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(newProject)
-                        }).then(e=>e.json()).then(e=>setProjects(e))
+                        updateDoc(doc(db, 'projects', activeProject), {
+                            ...newProject
+                        })
                     }
                     distance = 0
                 }
@@ -252,6 +235,9 @@ const Main = () => {
     
         }
     
+        const displayLayers = Object.keys(layers).sort((a, b)=>layers[a].index-layers[b].index)
+        displayLayers.reverse()
+
         return (
             <div className={styles.main} id='main'>
                 <div id='canvasWrapper' className={styles.canvasWrapper} style={{aspectRatio: `${project.canvas.width}/${project.canvas.height}`}}>
@@ -278,12 +264,8 @@ const Main = () => {
                                 <Moveable
                                     snappable={true}
                                     elementGuidelines={target}
-                                    snapThreshold={5}
-                                    isDisplaySnapDigit={true}
-                                    snapGap={true}
                                     snapDirections={{'top': true, 'right': true, 'bottom': true, 'left': true}}
                                     elementSnapDirections={{'top': true, 'right': true, 'bottom': true, 'left': true}}
-                                    snapDigit={0}
                                     target={target}
                                     draggable={true}
                                     resizable={true}
@@ -313,14 +295,8 @@ const Main = () => {
                                         let projectString = JSON.stringify(project)
                                         let newProject = JSON.parse(projectString)
                                         newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left}
-                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                                            method: 'PATCH',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify(newProject)
-                                        }).then(e=>e.json()).then((e)=>{
-                                            setProjects(e)
+                                        updateDoc(doc(db, 'projects', activeProject), {
+                                            ...newProject
                                         })
                                     }}
                                     onDragGroupEnd={(e)=>{
@@ -333,13 +309,9 @@ const Main = () => {
                                             let asset = x.target.attributes[2].value
                                             newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left}
                                         })
-                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                                                method: 'PATCH',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify(newProject)
-                                        }).then(e=>e.json()).then(e=>setProjects(e))
+                                        updateDoc(doc(db, 'projects', activeProject), {
+                                            ...newProject
+                                        })
                                     }}
                                     onResize={(e)=>{
                                         e.target.style.left = e.drag.left+'px'
@@ -357,14 +329,8 @@ const Main = () => {
                                         let projectString = JSON.stringify(project)
                                         let newProject = JSON.parse(projectString)
                                         newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, width: width, height: height, top: top, left: left}
-                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                                            method: 'PATCH',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify(newProject)
-                                        }).then(e=>e.json()).then((e)=>{
-                                            setProjects(e)
+                                        updateDoc(doc(db, 'projects', activeProject), {
+                                            ...newProject
                                         })
                                     }}
                                     onResizeGroup = {(e) => {
@@ -387,13 +353,9 @@ const Main = () => {
                                             let asset = e.target.attributes[2].value
                                             newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, top: top, left: left, height: height, width: width}
                                         })
-                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                                                method: 'PATCH',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify(newProject)
-                                        }).then(e=>e.json()).then(e=>setProjects(e))
+                                        updateDoc(doc(db, 'projects', activeProject), {
+                                            ...newProject
+                                        })
                                     }}
                                     onRotate={(e)=>{
                                         e.target.style.transform = e.transform
@@ -405,14 +367,8 @@ const Main = () => {
                                         let projectString = JSON.stringify(project)
                                         let newProject = JSON.parse(projectString)
                                         newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, rotate: rotate}
-                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                                            method: 'PATCH',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify(newProject)
-                                        }).then(e=>e.json()).then((e)=>{
-                                            setProjects(e)
+                                        updateDoc(doc(db, 'projects', activeProject), {
+                                            ...newProject
                                         })
                                     }}
                                     onRotateGroup={(e)=>{
@@ -431,13 +387,9 @@ const Main = () => {
                                             let asset = e.target.attributes[2].value
                                             newProject['layers'][layer]['assets'][asset].style = {...newProject['layers'][layer]['assets'][asset].style, rotate: rotate, left: left, top: top}
                                         })
-                                        fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                                                method: 'PATCH',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify(newProject)
-                                        }).then(e=>e.json()).then(e=>setProjects(e))
+                                        updateDoc(doc(db, 'projects', activeProject), {
+                                            ...newProject
+                                        })
                                     }}
                                 />
                             :null}
@@ -445,7 +397,7 @@ const Main = () => {
                                 dragContainer={'#main'}
                                 boundContainer={'#main'}
                                 selectableTargets={[`.${styles.imgWrapper}`]}
-                                hitRate={30}
+                                hitRate={120}
                                 selectByClick={true}
                                 selectFromInside={true}
                                 ratio={0}

@@ -5,9 +5,11 @@ import projectsAtom from '../../../projectsAtom'
 import activeProjectAtom from '../../../activeProjectAtom'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import loadingAtom from '../../../loadingAtom'
+import { db } from '../../../../../../firebase'
+import { doc, updateDoc } from 'firebase/firestore'
 
 const Generate = () => {
-    const [projects, setProjects] = useRecoilState(projectsAtom)
+    const [projects] = useRecoilState(projectsAtom)
     const [activeProject] = useRecoilState(activeProjectAtom)
     
     let maxRef = useRef(1)
@@ -15,11 +17,11 @@ const Generate = () => {
 
     useEffect(()=>{
         if(max !== maxRef.current){
-            let currentProject = projects[activeProject]
+            let currentProject = projects.filter(i=>i.id===activeProject)[0]
             if(currentProject){
-                Object.keys(currentProject.layers).forEach((item)=>{
-                    if(currentProject.layers[item].assets){
-                        maxRef.current = maxRef.current * currentProject.layers[item].assets.length
+                Object.keys(currentProject.data.layers).forEach((item)=>{
+                    if(currentProject.data.layers[item].assets){
+                        maxRef.current = maxRef.current * currentProject.data.layers[item].assets.length
                     }
                 })
                 setMax(maxRef.current)
@@ -46,25 +48,21 @@ const Generate = () => {
 
     const [error, setError] = useState(false)
 
-    const nav = useNavigate()
-
     const setLoading = useSetRecoilState(loadingAtom)
+
+    const navigate = useNavigate()
 
     const generate = () => {
         setLoading(true)
         if(inputText){
             if(parseInt(inputText) <= max){
-                let projectString = JSON.stringify(projects[activeProject])
+                let projectString = JSON.stringify(projects.filter(i=>i.id===activeProject)[0].data)
                 let newProject = JSON.parse(projectString)
                 newProject.supply = inputText
-                fetch('https://pencyl.herokuapp.com/data'+activeProject, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(newProject)
-                }).then(e=>e.json()).then(e=>setProjects(e)).then(()=>{
-                    nav('generate')
+                updateDoc(doc(db, 'projects', activeProject), {
+                    ...newProject
+                }).then(()=>{
+                    navigate('generate')
                 })
             }else{
                 setLoading(false)
