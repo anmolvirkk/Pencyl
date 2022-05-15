@@ -48,15 +48,11 @@ export const addImage = async (req, res) => {
         decodeBase64Image(req.body.image).then((e)=>{
           fs.readdir(folder, (_, files) => {
               fs.writeFileSync(folder+'\\'+req.body.folder+'_#'+files.length+'.jpg', e.data, ()=>{console.log('image added')})
-              res.header('Access-Control-Allow-Origin', '*')
-              res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
               res.json()
           })
         })
       })
     } catch (error) {
-        res.header('Access-Control-Allow-Origin', '*')
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
         res.json({message: error.message})
     }
 }
