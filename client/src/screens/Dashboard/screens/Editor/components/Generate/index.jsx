@@ -127,7 +127,7 @@ const Footer = React.memo(({images, loading, setLoading}) => {
                 toJpeg(div.childNodes[0]).then((e)=>{
                   if(e !== 'data:,'){
                     promises.push(
-                        fetch('https://pencyl.herokuapp.com/dataimage', {
+                        fetch('https://pencyl.herokuapp.com/data/image', {
                           method: 'POST',
                           headers: {
                               'Content-Type': 'application/json'
