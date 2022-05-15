@@ -85,6 +85,7 @@ const Start = ({setLoading}) => {
                 let newLayers = {}
                 for(let i = 0; i < newKeys.length; i++){
                     newLayers[newKeys[i]] = layers[newKeys[i]]
+                    newLayers[newKeys[i]].index = i
                     if(i === newKeys.length - 1){
                         const project = {
                             name: name,
