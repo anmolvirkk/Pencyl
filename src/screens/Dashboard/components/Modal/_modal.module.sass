@@ -1,0 +1,17 @@
+@use '../../../../mixins'
+
+.wrapper
+    width: 100vw
+    height: 100vh
+    +mixins.center
+    background-color: rgba(0,0,0,0.8)
+    position: fixed
+    top: 0
+    left: 0
+    z-index: 99
+    .modal
+        max-height: 90vh
+        background-color: var(--black2)
+        border-radius: 10px 10px
+        overflow-y: overlay
+        box-shadow: 0 5px 10px rgba(0,0,0,0.2)

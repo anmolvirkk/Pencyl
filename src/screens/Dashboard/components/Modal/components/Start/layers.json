@@ -1,0 +1,1051 @@
+{
+  "1_accessories": {
+    "index": 0,
+    "active": false,
+    "assets": [
+      {
+        "active": true,
+        "elem": "/demo/1_accessories/bat.png",
+        "id": "165131372560544",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/1_accessories/gold-chain.png",
+        "id": "165131372560545",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/1_accessories/gold-rolex.png",
+        "id": "165131372560546",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/1_accessories/intellect-serum.png",
+        "id": "165131372560547",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/1_accessories/mace.png",
+        "id": "165131372560548",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/1_accessories/mage.png",
+        "id": "165131372560549",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/1_accessories/nether-raygun.png",
+        "id": "165131372560550",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/1_accessories/popcorn.png",
+        "id": "165131372560551",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/1_accessories/solana-flag.png",
+        "id": "165131372560552",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      }
+    ]
+  },
+  "2_clothes": {
+    "index": 1,
+    "active": false,
+    "assets": [
+      {
+        "active": true,
+        "elem": "/demo/2_clothes/astronaut-suit.png",
+        "id": "165131372560535",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/2_clothes/football-jersey.png",
+        "id": "165131372560536",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/2_clothes/jumpsuit.png",
+        "id": "165131372560537",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/2_clothes/karate.png",
+        "id": "165131372560538",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/2_clothes/mage.png",
+        "id": "165131372560539",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/2_clothes/my-name-is.png",
+        "id": "165131372560540",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/2_clothes/police.png",
+        "id": "165131372560541",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/2_clothes/toga.png",
+        "id": "165131372560542",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/2_clothes/trenchcoat.png",
+        "id": "165131372560543",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      }
+    ]
+  },
+  "3_headgear": {
+    "index": 2,
+    "active": false,
+    "assets": [
+      {
+        "active": true,
+        "elem": "/demo/3_headgear/3d-glasses.png",
+        "id": "165131372560426",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/3_headgear/astronaut-helmet.png",
+        "id": "165131372560427",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/3_headgear/clown.png",
+        "id": "165131372560428",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/3_headgear/dark-prince.png",
+        "id": "165131372560429",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/3_headgear/fedora.png",
+        "id": "165131372560430",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/3_headgear/halo.png",
+        "id": "165131372560431",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/3_headgear/hardhat.png",
+        "id": "165131372560432",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/3_headgear/headphones.png",
+        "id": "165131372560433",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/3_headgear/officer.png",
+        "id": "165131372560534",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      }
+    ]
+  },
+  "4_expression": {
+    "index": 3,
+    "active": false,
+    "assets": [
+      {
+        "active": true,
+        "elem": "/demo/4_expression/angry.png",
+        "id": "165131372560421",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/4_expression/excited.png",
+        "id": "165131372560422",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/4_expression/neutral.png",
+        "id": "165131372560423",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/4_expression/smile.png",
+        "id": "165131372560424",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/4_expression/stupid.png",
+        "id": "165131372560425",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      }
+    ]
+  },
+  "5_eyes": {
+    "index": 4,
+    "active": false,
+    "assets": [
+      {
+        "active": true,
+        "elem": "/demo/5_eyes/angry.png",
+        "id": "165131372560415",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/5_eyes/excited.png",
+        "id": "165131372560416",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/5_eyes/googly.png",
+        "id": "165131372560417",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/5_eyes/neutral.png",
+        "id": "165131372560418",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/5_eyes/smiling.png",
+        "id": "165131372560419",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/5_eyes/stupid.png",
+        "id": "165131372560420",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      }
+    ]
+  },
+  "6_skin": {
+    "index": 5,
+    "active": false,
+    "assets": [
+      {
+        "active": true,
+        "elem": "/demo/6_skin/abstract.png",
+        "id": "16513137256036",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/6_skin/blue.png",
+        "id": "16513137256037",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/6_skin/camo-coral.png",
+        "id": "16513137256038",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/6_skin/camo-hot-pink.png",
+        "id": "16513137256039",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/6_skin/chrome-turquoise.png",
+        "id": "165131372560310",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/6_skin/damascus-steel.png",
+        "id": "165131372560311",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/6_skin/lava.png",
+        "id": "165131372560412",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/6_skin/more-razzle.png",
+        "id": "165131372560413",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/6_skin/regular.png",
+        "id": "165131372560414",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      }
+    ]
+  },
+  "7_background": {
+    "index": 6,
+    "active": false,
+    "assets": [
+      {
+        "active": true,
+        "elem": "/demo/7_background/baby-blue.png",
+        "id": "16513137256030",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/7_background/cotton-candy.png",
+        "id": "16513137256031",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/7_background/deep-champagne.png",
+        "id": "16513137256032",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/7_background/lavender-blue.png",
+        "id": "16513137256033",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/7_background/light-gray.png",
+        "id": "16513137256034",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      },
+      {
+        "active": false,
+        "elem": "/demo/7_background/magic-mint.png",
+        "id": "16513137256035",
+        "rare": "",
+        "style": {
+          "width": "auto",
+          "height": "auto",
+          "lockAspectRatio": true,
+          "top": "0%",
+          "left": "0%",
+          "rotate": "0deg",
+          "brightness": "100%",
+          "contrast": "100%",
+          "saturatation": "100%",
+          "hue": "0deg",
+          "sepia": "0%"
+        }
+      }
+    ]
+  }
+}
