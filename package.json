@@ -5,7 +5,9 @@
   "dependencies": {
     "@viselect/react": "^3.0.0-beta.13",
     "dom-to-image": "^2.6.0",
+    "file-saver": "^2.0.5",
     "firebase": "^9.8.1",
+    "jszip": "^3.9.1",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^17.0.2",

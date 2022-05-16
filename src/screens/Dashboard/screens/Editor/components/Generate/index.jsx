@@ -11,6 +11,8 @@ import loadingAtom from '../../../loadingAtom'
 import Loader from '../../../Loading/components/Loader'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import { Navigate } from 'react-router-dom'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
 
 const Images = React.memo(({images}) => {
 
@@ -93,65 +95,60 @@ const Footer = React.memo(({images, loading, setLoading}) => {
         document.getElementById('total').innerHTML = currentProject.data.supply
       }
     }, [])
-  
+    
     const download = () => {
-      setLoading(true)
-      let promises = []
-      let progress = 0
-      const setProgress = async () => {
-        progress = progress + 1
-        setTimeout(()=>{
-          document.getElementById('current').innerHTML = progress
-          document.getElementById('progressIndicator').style.width = (((progress)/parseInt(currentProject.data.supply))*100)+'%'  
-        }, 0)
-      }
-      const supplyImage = (i) => {
-        if(i < parseInt(currentProject.data.supply)){
-            let image = images.current[i]
-            let div = document.createElement('div')
-            let targetHTML = ReactDOMServer.renderToStaticMarkup(
-              <div style={{backgroundColor: currentProject.data.canvas.background, position: 'relative', height: `${currentProject.data.canvas.height}px`, width: `${currentProject.data.canvas.width}px`}}>
-                  {image.map((item, key)=>{
-                    let style = {...item.style, width: '100%', height: '100%', left: 0, top: 0, transform: 'none', filter: `brightness(${item.style.brightness}) contrast(${item.style.contrast}) saturate(${item.style.saturatation}) hue-rotate(${item.style.hue}) sepia(${item.style.sepia})`}
-                    return (
-                      <div key={key} style={{position: 'absolute', top: item.style.top, left: item.style.left, width: item.style.width, height: item.style.height, transform: `rotate(${item.style.rotate})`}}>
-                        <img src={item.elem} alt='' style={{...style}} />
-                      </div>
-                    )
-                  })}
-              </div>
-            )
-            div.innerHTML = targetHTML
-            document.getElementById('download').append(div)
-            promises.push(
-              new Promise(res=>{
-                toJpeg(div.childNodes[0]).then((e)=>{
-                  if(e !== 'data:,'){
-                    promises.push(
-                        fetch('https://pencyl.herokuapp.com/data/image', {
-                          method: 'POST',
-                          headers: {
-                              'Content-Type': 'application/json'
-                          },
-                          body: JSON.stringify({folder: currentProject.data.name, image: e})
-                        }).then((e)=>{
-                          setProgress().then(()=>{
-                            res(e)
-                          })
-                      })
-                    )
-                  }
-                })
-              })
-            )
-            supplyImage(i+1)
-        }else{
-          Promise.all(promises).then(()=>{
-            setLoading(false)
-          })
+        setLoading(true)
+        let promises = []
+        let progress = 0
+        const setProgress = async () => {
+          progress = progress + 1
+          setTimeout(()=>{
+            document.getElementById('current').innerHTML = progress
+            document.getElementById('progressIndicator').style.width = (((progress)/parseInt(currentProject.data.supply))*100)+'%'  
+          }, 0)
         }
-      }
-      supplyImage(0)
+        const zip = new JSZip()
+        const supplyImage = (i) => {
+          if(i < parseInt(currentProject.data.supply)){
+              let image = images.current[i]
+              let div = document.createElement('div')
+              let targetHTML = ReactDOMServer.renderToStaticMarkup(
+                <div style={{backgroundColor: currentProject.data.canvas.background, position: 'relative', height: `${currentProject.data.canvas.height}px`, width: `${currentProject.data.canvas.width}px`}}>
+                    {image.map((item, key)=>{
+                      let style = {...item.style, width: '100%', height: '100%', left: 0, top: 0, transform: 'none', filter: `brightness(${item.style.brightness}) contrast(${item.style.contrast}) saturate(${item.style.saturatation}) hue-rotate(${item.style.hue}) sepia(${item.style.sepia})`}
+                      return (
+                        <div key={key} style={{position: 'absolute', top: item.style.top, left: item.style.left, width: item.style.width, height: item.style.height, transform: `rotate(${item.style.rotate})`}}>
+                          <img src={item.elem} alt='' style={{...style}} />
+                        </div>
+                      )
+                    })}
+                </div>
+              )
+              div.innerHTML = targetHTML
+              document.getElementById('download').append(div)
+              promises.push(
+                new Promise(res=>{
+                  toJpeg(div.childNodes[0]).then((e)=>{
+                    if(e !== 'data:,'){
+                      setProgress().then(()=>{
+                        zip.file(currentProject.data.name+'_#'+i+'.jpg', e.replace(/^data:image\/(png|jpg|jpeg);base64,/, ''), {base64: true})
+                        res()
+                      })
+                    }
+                  })
+                })
+              )
+              supplyImage(i+1)
+          }else{
+            Promise.all(promises).then(()=>{
+              zip.generateAsync({type: 'blob'}).then((content)=>{
+                saveAs(content, `${currentProject.data.name}.zip`)
+                setLoading(false)
+              })
+            })
+          }
+        }
+        supplyImage(0)
     }
   
     const setModal = useSetRecoilState(modalAtom)
