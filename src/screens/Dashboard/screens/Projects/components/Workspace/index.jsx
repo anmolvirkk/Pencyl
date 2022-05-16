@@ -10,7 +10,6 @@ import styles from './_workspace.module.sass'
 import { db } from '../../../../../../firebase'
 import {collection, query, onSnapshot, deleteDoc, doc} from 'firebase/firestore'
 import Loader from '../../../Loading/components/Loader'
-import loadingAtom from './workspaceLoadingAtom'
 import workspaceLoadingAtom from './workspaceLoadingAtom'
 
 const Empty = () => {
@@ -96,7 +95,6 @@ const Workspace = () => {
                         <div className={styles.files}>
                             {search!==''?
                                 projects.map((item, key)=>{
-                                    console.log(item)
                                     if(item.data.name.includes(search)){
                                         return <Tile key={key} item={item} />
                                     }else{

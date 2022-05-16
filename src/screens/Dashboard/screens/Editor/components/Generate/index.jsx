@@ -11,8 +11,6 @@ import loadingAtom from '../../../loadingAtom'
 import Loader from '../../../Loading/components/Loader'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import { Navigate } from 'react-router-dom'
-import JSZip from 'jszip'
-import { saveAs } from 'file-saver'
 
 const Images = React.memo(({images}) => {
 
@@ -107,7 +105,6 @@ const Footer = React.memo(({images, loading, setLoading}) => {
             document.getElementById('progressIndicator').style.width = (((progress)/parseInt(currentProject.data.supply))*100)+'%'  
           }, 0)
         }
-        const zip = new JSZip()
         const supplyImage = (i) => {
           if(i < parseInt(currentProject.data.supply)){
               let image = images.current[i]
@@ -130,26 +127,25 @@ const Footer = React.memo(({images, loading, setLoading}) => {
                   document.getElementById('download').append(div)
                   setTimeout(()=>{
                     toJpeg(div.childNodes[0]).then((e)=>{
+                      let a = document.createElement('a')
+                      a.href = e
+                      a.download = currentProject.data.name+'_#'+i+'.jpg'
+                      document.getElementById('download').append(a)
                       setProgress().then(()=>{
-                        if(e !== 'data:,'){
-                          zip.file(currentProject.data.name+'_#'+i+'.jpg', e.replace(/^data:image\/(png|jpg|jpeg);base64,/, ''), {base64: true})
-                        }
+                        a.click()
                         setTimeout(()=>{
                           document.getElementById('download').innerHTML = ''
+                          supplyImage(i+1)
                           res()
-                        }, 10)
+                        }, 250)
                       })
                     })
-                  }, 0)
+                  }, 750)
                 })
               )
-              supplyImage(i+1)
           }else{
-            Promise.all(promises).then((data)=>{
-              zip.generateAsync({type: 'blob'}).then((content)=>{
-                saveAs(content, `${currentProject.data.name}.zip`)
-                setLoading(false)
-              })
+            Promise.all(promises).then(()=>{
+              setLoading(false)
             })
           }
         }
