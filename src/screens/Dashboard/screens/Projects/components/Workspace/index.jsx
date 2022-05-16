@@ -97,7 +97,7 @@ const Workspace = () => {
                             {search!==''?
                                 projects.map((item, key)=>{
                                     console.log(item)
-                                    if(item.name.includes(search)){
+                                    if(item.data.name.includes(search)){
                                         return <Tile key={key} item={item} />
                                     }else{
                                         return null

@@ -125,22 +125,27 @@ const Footer = React.memo(({images, loading, setLoading}) => {
                 </div>
               )
               div.innerHTML = targetHTML
-              document.getElementById('download').append(div)
               promises.push(
                 new Promise(res=>{
-                  toJpeg(div.childNodes[0]).then((e)=>{
-                    if(e !== 'data:,'){
+                  document.getElementById('download').append(div)
+                  setTimeout(()=>{
+                    toJpeg(div.childNodes[0]).then((e)=>{
                       setProgress().then(()=>{
-                        zip.file(currentProject.data.name+'_#'+i+'.jpg', e.replace(/^data:image\/(png|jpg|jpeg);base64,/, ''), {base64: true})
-                        res()
+                        if(e !== 'data:,'){
+                          zip.file(currentProject.data.name+'_#'+i+'.jpg', e.replace(/^data:image\/(png|jpg|jpeg);base64,/, ''), {base64: true})
+                        }
+                        setTimeout(()=>{
+                          document.getElementById('download').innerHTML = ''
+                          res()
+                        }, 10)
                       })
-                    }
-                  })
+                    })
+                  }, 0)
                 })
               )
               supplyImage(i+1)
           }else{
-            Promise.all(promises).then(()=>{
+            Promise.all(promises).then((data)=>{
               zip.generateAsync({type: 'blob'}).then((content)=>{
                 saveAs(content, `${currentProject.data.name}.zip`)
                 setLoading(false)
