@@ -94,7 +94,7 @@ const Header = ({type}) => {
     const isMobile = window.innerWidth < 1200
     return (
         <header className={styles.header}>
-            {!isMobile?<button onMouseDown={() => nav(-1)}><img alt='' src='/logo.png' /></button>:null}
+            {!isMobile||type==='generate'?<button onMouseDown={() => nav(-1)}><img alt='' src='/logo.png' /></button>:null}
             {type!=='generate'?
                 <div className={styles.menu}>
                     <Generate />

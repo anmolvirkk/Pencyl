@@ -26,6 +26,7 @@ const Images = React.memo(({images}) => {
     let columnCount = Math.floor(window.innerWidth / columnWidth)
 
     const [resize, setResize] = useState(false)
+
     window.onresize = () => {
       setResize(!resize)
       let newRowHeight = 300*(currentProject.data.canvas.height/currentProject.data.canvas.width)
@@ -157,6 +158,8 @@ const Footer = React.memo(({images, loading, setLoading}) => {
     const createNFT = () => {
       setModal({type: 'error', text: 'NFT creation is not available yet'})
     }
+
+    const isMobile = window.innerWidth < 1200
   
     return (
       <div className={styles.footer} id='footer'>
@@ -170,9 +173,11 @@ const Footer = React.memo(({images, loading, setLoading}) => {
           <button className={styles.btn} onMouseDown={download} disabled={loading}>
               Download Images
           </button>
-          <button className={styles.btn} onMouseDown={createNFT}>
-              Create NFT Collection
-          </button>
+          {!isMobile?
+            <button className={styles.btn} onMouseDown={createNFT}>
+                Create NFT Collection
+            </button>
+          :null}
         </div>
       </div>
     )
