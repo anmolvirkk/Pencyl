@@ -1,4 +1,4 @@
-import { Plus } from 'react-feather'
+import { ChevronLeft, Plus } from 'react-feather'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import modalAtom from '../../../../components/Modal/modalAtom'
 import MoreMenu from '../../../../components/MoreMenu'
@@ -7,9 +7,10 @@ import styles from './_layers.module.sass'
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd'
 import targetAtom from '../Main/targetAtom'
 import activeProjectAtom from '../../../activeProjectAtom'
-import React from 'react'
+import React, { useState } from 'react'
 import { db } from '../../../../../../firebase'
 import { doc, updateDoc } from 'firebase/firestore'
+import {ChevronRight} from 'react-feather'
  
 const AddLayer = ({currentProject}) => {
     
@@ -384,8 +385,17 @@ const Layers = () => {
 
         const displayLayers = Object.keys(layers).sort((a, b)=>layers[a].index-layers[b].index)
 
+        const isMobile = window.innerWidth < 1200
+
+        const [openLayer, setOpenLayer] = useState(false)
+
         return (
-            <div className={styles.layersWrapper}>
+            <div className={styles.layersWrapper} style={{left: openLayer?'0':'-300px'}}>
+                {isMobile?
+                    <div className={styles.openLayers} onMouseDown={()=>setOpenLayer(!openLayer)} style={{padding: openLayer?'1px 6px 1px 0':'1px 2px 1px 0'}}>
+                        {openLayer?<ChevronLeft />:<ChevronRight />}
+                    </div>
+                :null}
                 <DragDropContext onDragEnd={(e)=>reorderLayers(e)}>
                     <Droppable droppableId='droppable-1'>
                         {(provided)=>(
