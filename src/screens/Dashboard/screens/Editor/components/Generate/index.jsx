@@ -147,6 +147,8 @@ const Footer = React.memo(({images, loading, setLoading}) => {
           }else{
             Promise.all(promises).then(()=>{
               setLoading(false)
+            }).catch(()=>{
+              setLoading(true)
             })
           }
         }
